@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.whitneyrobotics.ftc.teamcode.autoop.AutoSwervePositions;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
 import java.util.List;
