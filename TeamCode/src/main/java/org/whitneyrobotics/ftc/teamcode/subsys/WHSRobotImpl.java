@@ -24,7 +24,7 @@ public class WHSRobotImpl {
     public Intake intake;
     //public OldOuttake oldOuttake;
     public Wobble wobble;
-    public Outtake outtake;
+    public OldOuttake2 outtake;
 
     SwervePath currentSwervePath;
     public SwerveFollower swerveFollower;
@@ -75,7 +75,7 @@ public class WHSRobotImpl {
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
         intake = new Intake(hardwareMap);
-        outtake = new Outtake(hardwareMap);
+        outtake = new OldOuttake2(hardwareMap);
         canister = new Canister(hardwareMap);
         wobble = new Wobble(hardwareMap);
 
@@ -340,7 +340,7 @@ public class WHSRobotImpl {
 
     public void shootPowerShots(boolean gamepadInput) {
         double[] POWERSHOT_ANGLE_ARRAY = {12.0, 16.9, 21.0};
-        Outtake.GoalPositions[] GOAL_POSITION = new Outtake.GoalPositions[]{Outtake.GoalPositions.RIGHT_POWER_SHOT, Outtake.GoalPositions.CENTER_POWER_SHOT, Outtake.GoalPositions.LEFT_POWER_SHOT};
+        OldOuttake2.GoalPositions[] GOAL_POSITION = new OldOuttake2.GoalPositions[]{OldOuttake2.GoalPositions.RIGHT_POWER_SHOT, OldOuttake2.GoalPositions.CENTER_POWER_SHOT, OldOuttake2.GoalPositions.LEFT_POWER_SHOT};
         double loadRingDelay = 0.5;
         double canisterResetDelay = 1.0;
         switch (powershotSwitch) {
@@ -353,7 +353,7 @@ public class WHSRobotImpl {
                 break;
             case 1:
                 rotateToTarget(POWERSHOT_ANGLE_ARRAY[ringsShot], false);
-                outtake.operateFlywheel(Outtake.GoalPositions.LEFT_POWER_SHOT);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.LEFT_POWER_SHOT);
                 if (!rotateToTargetInProgress) {
                     powershotSwitch++;
                 }
@@ -403,13 +403,13 @@ public class WHSRobotImpl {
                 break;
             case 1:
                 rotateToTarget(0, false);
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (!rotateToTargetInProgress) {
                     aimCase++;
                 }
                 break;
             case 2:
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (shootingTimer.isExpired()) {
                     canister.shootRing();
                     if (!canister.shootingInProgress()) {
@@ -438,13 +438,13 @@ public class WHSRobotImpl {
                 break;
             case 1:
                 rotateToTarget(0, false);
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN_FAR);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN_FAR);
                 if (!rotateToTargetInProgress) {
                     aimCase++;
                 }
                 break;
             case 2:
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN_FAR);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN_FAR);
                 if (shootingTimer.isExpired()) {
                     canister.shootRing();
                     if (!canister.shootingInProgress()) {
@@ -472,19 +472,19 @@ public class WHSRobotImpl {
             case 0:
                 shootingInProgress = true;
                 if(ringsShot < 1){
-                    outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN_FAR);
+                    outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN_FAR);
                 } else {
-                    outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                    outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 }
                 powershotSwitch++;
                 break;
             case 1:
                 loadRingTimer.set(loadRingDelay);
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 powershotSwitch++;
                 break;
             case 2:
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (loadRingTimer.isExpired()) {
                     if(ringsShot > 0) {
                         canister.setLoaderPosition(Canister.LoaderPositions.PUSH);
@@ -495,7 +495,7 @@ public class WHSRobotImpl {
                 canisterResetTimer.set(canisterResetDelay);
                 break;
             case 3:
-                outtake.operateFlywheel(Outtake.GoalPositions.HIGH_BIN);
+                outtake.operateFlywheel(OldOuttake2.GoalPositions.HIGH_BIN);
                 if (canisterResetTimer.isExpired()) {
                     canister.setLoaderPosition(Canister.LoaderPositions.REST);
                     ringsShot++;

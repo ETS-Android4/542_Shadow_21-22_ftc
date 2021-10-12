@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
+import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
@@ -23,8 +24,19 @@ public class Carousel {
     private boolean rotateInProgress = false;
     private boolean firstLoop = true;
 
+    private Toggler onOff= new Toggler(2);
     private SimpleTimer timer = new SimpleTimer();
-
+    //toggler based teleop
+    public void togglerOperate(boolean on){
+        onOff.changeState(on);
+        if (onOff.currentState() == 1) {
+            spinner.setPower(1);
+            rotateInProgress = true;
+        } else {
+            spinner.setPower(0);
+            rotateInProgress = false;
+        }
+    }
     //tele-op
     public void operate(boolean buttonInput) {
         telemetry.addData("Spin ducky: ", rotateInProgress);

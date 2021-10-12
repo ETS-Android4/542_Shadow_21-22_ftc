@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
-import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
-import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
+import org.whitneyrobotics.ftc.teamcode.subsys.OldOuttake2;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
 @TeleOp(name = "WHS TeleOp", group = "TeleOp")
@@ -16,7 +15,7 @@ public class WHSTeleOp extends OpMode {
     //public Toggler binToggler = new Toggler(3);
     //public Toggler outtakeToggler = new Toggler(6);
 
-    public Outtake.GoalPositions currentTarget;
+    public OldOuttake2.GoalPositions currentTarget;
     public Position currentTargetPos;
 
     public SimpleTimer rotateTimer = new SimpleTimer();
@@ -75,27 +74,27 @@ public class WHSTeleOp extends OpMode {
         //outtakeToggler.changeState(gamepad2.dpad_right, gamepad2.dpad_left);
         if (gamepad2.dpad_left) {
             currentTargetWord = "Left Powershot";
-            currentTarget = Outtake.GoalPositions.LEFT_POWER_SHOT;
+            currentTarget = OldOuttake2.GoalPositions.LEFT_POWER_SHOT;
             currentTargetPos = powershot1;
         } else if (gamepad2.dpad_up) {
             currentTargetWord = "Center Powershot";
-            currentTarget = Outtake.GoalPositions.CENTER_POWER_SHOT;
+            currentTarget = OldOuttake2.GoalPositions.CENTER_POWER_SHOT;
             currentTargetPos = powershot2;
         } else if (gamepad2.dpad_right) {
             currentTargetWord = "Right Powershot";
-            currentTarget = Outtake.GoalPositions.RIGHT_POWER_SHOT;
+            currentTarget = OldOuttake2.GoalPositions.RIGHT_POWER_SHOT;
             currentTargetPos = powershot3;
         } else if (gamepad2.dpad_down) {
             currentTargetPos = binsMidpoint;
-            currentTarget = Outtake.GoalPositions.LOW_BIN;
+            currentTarget = OldOuttake2.GoalPositions.LOW_BIN;
             currentTargetWord = "Low Bin";
         } else if (gamepad2.left_bumper) {
             currentTargetPos = binsMidpoint;
-            currentTarget = Outtake.GoalPositions.MEDIUM_BIN;
+            currentTarget = OldOuttake2.GoalPositions.MEDIUM_BIN;
             currentTargetWord = "Medium Bin";
         } else if (gamepad2.right_bumper) {
             currentTargetPos = binsMidpoint;
-            currentTarget = Outtake.GoalPositions.HIGH_BIN;
+            currentTarget = OldOuttake2.GoalPositions.HIGH_BIN;
             currentTargetWord = "High Bin";
         }
 
