@@ -67,7 +67,20 @@ public class Outtake {
             }
         }
     }
-    public void togglerServoGate(boolean open){
-
+    public void togglerServoGate(boolean pressed){
+        servoGateTog.changeState(pressed);
+        if (servoGateTog.currentState() == 0) {
+            gate.setPosition(0.01);
+//            if (gate.getPosition() == 0.5) {
+//                gate.setPosition(0.01);
+//            } else {
+//
+//            }
+        } else {
+            gate.setPosition(0.5);
+//            if (gate.getPosition() < 0.5) {
+//                gate.setPosition(0.5);
+//            }
+        }
     }
 }
