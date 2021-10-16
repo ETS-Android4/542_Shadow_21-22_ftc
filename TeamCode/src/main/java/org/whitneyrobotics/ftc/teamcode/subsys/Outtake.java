@@ -16,9 +16,12 @@ public class Outtake {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
     }
+
+    private int level0 = 0;
     private int level1 = 1;
     private int level2 = 2;
     private int level3 = 3;
+
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler (3);
     private SimpleTimer outtakeTimer = new SimpleTimer();
@@ -81,6 +84,37 @@ public class Outtake {
 //            if (gate.getPosition() < 0.5) {
 //                gate.setPosition(0.5);
 //            }
+        }
+    }
+
+    public void autoControl(int level) {
+        if (level == 1) {
+            if (linearSlides.getCurrentPosition() < level1) {
+                linearSlides.setPower(1);
+            } else {
+                linearSlides.setPower(0);
+            }
+        } else if (level == 2) {
+            if (linearSlides.getCurrentPosition() < level2) {
+                linearSlides.setPower(1);
+            } else {
+                linearSlides.setPower(0);
+            }
+        } else {
+            if (linearSlides.getCurrentPosition() < level3) {
+                linearSlides.setPower(1);
+            } else {
+                linearSlides.setPower(0);
+            }
+        }
+    }
+
+    public void reset() {
+        if (linearSlides.getCurrentPosition() != level0) {
+            linearSlides.setPower(-1);
+        }
+        else {
+            linearSlides.setPower(0);
         }
     }
 }
