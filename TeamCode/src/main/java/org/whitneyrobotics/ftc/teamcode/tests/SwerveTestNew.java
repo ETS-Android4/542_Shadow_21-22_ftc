@@ -13,13 +13,13 @@ import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.FollowerConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.PathGenerator;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwervePath;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwervePathGenerationConstants;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 @Autonomous (name = "SwerveToTargetTest")
 public class SwerveTestNew extends OpMode {
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
     SwervePath path;
     Coordinate startingCoordinate = new Coordinate(0,0,0);
     Position p1 = new Position(-1200,0);
@@ -40,7 +40,7 @@ public class SwerveTestNew extends OpMode {
         dashboard.sendTelemetryPacket(packet);
         posArray.add(startingCoordinate);
         posArray.add(p1);
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         robot.setInitialCoordinate(startingCoordinate);
         path = PathGenerator.generateSwervePath(posArray, followerConstants, pathGenerationConstants);
         robot.updatePath(path);

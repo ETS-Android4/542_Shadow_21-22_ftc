@@ -8,13 +8,13 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 import java.util.List;
 
 @TeleOp(name = "Shooting Test", group = "Tests")
 public class ShootingTest extends OpMode {
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
     String stackSize;
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Four";
@@ -50,7 +50,7 @@ public class ShootingTest extends OpMode {
     }
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         initVuforia();
         initTfod();
 

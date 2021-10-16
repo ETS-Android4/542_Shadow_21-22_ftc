@@ -7,13 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 @TeleOp(name = "Outtake Test", group = "Tests")
 public class OuttakeTest extends OpMode {
 
-    public WHSRobotImpl robot;
+    public WHSRobotImplOld robot;
 
     double power;
 
@@ -29,7 +28,7 @@ public class OuttakeTest extends OpMode {
 
         dashboard.sendTelemetryPacket(packet);
 
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         dashboardTelemetry.setMsTransmissionInterval(10);
     }
 

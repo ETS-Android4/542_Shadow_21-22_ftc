@@ -6,17 +6,16 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;*/
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 @Autonomous(name = "driveToTarget test")
 public class DriveToTargetTest extends OpMode {
 
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
 /*    FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();*/
 
@@ -36,7 +35,7 @@ public class DriveToTargetTest extends OpMode {
 
         // dashboard.sendTelemetryPacket(packet);
 
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         robot.setInitialCoordinate(new Coordinate(0, 0, 0));
         telemetry.setMsTransmissionInterval(10);
     }

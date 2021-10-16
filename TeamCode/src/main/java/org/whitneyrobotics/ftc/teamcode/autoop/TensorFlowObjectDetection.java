@@ -29,7 +29,6 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
     private TFObjectDetector tfod;
 
-    @Override
     public void runOpMode() {
         initVuforia();
         initTfod();

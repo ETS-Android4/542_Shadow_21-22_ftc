@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 /**
  * Created by Amar2 on 11/15/2017.
  */
 @Autonomous(name = "RotateToTargetTest", group = "tests")
 public class RotateToTargetTest extends OpMode {
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
 //    Telemetry dashboardTelemetry = dashboard.getTelemetry();
     @Override
     public void init() {
@@ -21,7 +21,7 @@ public class RotateToTargetTest extends OpMode {
 
         // dashboard.sendTelemetryPacket(packet);
 
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         robot.setInitialCoordinate(new Coordinate(0, 0, 0));
       //  telemetry.setMsTransmissionInterval(10);
     }

@@ -4,19 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 
 @TeleOp(name = "Estimate Position Test")
 public class EstimatePositionTest extends OpMode {
 
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
     double maxAccel = 0;
     double currentAccel;
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         robot.setInitialCoordinate(new Coordinate(0, 0, 90));
     }
 

@@ -16,12 +16,12 @@ public class CanisterTest extends OpMode {
     private Drivetrain testDrivetrain;*/
     public Toggler intakeToggler;
     public Toggler outtakeToggler;
-    public WHSRobotImpl robot;
+    public WHSRobotImplOld robot;
 
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
         intakeToggler = new Toggler(2);
         outtakeToggler = new Toggler(2);
 

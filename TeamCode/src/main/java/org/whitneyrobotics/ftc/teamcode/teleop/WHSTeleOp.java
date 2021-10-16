@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.OldOuttake2;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
 @TeleOp(name = "WHS TeleOp", group = "TeleOp")
 public class WHSTeleOp extends OpMode {
-    WHSRobotImpl robot;
+    WHSRobotImplOld robot;
 
     //public Toggler binToggler = new Toggler(3);
     //public Toggler outtakeToggler = new Toggler(6);
@@ -36,7 +36,7 @@ public class WHSTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplOld(hardwareMap);
     }
 
     @Override
