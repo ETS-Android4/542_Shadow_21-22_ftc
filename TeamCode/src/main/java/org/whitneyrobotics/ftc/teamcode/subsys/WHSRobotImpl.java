@@ -9,10 +9,24 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 
 public class WHSRobotImpl {
+<<<<<<< HEAD
     public Carousel robotCarousel;
     public Drivetrain robotDrivetrain;
     public Outtake robotOuttake;
     public IMU robotIMU;
+=======
+
+    public Drivetrain drivetrain;
+    public IMU imu;
+    public Canister canister;
+    public OldIntake intake;
+    //public OldOuttake oldOuttake;
+    public Wobble wobble;
+    public OldOuttake2 outtake;
+
+    SwervePath currentSwervePath;
+    public SwerveFollower swerveFollower;
+>>>>>>> master
 
     Coordinate currentCoord;
     private double targetHeading; //field frame
@@ -51,9 +65,16 @@ public class WHSRobotImpl {
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
+<<<<<<< HEAD
         robotCarousel = new Carousel(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
         robotOuttake = new Outtake(robotMap);
+=======
+        intake = new OldIntake(hardwareMap);
+        outtake = new OldOuttake2(hardwareMap);
+        canister = new Canister(hardwareMap);
+        wobble = new Wobble(hardwareMap);
+>>>>>>> master
 
         DRIVE_MIN = RobotConstants.drive_min;
         DRIVE_MAX = RobotConstants.drive_max;
