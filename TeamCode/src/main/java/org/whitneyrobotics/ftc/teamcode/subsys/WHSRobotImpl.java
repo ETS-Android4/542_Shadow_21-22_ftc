@@ -21,7 +21,7 @@ public class WHSRobotImpl {
     public Drivetrain drivetrain;
     public IMU imu;
     public Canister canister;
-    public Intake intake;
+    public OldIntake intake;
     //public OldOuttake oldOuttake;
     public Wobble wobble;
     public OldOuttake2 outtake;
@@ -74,7 +74,7 @@ public class WHSRobotImpl {
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-        intake = new Intake(hardwareMap);
+        intake = new OldIntake(hardwareMap);
         outtake = new OldOuttake2(hardwareMap);
         canister = new Canister(hardwareMap);
         wobble = new Wobble(hardwareMap);

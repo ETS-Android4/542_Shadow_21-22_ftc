@@ -2,15 +2,13 @@ package org.whitneyrobotics.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
-import org.whitneyrobotics.ftc.teamcode.subsys.Intake;
+import org.whitneyrobotics.ftc.teamcode.subsys.OldIntake;
 
 @TeleOp(name = "Intake Test", group = "Tests")
 public class IntakeTest extends OpMode {
-    public Intake testIntake;
+    public OldIntake testIntake;
     public Toggler powerTog;
     public Toggler dropdownTog;
     int i;
@@ -19,7 +17,7 @@ public class IntakeTest extends OpMode {
 
     @Override
     public void init() {
-        testIntake = new Intake(hardwareMap);
+        testIntake = new OldIntake(hardwareMap);
         i = 0;
 
     }
