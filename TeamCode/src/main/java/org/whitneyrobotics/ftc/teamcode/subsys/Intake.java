@@ -4,12 +4,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Intake {
 
     private DcMotor roller;
     private Servo arm;
+    public SimpleTimer armTimer = new SimpleTimer();
+    public double armTimerDelay = 1.0;
+    int state = 0;
+
+    public double[] armPositions = {0, 0.5}; //change numbers later
 
     private Toggler intakeState = new Toggler(2);
     private Toggler rollerState = new Toggler(2);
@@ -34,5 +40,26 @@ public class Intake {
         } else {
             roller.setPower(1 * (reverse ? -1 : 1));
         }
+    }
+    //testing
+    public void setIntakePower(double power) { roller.setPower(power);}
+
+    public void setArm(double position) { arm.setPosition(position); }
+    public void autoDropIntake(){
+        switch(state){
+            case 0:
+                armTimer.set(armTimerDelay);
+                state++;
+                break;
+            case 1:
+
+                if(armTimer.isExpired()){
+                    setArm(0);
+                }else{
+                    setArm(0.5);
+                }
+                break;
+        }
+
     }
 }

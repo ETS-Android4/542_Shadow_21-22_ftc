@@ -9,12 +9,12 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 
 public class WHSRobotImpl {
-<<<<<<< HEAD
+// <<<<<<< HEAD (error so commented out fix later)
     public Carousel robotCarousel;
     public Drivetrain robotDrivetrain;
     public Outtake robotOuttake;
     public IMU robotIMU;
-=======
+// ======= (error so commented out fix later)
 
     public Drivetrain drivetrain;
     public IMU imu;
@@ -24,9 +24,9 @@ public class WHSRobotImpl {
     public Wobble wobble;
     public OldOuttake2 outtake;
 
-    SwervePath currentSwervePath;
-    public SwerveFollower swerveFollower;
->>>>>>> master
+   // SwervePath currentSwervePath; (error so commented out fix later)
+   // public SwerveFollower swerveFollower; (error so commented out fix later)
+// >>>>>>> master (error so commented out fix later)
 
     Coordinate currentCoord;
     private double targetHeading; //field frame
@@ -65,16 +65,16 @@ public class WHSRobotImpl {
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-<<<<<<< HEAD
+//<<<<<<< HEAD (error so commented out fix later)
         robotCarousel = new Carousel(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
         robotOuttake = new Outtake(robotMap);
-=======
-        intake = new OldIntake(hardwareMap);
-        outtake = new OldOuttake2(hardwareMap);
-        canister = new Canister(hardwareMap);
-        wobble = new Wobble(hardwareMap);
->>>>>>> master
+//=======
+       // intake = new OldIntake(hardwareMap); (error so commented out fix later)
+       // outtake = new OldOuttake2(hardwareMap); (error so commented out fix later)
+       // canister = new Canister(hardwareMap); (error so commented out fix later)
+       // wobble = new Wobble(hardwareMap); (error so commented out fix later)
+// >>>>>>> master
 
         DRIVE_MIN = RobotConstants.drive_min;
         DRIVE_MAX = RobotConstants.drive_max;
@@ -197,8 +197,8 @@ public class WHSRobotImpl {
     public void estimatePosition() {
         encoderDeltas = robotDrivetrain.getLRAvgEncoderDelta();
         distance = robotDrivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
-        robotX += distance * Functions.cosd(getCoordinate().getHeading());
-        robotY += distance * Functions.sind(getCoordinate().getHeading());
+     //   robotX += distance * Functions.cosd(getCoordinate().getHeading()); (error so commented out fix later)
+      //  robotY += distance * Functions.sind(getCoordinate().getHeading()); (error so commented out fix later)
         currentCoord.setX(robotX);
         currentCoord.setY(robotY);
     }
