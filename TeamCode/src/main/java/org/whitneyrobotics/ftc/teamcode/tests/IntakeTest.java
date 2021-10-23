@@ -2,9 +2,10 @@ package org.whitneyrobotics.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
-import org.whitneyrobotics.ftc.teamcode.subsys.OldIntake;
+import org.whitneyrobotics.ftc.teamcode.subsys.Intake;
 
 public class IntakeTest {
     @TeleOp(name = "Intake Test", group = "Tests")
@@ -18,7 +19,8 @@ public class IntakeTest {
 
         @Override
         public void init() {
-
+            testIntake = new Intake();
+            i = 0;
         }
 
         @Override
@@ -44,6 +46,7 @@ public class IntakeTest {
             telemetry.addData("Arm Position", position);
 
         }
+
     }
 
 }

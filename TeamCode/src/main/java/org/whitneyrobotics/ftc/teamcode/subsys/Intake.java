@@ -45,7 +45,7 @@ public class Intake {
     public void setIntakePower(double power) { roller.setPower(power);}
 
     public void setArm(double position) { arm.setPosition(position); }
-    public void ArmPositionTest(){
+    public void autoDropIntake(){
         switch(state){
             case 0:
                 armTimer.set(armTimerDelay);
