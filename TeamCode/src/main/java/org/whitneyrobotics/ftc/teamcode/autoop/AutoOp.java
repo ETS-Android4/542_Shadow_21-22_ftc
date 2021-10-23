@@ -1,8 +1,10 @@
 package org.whitneyrobotics.ftc.teamcode.autoop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
+import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
 public class AutoOp extends OpMode {
@@ -16,6 +18,8 @@ public class AutoOp extends OpMode {
 
     final int STARTING_ALLIANCE = RED;
     final int STARTING_SIDE = BOTTOM;
+
+    private int scanLevel = 3;
 
     Position[][] startingPositions = new Position[2][2];
     Position[] carouselPositions = new Position[2];
@@ -45,6 +49,8 @@ public class AutoOp extends OpMode {
         stateEnabled[PARK] = true;
     }
 
+    public String[] stateNames = {"Init", "Rotate Carousel", "Shipping Hub", "Warehouse", "Park"};
+
     public void advanceState(){
         if (stateEnabled[state + 1]){
             subState = 0;
@@ -54,6 +60,8 @@ public class AutoOp extends OpMode {
             advanceState();
         }
     }
+
+    public long lastRecordedTime = System.nanoTime();
 
     public void init() {
         robot = new WHSRobotImpl(hardwareMap);
@@ -73,6 +81,9 @@ public class AutoOp extends OpMode {
         sharedShippingHub[RED] = new Position(6, 6);
         sharedShippingHub[BLUE] = new Position(7, 7);
 
+        warehouse[RED] = new Position(20,20);
+        warehouse[BLUE] = new Position(20,20);
+
         finalParkingPosition[RED][TOP] = new Position(8,8);
         finalParkingPosition[RED][BOTTOM] = new Position(9,9);
         finalParkingPosition[BLUE][TOP] = new Position(10,10);
@@ -89,6 +100,7 @@ public class AutoOp extends OpMode {
                 switch (subState){
                     case 0:
                         //add camera code later
+                        //reassign scanLevel based on camera feed
                         subState++;
                         break;
                     case 1:
@@ -107,13 +119,55 @@ public class AutoOp extends OpMode {
                     case 1:
                         robot.robotCarousel.operate();
                         if (!robot.robotCarousel.rotateInProgress()){
-                            subState++;
                             advanceState();
+                            subState++;
                         }
                         break;
+                    break;
                 }
             case SHIPPING_HUB:
+                switch (subState){
+                    case 0:
+                        robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE],true); //check if outtake is on the back
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
+                        break;
+                    case 1:
+                        robot.robotOuttake.autoControl(scanLevel);
+                        if(robot.robotOuttake.slidingInProgress){
+                            if(robot.robotOuttake.autoDrop()){ subState++; }
+                            break;
+                        }
+                    case 2:
+                        robot.robotOuttake.reset();
+                        advanceState();
+                        break;
+                    break;
+                }
             case WAREHOUSE:
+                switch (subState){
+                    case 0:
+                        robot.driveToTarget(warehouse[STARTING_ALLIANCE],false);
+                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
+                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        break;
+                    case 3:
+                        robot.robotOuttake.autoControl(1);
+                        if (robot.robotOuttake.autoDrop()) { subState++; }
+                        break;
+                    case 4:
+                        robot.robotOuttake.reset();
+                        advanceState();
+                        break;
+                    break;
+
+                }
             case PARK:
                 switch (subState){
                     case 0:
@@ -126,5 +180,14 @@ public class AutoOp extends OpMode {
             default:
                 break;
         }
+        telemetry.addData("Current state: ",stateNames[state]);
+        telemetry.addData("Substate: ", subState);
+        telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
+        telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
+        telemetry.addData("Outtake extension: ", robot.robotOuttake.slidingInProgress);
+
+        //lag output
+        telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())*1000 + "ms");
+        lastRecordedTime = System.nanoTime();
     }
 }

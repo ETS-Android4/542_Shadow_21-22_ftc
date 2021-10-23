@@ -24,10 +24,11 @@ public class Outtake {
 
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler (3);
-    private SimpleTimer outtakeTimer = new SimpleTimer();
+    private SimpleTimer outtakeGateTimer = new SimpleTimer();
 
     public boolean slidingInProgress = false;
-    private boolean outtakeTimerSet = true;
+    public boolean dropFirstLoop = true; //for setting drop timer
+    //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
     public void togglerOuttake(boolean up,boolean down){
@@ -107,6 +108,22 @@ public class Outtake {
                 linearSlides.setPower(0);
             }
         }
+    }
+
+    public boolean autoDrop() { //boolean so our autoop knows if its done
+        if(dropFirstLoop) {
+            togglerServoGate(true);
+            outtakeGateTimer.set(500); /*ms to keep the flap open*/
+            dropFirstLoop = false;
+        }
+
+        if(outtakeGateTimer.isExpired()){
+            togglerServoGate(false);
+            togglerServoGate(true);
+            dropFirstLoop = true;
+            return true;
+        }
+        return false;
     }
 
     public void reset() {

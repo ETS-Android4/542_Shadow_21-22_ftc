@@ -39,7 +39,7 @@ public class Carousel {
     }
     //tele-op
     public void operate(boolean buttonInput) {
-        telemetry.addData("Spin ducky: ", rotateInProgress);
+        //telemetry.addData("Spin ducky: ", rotateInProgress);
         if (!rotateInProgress){
             if(buttonInput){
                 rotateInProgress = true;
@@ -59,9 +59,13 @@ public class Carousel {
 
     }
 
+    public void operatePrecise(boolean toggle) {
+
+    }
+
     //autonomous
     public void operate() {
-        telemetry.addData("Spin ducky: ", rotateInProgress);
+        //telemetry.addData("Spin ducky: ", rotateInProgress);
         if(firstLoop){
             rotateInProgress = true;
             timer.set(seconds);
