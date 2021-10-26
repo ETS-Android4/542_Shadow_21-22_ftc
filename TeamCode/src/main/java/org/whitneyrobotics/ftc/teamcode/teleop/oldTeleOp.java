@@ -8,8 +8,8 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.OldOuttake2;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
-@TeleOp(name = "WHS TeleOp", group = "TeleOp")
-public class WHSTeleOp extends OpMode {
+@TeleOp(name = "Old TeleOp", group = "TeleOp")
+public class oldTeleOp extends OpMode {
     WHSRobotImplOld robot;
 
     //public Toggler binToggler = new Toggler(3);
@@ -44,16 +44,16 @@ public class WHSTeleOp extends OpMode {
         //Intake
         if (gamepad1.right_trigger > 0.01) {
             intakeStatus = "Normal Intake";
-            robot.intake.operate(gamepad1.right_trigger > 0.01, gamepad1.left_trigger == 0.0);
+            //robot.intake.operate(gamepad1.right_trigger > 0.01, gamepad1.left_trigger == 0.0);
         } else if (gamepad1.left_trigger > 0.01) {
             intakeStatus = "Reverse Intake";
-            robot.intake.operate(gamepad1.right_trigger > 0.01, gamepad1.left_trigger > 0.01);
+           // robot.intake.operate(gamepad1.right_trigger > 0.01, gamepad1.left_trigger > 0.01);
         } else {
             intakeStatus = "Power Off";
-            robot.intake.operate(gamepad1.right_trigger == 0, gamepad1.left_trigger == 0);
+           // robot.intake.operate(gamepad1.right_trigger == 0, gamepad1.left_trigger == 0);
         }
         if (gamepad1.a) {
-            robot.intake.manualDropdown(gamepad1.a);
+            //robot.intake.manualDropdown(gamepad1.a);
         }
         //Canister
         if (gamepad2.b) {
@@ -123,7 +123,7 @@ public class WHSTeleOp extends OpMode {
             robot.wobble.operateWobble(gamepad2.x, gamepad2.y);
         }
         telemetry.addData("Intake State: ", intakeStatus);
-        telemetry.addData("Intake Position", robot.intake.dropdownStatus);
+       // telemetry.addData("Intake Position", robot.intake.dropdownStatus);
         telemetry.addData("Canister Loader State: ", robot.canister.canisterState);
         telemetry.addData("Robot Current Position: ", robot.drivetrain.getAllEncoderPositions());
         telemetry.addData("Current Target: ", currentTargetWord);
