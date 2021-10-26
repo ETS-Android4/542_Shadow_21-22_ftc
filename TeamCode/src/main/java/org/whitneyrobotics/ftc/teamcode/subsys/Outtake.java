@@ -10,17 +10,15 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Outtake {
     private Servo gate;
-    private DcMotor linearSlides;
+    public DcMotor linearSlides;
 
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
     }
-
-    private int level0 = 0;
-    private int level1 = 1;
-    private int level2 = 2;
-    private int level3 = 3;
+    public int level1 = 1;
+    public int level2 = 2;
+    public int level3 = 3;
 
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler (3);
@@ -127,11 +125,14 @@ public class Outtake {
     }
 
     public void reset() {
-        if (linearSlides.getCurrentPosition() != level0) {
+        if (linearSlides.getCurrentPosition() != level1) {
             linearSlides.setPower(-1);
         }
         else {
             linearSlides.setPower(0);
         }
     }
+
+    public int getTier() { return linearSlidesTog.currentState(); }
 }
+

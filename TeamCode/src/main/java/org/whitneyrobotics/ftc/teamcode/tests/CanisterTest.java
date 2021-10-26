@@ -39,7 +39,7 @@ public class CanisterTest extends OpMode {
             robot.drivetrain.operateMecanumDrive(-gamepad2.left_stick_x, -gamepad2.left_stick_y, -gamepad2.right_stick_x, 180);
         }
         intakeToggler.changeState(gamepad1.right_bumper);
-        robot.intake.operate(gamepad1.right_bumper, gamepad1.left_bumper || gamepad2.right_bumper);
+        //robot.intake.operate(gamepad1.right_bumper, gamepad1.left_bumper || gamepad2.right_bumper);
         robot.shootHighGoal(gamepad1.x);
         robot.shootHighGoal2(gamepad1.y);
 

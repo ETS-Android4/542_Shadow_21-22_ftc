@@ -12,8 +12,9 @@ public class Intake {
     private DcMotor roller;
     private Servo arm;
     public SimpleTimer armTimer = new SimpleTimer();
-    public double armTimerDelay = 1.0;
+    public double armTimerDelay = 1; //change based on testing
     int state = 0;
+    public boolean intakeAutoDone = false;
 
     public double[] armPositions = {0, 0.5}; //change numbers later
 
@@ -45,16 +46,21 @@ public class Intake {
     public void setIntakePower(double power) { roller.setPower(power);}
 
     public void setArm(double position) { arm.setPosition(position); }
+
     public void autoDropIntake(){
         switch(state){
             case 0:
+                roller.setPower(1);
+                intakeAutoDone = false;
                 armTimer.set(armTimerDelay);
                 state++;
                 break;
             case 1:
-
                 if(armTimer.isExpired()){
                     setArm(0);
+                    roller.setPower(0);
+                    intakeAutoDone = true;
+                    state = 0;
                 }else{
                     setArm(0.5);
                 }

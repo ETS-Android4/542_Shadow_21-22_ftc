@@ -123,7 +123,6 @@ public class AutoOp extends OpMode {
                             subState++;
                         }
                         break;
-                    break;
                 }
             case SHIPPING_HUB:
                 switch (subState){
@@ -143,7 +142,6 @@ public class AutoOp extends OpMode {
                         robot.robotOuttake.reset();
                         advanceState();
                         break;
-                    break;
                 }
             case WAREHOUSE:
                 switch (subState){
@@ -152,6 +150,10 @@ public class AutoOp extends OpMode {
                         if (!robot.driveToTargetInProgress()) { subState++; }
                         break;
                     case 1:
+                        robot.robotIntake.autoDropIntake();
+                        if (robot.robotIntake.intakeAutoDone){
+                            subState++;
+                        }
                         break;
                     case 2:
                         robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
@@ -165,7 +167,6 @@ public class AutoOp extends OpMode {
                         robot.robotOuttake.reset();
                         advanceState();
                         break;
-                    break;
 
                 }
             case PARK:
@@ -185,6 +186,7 @@ public class AutoOp extends OpMode {
         telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
         telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
         telemetry.addData("Outtake extension: ", robot.robotOuttake.slidingInProgress);
+        telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output
         telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())*1000 + "ms");
