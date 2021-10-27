@@ -51,7 +51,7 @@ public class OuttakeTest extends OpMode {
         }
 
         outtake.togglerOuttake(gamepad1.b, gamepad1.a);
-        outtake.reset(gamepad1.x);
+        if (gamepad1.x) { outtake.reset(); }
 
         telemetry.addData("Encoder Position", outtake.linearSlides.getCurrentPosition());
         telemetry.addData("Current Tier (0-2)", outtake.getTier());
