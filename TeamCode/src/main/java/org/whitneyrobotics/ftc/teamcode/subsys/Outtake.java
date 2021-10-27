@@ -34,7 +34,7 @@ public class Outtake {
         if (linearSlidesTog.currentState() == 0) {
             if(linearSlides.getCurrentPosition()>level1){
                 linearSlides.setPower(-1);
-            } else if (linearSlides.getCurrentPosition()<level1){
+            } else if (linearSlides.getCurrentPosition()<level1)
                 linearSlides.setPower(1);
             } else {
                 linearSlides.setPower(0);
