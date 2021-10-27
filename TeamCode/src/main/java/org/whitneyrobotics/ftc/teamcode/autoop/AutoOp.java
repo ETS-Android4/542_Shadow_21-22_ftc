@@ -7,6 +7,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
+@Autonomous (name="WHS Freight Frenzy Auto")
 public class AutoOp extends OpMode {
 
     public WHSRobotImpl robot;

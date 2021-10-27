@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 import org.whitneyrobotics.ftc.teamcode.subsys.OldIntake;
 
-@TeleOp(name = "Intake Test", group = "Tests")
+@TeleOp(name = "Depreciated Intake Test", group = "Tests")
 public class OldIntakeTest extends OpMode {
     public OldIntake testIntake;
     public Toggler powerTog;

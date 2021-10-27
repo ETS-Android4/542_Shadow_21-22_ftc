@@ -1,5 +1,7 @@
 package org.whitneyrobotics.ftc.teamcode.tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,6 +15,10 @@ public class IntakeTest {
         public Intake testIntake;
         public Toggler intakeState;
         public Toggler rollerState;
+
+        private FtcDashboard dashboard;
+        private TelemetryPacket packet = new TelemetryPacket();
+
         int i;
         double power = 0;
         double position =0;
@@ -43,7 +49,11 @@ public class IntakeTest {
             }
             //testIntake.setIntakePower(power);
             telemetry.addData("Roller Power: ", power);
-            telemetry.addData("Arm Position", position);
+            telemetry.addData("Arm Position: ", position);
+
+            packet.put("Roller Power: ", power);
+            packet.put("Arm Position: ", position);
+            dashboard.sendTelemetryPacket(packet);
 
         }
 

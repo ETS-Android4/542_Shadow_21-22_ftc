@@ -9,7 +9,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Outtake {
-    private Servo gate;
+    public Servo gate;
     public DcMotor linearSlides;
 
     public Outtake(HardwareMap outtakeMap) {
@@ -21,7 +21,7 @@ public class Outtake {
     public int level3 = 3;
 
     private Toggler servoGateTog = new Toggler(2);
-    private Toggler linearSlidesTog = new Toggler (3);
+    private Toggler linearSlidesTog = new Toggler(3);
     private SimpleTimer outtakeGateTimer = new SimpleTimer();
 
     public boolean slidingInProgress = false;
@@ -34,7 +34,7 @@ public class Outtake {
         if (linearSlidesTog.currentState() == 0) {
             if(linearSlides.getCurrentPosition()>level1){
                 linearSlides.setPower(-1);
-            } else if (linearSlides.getCurrentPosition()<level1)
+            } else if (linearSlides.getCurrentPosition()<level1) {
                 linearSlides.setPower(1);
             } else {
                 linearSlides.setPower(0);

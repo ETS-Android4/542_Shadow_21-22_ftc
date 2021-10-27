@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplOld;
 
-@TeleOp(name = "Outtake Test", group = "Tests")
+@TeleOp(name = "Depreciated Outtake Test", group = "Tests")
 public class FlywheelOuttakeTest extends OpMode {
 
     public WHSRobotImplOld robot;

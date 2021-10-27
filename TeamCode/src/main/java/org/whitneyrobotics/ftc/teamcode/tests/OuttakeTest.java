@@ -3,17 +3,18 @@ package org.whitneyrobotics.ftc.teamcode.tests;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
+@TeleOp (name="Outtake Test", group="Tests")
 public class OuttakeTest extends OpMode {
 
     public Outtake outtake;
     public double power = 0.2;
-    FtcDashboard dashboard ;
+    public double servoPosition;
+    FtcDashboard dashboard;
     //Telemetry dashboardTelemetry;
     TelemetryPacket packet = new TelemetryPacket();
 
@@ -23,6 +24,7 @@ public class OuttakeTest extends OpMode {
         outtake = new Outtake(hardwareMap);
         outtake.linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtake.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        servoPosition = outtake.gate.getPosition();
     }
 
     @Override
@@ -35,6 +37,16 @@ public class OuttakeTest extends OpMode {
         }
         else {
             outtake.linearSlides.setPower(0);
+        }
+
+        if (gamepad1.dpad_left){
+            servoPosition --;
+            servoPosition = servoPosition<0 ? 1 : servoPosition;
+            outtake.gate.setPosition(servoPosition);
+        } else if(gamepad1.dpad_right){
+            servoPosition++;
+            servoPosition = servoPosition>1 ? 0 : servoPosition;
+            outtake.gate.setPosition(servoPosition);
         }
 
         if(gamepad1.left_bumper){
