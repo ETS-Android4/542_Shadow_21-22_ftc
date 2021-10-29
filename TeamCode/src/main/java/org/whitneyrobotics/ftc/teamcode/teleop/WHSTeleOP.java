@@ -49,7 +49,7 @@ public class WHSTeleOP extends OpMode {
         if (gamepad2.dpad_right || gamepad2.dpad_left) {
             robot.robotOuttake.togglerOuttake(gamepad2.dpad_right, gamepad2.dpad_left);
         }
-        
+
         // - Hatch
         if (gamepad2.x) {
             robot.robotOuttake.togglerServoGate(true);
