@@ -388,6 +388,7 @@ public class WHSRobotImplOld {
         }
     }
 
+
     public void shootHighGoal(boolean gamepadInput) {
         double initialShotDelay = 1.2;
         double shootingDelay = 0.7;
@@ -510,6 +511,7 @@ public class WHSRobotImplOld {
                 break;
         }
     }
+
     public boolean shootingInProgress(){
         return  shootingInProgress;
     }
