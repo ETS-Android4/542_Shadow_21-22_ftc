@@ -27,6 +27,8 @@ public class Carousel {
     private Toggler onOff= new Toggler(2);
     private SimpleTimer timer = new SimpleTimer();
     //toggler based teleop
+
+
     public void togglerOperate(boolean on){
         onOff.changeState(on);
         if (onOff.currentState() == 1) {
@@ -59,9 +61,6 @@ public class Carousel {
 
     }
 
-    public void operatePrecise(boolean toggle) {
-
-    }
 
     //autonomous
     public void operate() {

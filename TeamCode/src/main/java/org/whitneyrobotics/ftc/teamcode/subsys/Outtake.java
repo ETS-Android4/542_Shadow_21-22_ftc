@@ -125,7 +125,7 @@ public class Outtake {
     }
 
     public void reset() {
-        if (linearSlides.getCurrentPosition() != level1) {
+        if (linearSlides.getCurrentPosition() > level1) {
             linearSlides.setPower(-1);
         }
         else {

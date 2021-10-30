@@ -21,8 +21,8 @@ public class WHSRobotImpl {
     public Drivetrain drivetrain;
     public IMU imu;
     public Canister canister;
-    public OldIntake intake;
-    //public OldOuttake oldOuttake;
+//    public OldIntake intake;
+//    public OldOuttake oldOuttake;
     public Wobble wobble;
     public OldOuttake2 outtake;
 
@@ -197,11 +197,34 @@ public class WHSRobotImpl {
         return rotateToTargetInProgress;
     }
 
+    public void estimateCoordinate() {
+        double[] currentEncoderValues = drivetrain.getLRAvgEncoderPosition();
+        encoderDeltas[0] = currentEncoderValues[0] - encoderValues[0];
+        encoderDeltas[1] = currentEncoderValues[1] - encoderValues[1];
+        double currentHeading = Functions.normalizeAngle(Math.toDegrees(drivetrain.encToMM((currentEncoderValues[1] - currentEncoderValues[0]) / 2 / Drivetrain.getTrackWidth())) + imu.getImuBias()); //-180 to 180 deg
+        currentCoord.setHeading(currentHeading); //updates global variable
+
+        double deltaS = drivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
+        double deltaHeading = Math.toDegrees(drivetrain.encToMM((encoderDeltas[1] - encoderDeltas[0]) / Drivetrain.getTrackWidth()));
+        robotX += deltaS * Functions.cosd(lastKnownHeading + deltaHeading / 2);
+        robotY += deltaS * Functions.sind(lastKnownHeading + deltaHeading / 2);
+
+        currentCoord.setX(robotX);
+        currentCoord.setY(robotY);
+        encoderValues[0] = currentEncoderValues[0];
+        encoderValues[1] = currentEncoderValues[1];
+        lastKnownHeading = currentCoord.getHeading();
+    }
+
+    public Coordinate getCoordinate() {
+        return currentCoord;
+    }
+
     public void estimatePosition() {
         encoderDeltas = robotDrivetrain.getLRAvgEncoderDelta();
         distance = robotDrivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
-     //   robotX += distance * Functions.cosd(getCoordinate().getHeading()); (error so commented out fix later)
-      //  robotY += distance * Functions.sind(getCoordinate().getHeading()); (error so commented out fix later)
+        robotX += distance * Functions.cosd(getCoordinate().getHeading());
+        robotY += distance * Functions.sind(getCoordinate().getHeading());
         currentCoord.setX(robotX);
         currentCoord.setY(robotY);
     }
