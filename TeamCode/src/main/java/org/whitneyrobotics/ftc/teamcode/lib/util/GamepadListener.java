@@ -13,15 +13,15 @@ public class GamepadListener {
         if(firstLongPress && button){
             longPressStartTime = System.nanoTime();
             firstLongPress = false;
-            longPressFired = true;
         } else if (button && !longPressFired) {
-            if((System.nanoTime()-longPressStartTime)*1000 >= minThresholdms){
+            if((System.nanoTime()-longPressStartTime)/1E6 >= minThresholdms){
                 longPressFired = true;
                 return true;
             }
         }
         if (!button) {
           firstLongPress = true;
+          longPressFired = false;
         }
         return false;
     }
@@ -39,7 +39,7 @@ public class GamepadListener {
             firstShortPress = false;
         } else if (!button) {
             long endTime = System.nanoTime();
-            if((endTime-shortPressStartTime)*1000 <= maxThresholdms){
+            if((endTime-shortPressStartTime)/1E6 <= maxThresholdms){
                 endTime += maxThresholdms; // to get it to only fire once
                 return true;
             }
@@ -50,6 +50,36 @@ public class GamepadListener {
 
     public boolean shortPress(boolean button){
         return shortPress(button, 250);
+    }
+
+    private boolean firstPress = true;
+    private boolean expired = false;
+    private double expireTime;
+    private double firstPressEndTime;
+
+    public boolean doublePress(boolean button, double maxPressIntervalMs){
+        if(button && firstPress ) {
+            firstPress = false;
+            expired = false;
+            expireTime = (System.nanoTime()/1E6) + 500 + maxPressIntervalMs; //you wil have the maximum press interval plus half a second to perform the double press
+        } else if(!button && !firstPress && !expired){ //first unpress
+            firstPressEndTime = System.nanoTime()/1E6;
+        } else if(button && !firstPress && !expired){
+            if(System.nanoTime()/1E6 < firstPressEndTime+maxPressIntervalMs) {
+                firstPress = true;
+                return true;
+            }
+        }
+
+        if(System.nanoTime()/1E6 > expireTime){
+            expired = true;
+            firstPress = true;
+        }
+        return false;
+    }
+
+    private boolean doublePress(boolean button){
+        return doublePress(button, 250);
     }
 
 }
