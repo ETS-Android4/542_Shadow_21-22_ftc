@@ -22,6 +22,9 @@ public class ControllerDemo extends OpMode {
         buttonLongPressToggler.changeState(gamepadListener.longPress(gamepad1.a,750));
         buttonShortPressToggler.changeState(gamepadListener.shortPress(gamepad1.b,500));
 
+        if(gamepad1.a){
+            gamepad1.rumble(500);
+        }
 
         telemetry.addData("gamepad1LeftStickX: ", gamepad1.left_stick_x);
         telemetry.addData("gamepad1LeftStickY: ", gamepad1.left_stick_y);
