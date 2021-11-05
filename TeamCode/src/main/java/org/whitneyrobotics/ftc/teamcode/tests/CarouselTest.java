@@ -20,10 +20,10 @@ public class CarouselTest extends OpMode {
     public void loop() {
         telemetry.addData("Rotations", carousel.getRotations());
         telemetry.addData("Rotate in progress", carousel.rotateInProgress());
+        telemetry.addData("First loop: ", carousel.rotateInProgress());
+        telemetry.addData("Toggler State: ", carousel.getTogglerState());
 
-        rotate(gamepad1.x);
-    }
-    private void rotate(boolean button) {
-        carousel.operate(button);
+        carousel.operate(gamepad1.y);
+        carousel.togglerOperate(gamepad1.a);
     }
 }

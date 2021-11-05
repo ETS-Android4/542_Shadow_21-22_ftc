@@ -8,7 +8,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 import org.whitneyrobotics.ftc.teamcode.subsys.*;
 
-@TeleOp(name = "Canister Test", group = "Tests")
+//@TeleOp(name = "Canister Test", group = "Tests")
 public class CanisterTest extends OpMode {
 /*    private Canister testCanister;
     private Outtake testOuttake;

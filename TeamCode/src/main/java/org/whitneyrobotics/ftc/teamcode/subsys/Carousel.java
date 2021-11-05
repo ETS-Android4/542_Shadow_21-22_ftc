@@ -19,7 +19,7 @@ public class Carousel {
     public final double CAROUSEL_CIRCUMFERENCE = 47.1238898038;
     public final double SERVO_RPM = 250;
     private double rotations = CAROUSEL_CIRCUMFERENCE/WHEEL_CIRCUMFERENCE;
-    private double seconds = SERVO_RPM/rotations*60 + 0.5;
+    private double seconds = rotations/SERVO_RPM*60 + 0.5;
 
     private boolean rotateInProgress = false;
     private boolean firstLoop = true;
@@ -28,25 +28,30 @@ public class Carousel {
     private SimpleTimer timer = new SimpleTimer();
     //toggler based teleop
 
+    /*public void spinServo(double analogValue){
+        if(!rotateInProgress){ spinner.setPower(analogValue); }
+    }*/
 
     public void togglerOperate(boolean on){
-        onOff.changeState(on);
-        if (onOff.currentState() == 1) {
-            spinner.setPower(1);
-            rotateInProgress = true;
-        } else {
-            spinner.setPower(0);
-            rotateInProgress = false;
-        }
+            if(!rotateInProgress) {
+                onOff.changeState(on);
+                if (onOff.currentState() == 1) {
+                    spinner.setPower(1);
+                    //rotateInProgress = true;
+                } else {
+                    spinner.setPower(0);
+                    //rotateInProgress = false;
+                }
+            }
     }
-    //tele-op
+    //tele-op [BUGGED]
     public void operate(boolean buttonInput) {
         //telemetry.addData("Spin ducky: ", rotateInProgress);
         if (!rotateInProgress){
             if(buttonInput){
                 rotateInProgress = true;
             }
-        }  else {
+        }  else if ( rotateInProgress){
             if(firstLoop){
                 timer.set(seconds);
                 spinner.setPower(1);
@@ -65,15 +70,17 @@ public class Carousel {
     //autonomous
     public void operate() {
         //telemetry.addData("Spin ducky: ", rotateInProgress);
-        if(firstLoop){
-            rotateInProgress = true;
-            timer.set(seconds);
-            spinner.setPower(1);
-            firstLoop = false;
-        } else if (timer.isExpired()){
-            spinner.setPower(0);
-            firstLoop = true;
-            rotateInProgress = false;
+        if(!rotateInProgress) {
+            if (firstLoop) {
+                rotateInProgress = true;
+                timer.set(seconds);
+                spinner.setPower(1);
+                firstLoop = false;
+            } else if (timer.isExpired()) {
+                spinner.setPower(0);
+                firstLoop = true;
+                rotateInProgress = false;
+            }
         }
     }
 
@@ -81,5 +88,6 @@ public class Carousel {
     public double getSeconds() { return seconds; }
     public boolean rotateInProgress() { return rotateInProgress; }
     public boolean firstLoop() { return firstLoop; }
+    public int getTogglerState() {return onOff.currentState();}
 
 }

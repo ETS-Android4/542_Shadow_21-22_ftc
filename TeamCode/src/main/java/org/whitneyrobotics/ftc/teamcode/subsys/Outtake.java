@@ -2,6 +2,7 @@ package org.whitneyrobotics.ftc.teamcode.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -15,10 +16,13 @@ public class Outtake {
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
+        linearSlides.setDirection(DcMotor.Direction.REVERSE);
+        resetEncoder();
     }
     public int level1 = 1;
     public int level2 = 2;
     public int level3 = 3;
+    private double motorSpeed = 0.75;
 
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler(3);
@@ -33,40 +37,37 @@ public class Outtake {
         linearSlidesTog.changeState(up,down);
         if (linearSlidesTog.currentState() == 0) {
             if(linearSlides.getCurrentPosition()>level1){
-                linearSlides.setPower(-1);
+                linearSlides.setPower(-motorSpeed);
             } else if (linearSlides.getCurrentPosition()<level1) {
-                linearSlides.setPower(1);
+                linearSlides.setPower(motorSpeed);
             } else {
                 linearSlides.setPower(0);
             }
-            slidingInProgress = true;
             if (linearSlides.getCurrentPosition() == level1) {
                 slidingInProgress = false;
-            }
+            } else {slidingInProgress = true;}
         } else if (linearSlidesTog.currentState() == 1) {
             if(linearSlides.getCurrentPosition()>level2){
-                linearSlides.setPower(-1);
+                linearSlides.setPower(-motorSpeed);
             } else if (linearSlides.getCurrentPosition()<level2){
-                linearSlides.setPower(1);
+                linearSlides.setPower(motorSpeed);
             } else {
                 linearSlides.setPower(0);
             }
-            slidingInProgress = true;
             if (linearSlides.getCurrentPosition() == level2) {
                 slidingInProgress = false;
-            }
+            } else {slidingInProgress = true;}
         } else if (linearSlidesTog.currentState() == 2) {
             if(linearSlides.getCurrentPosition()>level3){
-                linearSlides.setPower(-1);
+                linearSlides.setPower(-motorSpeed);
             } else if (linearSlides.getCurrentPosition()<level3){
-                linearSlides.setPower(1);
+                linearSlides.setPower(motorSpeed);
             } else {
                 linearSlides.setPower(0);
             }
-            slidingInProgress = true;
             if (linearSlides.getCurrentPosition() == level3) {
                 slidingInProgress = false;
-            }
+            } else {slidingInProgress = true;}
         }
     }
     public void togglerServoGate(boolean pressed){
@@ -131,6 +132,11 @@ public class Outtake {
         else {
             linearSlides.setPower(0);
         }
+    }
+
+    public void resetEncoder() {
+        linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public int getTier() { return linearSlidesTog.currentState(); }

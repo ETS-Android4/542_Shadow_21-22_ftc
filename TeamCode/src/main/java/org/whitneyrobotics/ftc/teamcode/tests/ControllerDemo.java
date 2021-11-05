@@ -19,8 +19,8 @@ public class ControllerDemo extends OpMode {
 
     @Override
     public void loop() {
-        buttonLongPressToggler.changeState(gamepadListener.longPress(gamepad1.a,750));
-        buttonShortPressToggler.changeState(gamepadListener.shortPress(gamepad1.b,500));
+        buttonLongPressToggler.changeState(gamepadListener.longPress(gamepad1.a,2000));
+        buttonShortPressToggler.changeState(gamepadListener.shortPress(gamepad1.b,2000));
 
         if(gamepad1.a){
             gamepad1.rumble(500);
