@@ -33,7 +33,7 @@ public class OuttakeTest extends OpMode {
 
     public void kill() {
         outtake.linearSlides.setPower(0);
-        System.exit(69);
+        throw new RuntimeException("Kill command issued.");
     }
 
     @Override
