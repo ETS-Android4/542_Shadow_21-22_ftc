@@ -40,9 +40,9 @@ public class DrivetrainTest extends OpMode  {
         topBottomTog = new Toggler(2);
 
         startingPositions[RED][BOTTOM] = new Position(-1647.6,900);
-        startingPositions[RED][TOP] = new Position(-1647.6,-150);
+        startingPositions[RED][TOP] = new Position(-1647.6,-300);
         startingPositions[BLUE][BOTTOM] = new Position(-1647.6,-900);
-        startingPositions[BLUE][TOP] = new Position(-1647.6,150);
+        startingPositions[BLUE][TOP] = new Position(-1647.6,300);
 
         shippingHubPosition[RED] = new Position(-752.4,452.4);
         shippingHubPosition[BLUE] = new Position(-752.4,-452.4);
@@ -75,7 +75,7 @@ public class DrivetrainTest extends OpMode  {
         switch (posStateNum){
             case 0:
                 if(gamepad1.x){
-                    Coordinate initial = new Coordinate(startingPositions[allianceTog.currentState()][topBottomTog.currentState()],0);
+                    Coordinate initial = new Coordinate(startingPositions[allianceTog.currentState()][topBottomTog.currentState()],90);
                     robot.setInitialCoordinate(initial);
                 }
                 break;

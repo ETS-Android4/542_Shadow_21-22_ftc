@@ -129,9 +129,9 @@ public class AutoOp extends OpMode {
 
         // figure out actual values for this
         startingPositions[RED][BOTTOM] = new Position(-1647.6,900);
-        startingPositions[RED][TOP] = new Position(-1647.6,-150);
+        startingPositions[RED][TOP] = new Position(-1647.6,-300);
         startingPositions[BLUE][BOTTOM] = new Position(-1647.6,-900);
-        startingPositions[BLUE][TOP] = new Position(-1647.6,150);
+        startingPositions[BLUE][TOP] = new Position(-1647.6,300);
 
         shippingHubPosition[RED] = new Position(-752.4,452.4);
         shippingHubPosition[BLUE] = new Position(-752.4,-452.4);
