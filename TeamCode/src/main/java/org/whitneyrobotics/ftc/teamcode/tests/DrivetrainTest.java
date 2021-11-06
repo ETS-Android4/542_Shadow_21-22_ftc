@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.whitneyrobotics.ftc.teamcode.autoop.AutoSwervePositions;
+import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
@@ -56,6 +57,28 @@ public class DrivetrainTest extends OpMode  {
                 break;
 
         }
+        startingPositions[RED][BOTTOM] = new Position(-1647.6,900);
+        startingPositions[RED][TOP] = new Position(-1647.6,-150);
+        startingPositions[BLUE][BOTTOM] = new Position(-1647.6,-900);
+        startingPositions[BLUE][TOP] = new Position(-1647.6,150);
+
+        shippingHubPosition[RED] = new Position(-752.4,452.4);
+        shippingHubPosition[BLUE] = new Position(-752.4,-452.4);
+
+        sharedShippingHub[RED] = new Position(-152.4, -1200);
+        sharedShippingHub[BLUE] = new Position(-152.4, 1200);
+
+        warehouse[RED] = new Position(-1500,-1122.6);
+        warehouse[BLUE] = new Position(-1500,1122.6);
+
+        finalParkingPosition[RED][TOP] = new Position(-1500,-1122.6);
+        finalParkingPosition[RED][BOTTOM] = new Position(-900,1500);
+        finalParkingPosition[BLUE][TOP] = new Position(-1500,1122.6);
+        finalParkingPosition[BLUE][BOTTOM] = new Position(-900, -1500);
+
+        carouselPositions[RED] = new Position(-1400,1400);
+        carouselPositions[BLUE] = new Position(-1400, -1400);
+        
         telemetry.addData("Position State: ", posStateNum);
         telemetry.addData("Alliance State: ", allianceTog);
     }
