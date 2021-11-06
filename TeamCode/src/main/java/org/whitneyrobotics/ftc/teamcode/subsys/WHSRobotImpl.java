@@ -229,6 +229,14 @@ public class WHSRobotImpl {
         currentCoord.setY(robotY);
     }
 
+    public void setInitialCoordinate(Coordinate initCoord) {
+        currentCoord = initCoord;
+        robotX = initCoord.getX();
+        robotY = initCoord.getY();
+        imu.setImuBias(currentCoord.getHeading());
+        lastKnownHeading = currentCoord.getHeading();
+    }
+
     public void deadWheelEstimateCoordinate() {
 
         double deltaXRobot, deltaYRobot;

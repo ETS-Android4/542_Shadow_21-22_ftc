@@ -18,8 +18,8 @@ public class AutoSwervePositions {
  public final  static Position  shippingHubToWarehouse1 = new Position(-300, -900);
  public final  static Position  shippingHubToWarehouse2 = new Position(600, -1500);
 //Warehouse to Shipping Hub
-public final  static Position  warehouseToShippingHub1= new Position(600, -1500);
- public final  static Position   warehouseToShippingHub2 = new Position(-300, -900);
+ public final  static Position  warehouseToShippingHub1= new Position(600, -1500);
+ public final  static Position  warehouseToShippingHub2 = new Position(-300, -900);
  //Shipping Hub to Warehouse (Park)
  public final  static Position shippingHubToWarehousePark1 = new Position(-300, -900);
  public final  static Position shippingHubToWarehousePark2 = new Position(900, -900);

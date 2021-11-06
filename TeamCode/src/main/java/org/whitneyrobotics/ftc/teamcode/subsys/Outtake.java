@@ -19,10 +19,13 @@ public class Outtake {
         linearSlides.setDirection(DcMotor.Direction.REVERSE);
         resetEncoder();
     }
-    public int level1 = 1;
-    public int level2 = 2;
-    public int level3 = 3;
+
+    public double level1 = 1;
+    public double level2 = 2;
+    public double level3 = 3;
     private double motorSpeed = 0.75;
+    private double acceptableError = 15;
+    private double[] orderedLevels = {level1, level2, level3};
 
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler(3);
@@ -33,7 +36,23 @@ public class Outtake {
     //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
-    public void togglerOuttake(boolean up,boolean down){
+    public void togglerOuttake(boolean up, boolean down) {
+        linearSlidesTog.changeState(up, down);
+        double currentTarget = orderedLevels[linearSlidesTog.currentState()];
+
+        if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
+            linearSlides.setPower(0);
+            slidingInProgress = false;
+        } else if(linearSlides.getCurrentPosition()>currentTarget){
+            linearSlides.setPower(-motorSpeed);
+            slidingInProgress = true;
+        } else {
+            linearSlides.setPower(motorSpeed);
+            slidingInProgress = true;
+        }
+    }
+
+    public void togglerOuttakeOld(boolean up,boolean down){
         linearSlidesTog.changeState(up,down);
         if (linearSlidesTog.currentState() == 0) {
             if(linearSlides.getCurrentPosition()>level1){
@@ -74,38 +93,23 @@ public class Outtake {
         servoGateTog.changeState(pressed);
         if (servoGateTog.currentState() == 0) {
             gate.setPosition(0.01);
-//            if (gate.getPosition() == 0.5) {
-//                gate.setPosition(0.01);
-//            } else {
-//
-//            }
         } else {
             gate.setPosition(0.5);
-//            if (gate.getPosition() < 0.5) {
-//                gate.setPosition(0.5);
-//            }
         }
     }
 
-    public void autoControl(int level) {
-        if (level == 1) {
-            if (linearSlides.getCurrentPosition() < level1) {
-                linearSlides.setPower(1);
-            } else {
-                linearSlides.setPower(0);
-            }
-        } else if (level == 2) {
-            if (linearSlides.getCurrentPosition() < level2) {
-                linearSlides.setPower(1);
-            } else {
-                linearSlides.setPower(0);
-            }
+    public void autoControl(int levelIndex) {
+        double currentTarget = orderedLevels[levelIndex];
+
+        if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
+            linearSlides.setPower(0);
+            slidingInProgress = false;
+        } else if(linearSlides.getCurrentPosition()>currentTarget){
+            linearSlides.setPower(-motorSpeed);
+            slidingInProgress = true;
         } else {
-            if (linearSlides.getCurrentPosition() < level3) {
-                linearSlides.setPower(1);
-            } else {
-                linearSlides.setPower(0);
-            }
+            linearSlides.setPower(motorSpeed);
+            slidingInProgress = true;
         }
     }
 
@@ -126,7 +130,7 @@ public class Outtake {
     }
 
     public void reset() {
-        if (linearSlides.getCurrentPosition() > level1) {
+        if (Math.abs(linearSlides.getCurrentPosition() - level1) <= acceptableError) {
             linearSlides.setPower(-1);
         }
         else {
