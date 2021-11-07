@@ -20,9 +20,9 @@ public class Outtake {
         resetEncoder();
     }
 
-    public double level1 = 1;
-    public double level2 = 2;
-    public double level3 = 3;
+    public double level1 = -43;
+    public double level2 = -340;
+    public double level3 = -971;
     private double motorSpeed = 0.75;
     private double acceptableError = 15;
     private double[] orderedLevels = {level1, level2, level3};
@@ -37,7 +37,8 @@ public class Outtake {
 
     //toggler based teleop
     public void togglerOuttake(boolean up, boolean down) {
-        linearSlidesTog.changeState(up, down);
+        if (!slidingInProgress){linearSlidesTog.changeState(up, down);}
+
         double currentTarget = orderedLevels[linearSlidesTog.currentState()];
 
         if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
