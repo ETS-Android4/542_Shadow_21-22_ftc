@@ -181,12 +181,12 @@ public class AutoOp extends OpMode {
     @Override
     public void init_loop() {
         if (tfod != null) {
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            List<Recognition> updatedRecognitions = (List<Recognition>) tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
                 int i = 0;
                 for (Recognition recognition : updatedRecognitions) {
-                    if (recognition.getLabel() == "Cube"){
+                    if (recognition.getLabel() == "Cube" || recognition.getLabel() == "Duck"){
                         CAMERA_BOTTOM = recognition.getBottom();
                         CAMERA_LEFT = recognition.getLeft();
                         CAMERA_TOP = recognition.getTop();

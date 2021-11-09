@@ -85,14 +85,14 @@ public class OuttakeTest extends OpMode {
         telemetry.addData("Mode", (modeTog.currentState() == 0) ? "Manual Configure Mode" : "Test Mode");
         telemetry.addData("Encoder Position", outtake.linearSlides.getCurrentPosition());
         telemetry.addData("Current Tier (0-2)", outtake.getTier());
-        telemetry.addData("Level 1:", outtake.level1);
-        telemetry.addData("Level 2:", outtake.level2);
-        telemetry.addData("Level 3:", outtake.level3);
+        telemetry.addData("Level 1", outtake.level1);
+        telemetry.addData("Level 2", outtake.level2);
+        telemetry.addData("Level 3", outtake.level3);
 
         packet.put("Encoder Position", outtake.linearSlides.getCurrentPosition());
         packet.put("Current Tier (0-2)",outtake.getTier());
-        packet.put("Level 1:", outtake.level1);
-        packet.put("Level 2:", outtake.level2);
+        packet.put("Level 1", outtake.level1);
+        packet.put("Level 2", outtake.level2);
         packet.put("Level 3", outtake.level3);
         //dashboard.sendTelemetryPacket(packet);
     }
