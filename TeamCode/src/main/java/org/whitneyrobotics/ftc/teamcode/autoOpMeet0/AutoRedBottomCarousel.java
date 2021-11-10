@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
-
+@Autonomous(name = "Auto Red Bottom Carousel")
 public class AutoRedBottomCarousel extends OpMode {
         public WHSRobotImpl robot;
 
@@ -141,6 +141,12 @@ public class AutoRedBottomCarousel extends OpMode {
                     }
                 case PARK:
                     switch (subState){
+                        case 0:
+                            robot.driveToTarget(finalParkingPosition[STARTING_ALLIANCE][STARTING_SIDE], false);
+                            if (!robot.driveToTargetInProgress()){
+                                subState++;
+                            }
+                            break;
                     }
                 default:
                     break;
