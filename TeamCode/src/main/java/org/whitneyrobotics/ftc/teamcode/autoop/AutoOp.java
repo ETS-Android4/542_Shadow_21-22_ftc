@@ -2,7 +2,6 @@ package org.whitneyrobotics.ftc.teamcode.autoop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -10,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+
+import java.util.List;
 
 @Autonomous (name="WHS Freight Frenzy Auto")
 public class AutoOp extends OpMode {
@@ -181,7 +182,7 @@ public class AutoOp extends OpMode {
     @Override
     public void init_loop() {
         if (tfod != null) {
-            List<Recognition> updatedRecognitions = (List<Recognition>) tfod.getUpdatedRecognitions();
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
                 int i = 0;
