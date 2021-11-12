@@ -21,7 +21,7 @@ public class Intake {
     int state = 0;
     public boolean intakeAutoDone = false;
 
-    public double[] armPositions = {0, 300}; //change numbers later
+    public int[] armPositions = {500, 0}; //change numbers later
     public enum ArmPositions {
         DOWN, UP
     }
@@ -60,7 +60,7 @@ public class Intake {
             } else {
                 arm.setPosition(armPositions[ArmPositions.UP.ordinal()]);
                 if (arm.getPosition() > 0.3) {
-                    ejectState.changeState(reject);
+                     ejectState.changeState(reject);
                 } else if (ejectState.currentState() != 0){
                     ejectState.changeState(false);
                     ejectState.changeState(true);
@@ -86,7 +86,7 @@ public class Intake {
         surgicalTubes.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         surgicalTubes.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void operate(boolean armState, boolean togOnOff, boolean reverse, boolean deposit){
@@ -96,19 +96,25 @@ public class Intake {
             eject.setPosition(pusherPositions[PusherPositions.IN.ordinal()]);
         }
         armPositionTog.changeState(armState);
-            intakeStateTog.changeState(togOnOff);
-            if (reverse) {
-                surgicalTubes.setPower(-1);
-                if(armPositionTog.currentState() != 0 && !deposit){
-                    eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
-                }
-            } else if (intakeStateTog.currentState() == 0) {
-                surgicalTubes.setPower(0);
-            } else if (intakeStateTog.currentState() == 1 && armPositionTog.currentState() != 0) {
-                surgicalTubes.setPower(1);
-            } else {
-                surgicalTubes.setPower(0);
+        intakeStateTog.changeState(togOnOff);
+        if (reverse) {
+            surgicalTubes.setPower(-1);
+            if(armPositionTog.currentState() != 0 && !deposit){
+                eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
             }
+        } else if (intakeStateTog.currentState() == 0) {
+            surgicalTubes.setPower(0);
+        } else if (intakeStateTog.currentState() == 1 && armPositionTog.currentState() != 0) {
+            surgicalTubes.setPower(1);
+        } else {
+            surgicalTubes.setPower(0);
+        }
+
+        if(armPositionTog.currentState() == 0){
+            arm.setTargetPosition(armPositions[ArmPositions.UP.ordinal()]);
+        } else {
+            arm.setTargetPosition(armPositions[ArmPositions.DOWN.ordinal()]);
+        }
     }
 
     public void setIntakePower(double power) { surgicalTubes.setPower(power);}

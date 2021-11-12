@@ -41,6 +41,12 @@ public class WHSTeleOp extends OpMode {
         // Outtake
         // - Adjust levels
         robot.robotOuttake.togglerOuttake(gamepad2.dpad_right, gamepad2.dpad_left);
+        //In case line outtake levels don't work properly
+        if(gamepad1.dpad_up){
+            robot.robotOuttake.linearSlides.setPower(0.4);
+        } else if (gamepad1.dpad_down){
+            robot.robotOuttake.linearSlides.setPower(-0.4);
+        }
 
         if(gamepad2.a) { robot.robotOuttake.reset(); }
 
