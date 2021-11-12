@@ -99,11 +99,13 @@ public class Intake {
         intakeStateTog.changeState(togOnOff);
         if (reverse) {
             surgicalTubes.setPower(-1);
-            if(armPositionTog.currentState() != 0 && !deposit){
-                eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
-            }
         } else if (intakeStateTog.currentState() == 0) {
-            surgicalTubes.setPower(0);
+            if(armPositionTog.currentState() != 0 && !deposit){
+                surgicalTubes.setPower(1);
+                eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
+            } else {
+                surgicalTubes.setPower(0);
+            }
         } else if (intakeStateTog.currentState() == 1 && armPositionTog.currentState() != 0) {
             surgicalTubes.setPower(1);
         } else {

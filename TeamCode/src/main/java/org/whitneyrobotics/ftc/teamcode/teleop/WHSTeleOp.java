@@ -36,7 +36,7 @@ public class WHSTeleOp extends OpMode {
         // DRIVER 2 CONTROLS
         // Intake
         // - Extend arm/unextend arm
-        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.right_bumper, gamepad2.y,gamepad2.left_bumper);
+        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.right_bumper, gamepad2.right_trigger>0,gamepad2.left_bumper);
 
         // Outtake
         // - Adjust levels
