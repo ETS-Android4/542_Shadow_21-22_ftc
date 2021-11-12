@@ -1,6 +1,7 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -9,15 +10,18 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Intake {
 
-    private DcMotor roller;
-    private Servo arm;
-    private Servo pusher;
+    private DcMotor surgicalTubes;
+    private DcMotor arm;
+
+    // 5281.1 ticks per revolution
+
+    private Servo eject;
     public SimpleTimer armTimer = new SimpleTimer();
     public double armTimerDelay = 1; //change based on testing
     int state = 0;
     public boolean intakeAutoDone = false;
 
-    public double[] armPositions = {0, 0.5}; //change numbers later
+    public double[] armPositions = {0, 300}; //change numbers later
     public enum ArmPositions {
         DOWN, UP
     }
@@ -27,17 +31,21 @@ public class Intake {
         IN, OUT, FULLY_OUT
     }
 
-    private Toggler intakeState = new Toggler(2);
-    private Toggler rollerState = new Toggler(2);
-    private Toggler ejectState = new Toggler(2);
+    private Toggler intakeStateTog = new Toggler(2);
+    private Toggler armPositionTog = new Toggler(2);
+    private Toggler ejectStateTog = new Toggler(2);
+
+    private Toggler armPositionTestingTogTuning = new Toggler(52);
+    private Toggler armPositionTestingTogFineTune = new Toggler(70);
 
     public Intake(HardwareMap map) {
-        roller = map.dcMotor.get("intakeMotor");
-        arm = map.servo.get("armServo");
-        pusher = map.servo.get("pusherServo");
+        surgicalTubes = map.dcMotor.get("intakeMotor");
+        arm = map.dcMotor.get("armMotor");
+        eject = map.servo.get("ejectServo");
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void operate(boolean armState, boolean roll, boolean reverse, boolean reject) {
+    /*public void operate(boolean armState, boolean roll, boolean reverse, boolean reject) {
         intakeState.changeState(armState);
         rollerState.changeState(roll);
 
@@ -72,28 +80,64 @@ public class Intake {
                 roller.setPower(1 * (reverse ? -1 : 1));
             }
         }
-    }
-    //testing
-    public void setIntakePower(double power) { roller.setPower(power);}
+    }*/
 
-    public void setArm(double position) { arm.setPosition(position); }
+    public void resetAllEncoder(){
+        surgicalTubes.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        surgicalTubes.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void operate(boolean armState, boolean togOnOff, boolean reverse, boolean deposit){
+        if(deposit){
+            eject.setPosition(pusherPositions[PusherPositions.FULLY_OUT.ordinal()]);
+        } else {
+            eject.setPosition(pusherPositions[PusherPositions.IN.ordinal()]);
+        }
+        armPositionTog.changeState(armState);
+            intakeStateTog.changeState(togOnOff);
+            if (reverse) {
+                surgicalTubes.setPower(-1);
+                if(armPositionTog.currentState() != 0 && !deposit){
+                    eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
+                }
+            } else if (intakeStateTog.currentState() == 0) {
+                surgicalTubes.setPower(0);
+            } else if (intakeStateTog.currentState() == 1 && armPositionTog.currentState() != 0) {
+                surgicalTubes.setPower(1);
+            } else {
+                surgicalTubes.setPower(0);
+            }
+    }
+
+    public void setIntakePower(double power) { surgicalTubes.setPower(power);}
+
+    public void armTest(boolean hundreds, boolean ones) {
+        resetAllEncoder();
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armPositionTestingTogTuning.changeState(hundreds);
+        armPositionTestingTogFineTune.changeState(ones);
+        arm.setTargetPosition(armPositionTestingTogFineTune.currentState() + (armPositionTestingTogTuning.currentState()*100));
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void autoDropIntake(){
         switch(state){
             case 0:
-                roller.setPower(1);
                 intakeAutoDone = false;
                 armTimer.set(armTimerDelay);
                 state++;
                 break;
             case 1:
                 if(armTimer.isExpired()){
-                    setArm(0);
-                    roller.setPower(0);
+                    armPositionTog.changeState(true);
+                    surgicalTubes.setPower(0);
+                    resetAllEncoder();
+                    arm.setTargetPosition(0);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     intakeAutoDone = true;
                     state = 0;
-                }else{
-                    setArm(0.5);
                 }
                 break;
         }
