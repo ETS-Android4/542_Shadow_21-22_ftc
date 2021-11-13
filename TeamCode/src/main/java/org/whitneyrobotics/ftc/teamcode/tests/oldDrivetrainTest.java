@@ -59,7 +59,7 @@ public class oldDrivetrainTest extends OpMode {
         if (stateTog.currentState() < 3) {
             drivetrain.switchOrientation(gamepad1.b);
         } else {
-            drivetrain.switchFieldCentric(gamepad1.b);
+            //drivetrain.switchFieldCentric(gamepad1.b);
         }
         powerTog.changeState(gamepad1.dpad_up, gamepad1.dpad_down);
 
@@ -86,7 +86,7 @@ public class oldDrivetrainTest extends OpMode {
 
 
         telemetry.addData("Mode:", mode);
-        telemetry.addData("Orientation:", stateTog.currentState() < 3 ? drivetrain.getOrientation() : drivetrain.getFieldCentric());
+        //telemetry.addData("Orientation:", stateTog.currentState() < 3 ? drivetrain.getOrientation() : drivetrain.getFieldCentric());
         telemetry.addData("LeftStickY:", gamepad1.left_stick_y);
         telemetry.addData("RightStickY:", gamepad1.right_stick_y);
         //telemetry.addData("Scaled L", drivetrain.getScaledPower(gamepad1.left_stick_y));

@@ -18,7 +18,8 @@ public class CarouselTest extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Rotations", carousel.getRotations());
+        //telemetry.addData("Rotations", carousel.getRotations());
+        telemetry.addData("Timer",carousel.getTimer());
         telemetry.addData("Rotate in progress", carousel.rotateInProgress());
         telemetry.addData("First loop: ", carousel.rotateInProgress());
         telemetry.addData("Toggler State: ", carousel.getTogglerState());

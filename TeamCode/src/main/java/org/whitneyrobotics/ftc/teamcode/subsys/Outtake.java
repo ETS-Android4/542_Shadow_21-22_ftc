@@ -16,7 +16,7 @@ public class Outtake {
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
-        linearSlides.setDirection(DcMotor.Direction.REVERSE);
+        //linearSlides.setDirection(DcMotor.Direction.REVERSE);
         resetEncoder();
     }
 
@@ -131,12 +131,7 @@ public class Outtake {
     }
 
     public void reset() {
-        if (Math.abs(linearSlides.getCurrentPosition() - level1) <= acceptableError) {
-            linearSlides.setPower(-1);
-        }
-        else {
-            linearSlides.setPower(0);
-        }
+        linearSlidesTog.setState(0);
     }
 
     public void resetEncoder() {

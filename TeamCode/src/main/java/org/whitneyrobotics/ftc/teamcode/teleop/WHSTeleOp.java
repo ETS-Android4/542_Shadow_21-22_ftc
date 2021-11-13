@@ -22,21 +22,21 @@ public class WHSTeleOp extends OpMode {
         // DRIVER 1 CONTROLS
         // Drivetrain
         // robot.estimateHeading();
-        robot.drivetrain.switchFieldCentric(gamepad1.b);
+        //robot.drivetrain.switchFieldCentric(gamepad1.b);
         if (gamepad1.left_bumper) {
-            robot.drivetrain.operateMecanumDriveScaled(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, robot.getCoordinate().getHeading());
+            robot.robotDrivetrain.operateMecanumDriveScaled(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, robot.getCoordinate().getHeading());
         }
         else {
-            robot.drivetrain.operateMecanumDrive(gamepad1.left_stick_x / 2.54, gamepad1.left_stick_y / 2.54, gamepad1.right_stick_x / 2.54, robot.getCoordinate().getHeading());
+            robot.robotDrivetrain.operateMecanumDrive(gamepad1.left_stick_x / 2.54, gamepad1.left_stick_y / 2.54, gamepad1.right_stick_x / 2.54, robot.getCoordinate().getHeading());
         }
         // Carousel
-        robot.robotCarousel.operate(gamepad1.a);
-        robot.robotCarousel.togglerOperate(gamepad1.b);
+        robot.robotCarousel.operate(gamepad1.left_bumper);
+        robot.robotCarousel.togglerOperate(gamepad1.left_trigger>0.05);
 
         // DRIVER 2 CONTROLS
         // Intake
         // - Extend arm/unextend arm
-        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.right_bumper, gamepad2.right_trigger>0,gamepad2.left_bumper);
+        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.left_bumper, gamepad2.right_trigger>0,gamepad2.left_trigger>0);
 
         // Outtake
         // - Adjust levels

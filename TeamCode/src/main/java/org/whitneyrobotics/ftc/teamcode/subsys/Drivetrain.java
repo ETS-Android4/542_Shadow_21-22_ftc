@@ -299,13 +299,13 @@ public class Drivetrain {
         backRight.setPower(vBR);
     }
 
-    public void switchFieldCentric(boolean gamepadInput) {
+    /*public void switchFieldCentric(boolean gamepadInput) {
         fieldCentricSwitch.changeState(gamepadInput);
     }
 
     public String getFieldCentric() {
         return fieldCentricSwitch.currentState() == 0 ? "Robot Centric" : "Field Centric";
-    }
+    }*/ //deal with later
 
 
     public double[] getMecanumEncoderDelta() {

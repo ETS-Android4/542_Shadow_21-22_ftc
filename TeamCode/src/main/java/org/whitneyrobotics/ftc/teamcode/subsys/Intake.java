@@ -26,7 +26,7 @@ public class Intake {
         DOWN, UP
     }
 
-    public double[] pusherPositions = {0.2, 0.8, 1};
+    public double[] pusherPositions = {1, 0.6, 0.5};
     public enum PusherPositions {
         IN, OUT, FULLY_OUT
     }
@@ -100,13 +100,13 @@ public class Intake {
         if (reverse) {
             surgicalTubes.setPower(-1);
         } else if (intakeStateTog.currentState() == 0) {
-            if(armPositionTog.currentState() != 0 && !deposit){
+            if(armPositionTog.currentState() != 0){
                 surgicalTubes.setPower(1);
-                eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
+                //eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
             } else {
                 surgicalTubes.setPower(0);
             }
-        } else if (intakeStateTog.currentState() == 1 && armPositionTog.currentState() != 0) {
+        } else if (deposit && armPositionTog.currentState() != 0) {
             surgicalTubes.setPower(1);
         } else {
             surgicalTubes.setPower(0);

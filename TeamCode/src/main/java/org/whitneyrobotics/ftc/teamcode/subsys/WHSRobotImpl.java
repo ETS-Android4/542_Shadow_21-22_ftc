@@ -18,14 +18,6 @@ public class WHSRobotImpl {
 
 // ======= (error so commented out fix later)
 
-    public Drivetrain drivetrain;
-    public IMU imu;
-    public Canister canister;
-//    public OldIntake intake;
-//    public OldOuttake oldOuttake;
-    public Wobble wobble;
-    public OldOuttake2 outtake;
-
    // SwervePath currentSwervePath; (error so commented out fix later)
    // public SwerveFollower swerveFollower; (error so commented out fix later)
 // >>>>>>> master (error so commented out fix later)
@@ -198,14 +190,14 @@ public class WHSRobotImpl {
     }
 
     public void estimateCoordinate() {
-        double[] currentEncoderValues = drivetrain.getLRAvgEncoderPosition();
+        double[] currentEncoderValues = robotDrivetrain.getLRAvgEncoderPosition();
         encoderDeltas[0] = currentEncoderValues[0] - encoderValues[0];
         encoderDeltas[1] = currentEncoderValues[1] - encoderValues[1];
-        double currentHeading = Functions.normalizeAngle(Math.toDegrees(drivetrain.encToMM((currentEncoderValues[1] - currentEncoderValues[0]) / 2 / Drivetrain.getTrackWidth())) + imu.getImuBias()); //-180 to 180 deg
+        double currentHeading = Functions.normalizeAngle(Math.toDegrees(robotDrivetrain.encToMM((currentEncoderValues[1] - currentEncoderValues[0]) / 2 / Drivetrain.getTrackWidth())) + robotIMU.getImuBias()); //-180 to 180 deg
         currentCoord.setHeading(currentHeading); //updates global variable
 
-        double deltaS = drivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
-        double deltaHeading = Math.toDegrees(drivetrain.encToMM((encoderDeltas[1] - encoderDeltas[0]) / Drivetrain.getTrackWidth()));
+        double deltaS = robotDrivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
+        double deltaHeading = Math.toDegrees(robotDrivetrain.encToMM((encoderDeltas[1] - encoderDeltas[0]) / Drivetrain.getTrackWidth()));
         robotX += deltaS * Functions.cosd(lastKnownHeading + deltaHeading / 2);
         robotY += deltaS * Functions.sind(lastKnownHeading + deltaHeading / 2);
 
@@ -233,7 +225,7 @@ public class WHSRobotImpl {
         currentCoord = initCoord;
         robotX = initCoord.getX();
         robotY = initCoord.getY();
-        imu.setImuBias(currentCoord.getHeading());
+        robotIMU.setImuBias(currentCoord.getHeading());
         lastKnownHeading = currentCoord.getHeading();
     }
 

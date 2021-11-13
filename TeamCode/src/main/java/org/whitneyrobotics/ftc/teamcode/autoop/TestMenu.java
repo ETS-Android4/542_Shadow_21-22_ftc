@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @Autonomous(group = "Tests",name="Menu Selector Test")
 public class TestMenu extends OpMode {
-    private SelectionMenu configureAuto;
+    private SelectionMenu configureAuto = new SelectionMenu("Auto configuration");
 
     @Override
     public void init() {

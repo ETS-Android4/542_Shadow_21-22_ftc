@@ -27,7 +27,7 @@ public class OuttakeTest extends OpMode {
         outtake = new Outtake(hardwareMap);
         outtake.linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtake.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        outtake.linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
+        //outtake.linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
         servoPosition = outtake.gate.getPosition();
     }
 
@@ -41,11 +41,12 @@ public class OuttakeTest extends OpMode {
         modeTog.changeState(gamepad1.x);
         if(modeTog.currentState() == 1){
             outtake.togglerOuttake(gamepad1.a, gamepad1.b);
+            if (gamepad1.y) { outtake.reset(); }
         }else {
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_down) {
                 outtake.linearSlides.setPower(power);
             }
-            else if (gamepad1.dpad_down) {
+            else if (gamepad1.dpad_up) {
                 outtake.linearSlides.setPower(-power);
             }
             else {
@@ -77,7 +78,7 @@ public class OuttakeTest extends OpMode {
         }
 
         //outtake.togglerOuttake(gamepad1.b, gamepad1.a);
-        if (gamepad1.x) { outtake.reset(); }
+
 
         //emergency kill switch
         if(gamepad1.left_trigger > 0.99){kill();}
