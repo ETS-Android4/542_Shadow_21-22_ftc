@@ -107,8 +107,8 @@ public class Drivetrain {
     public void operateWithOrientation(double leftPower, double rightPower) {
         switch (orientationSwitch.currentState()) {
             case 0:
-                operateLeft(rightPower);
-                operateRight(leftPower);
+                operateLeft(leftPower);
+                operateRight(rightPower);
                 break;
             case 1:
                 operateLeft(-leftPower);
@@ -182,15 +182,15 @@ public class Drivetrain {
     }
 
     public double getLAvgEncoderPosition() {
-        //double leftTotal = backLeft.getCurrentPosition() + frontLeft.getCurrentPosition();
-        //return leftTotal * 0.5;
-        return backLeft.getCurrentPosition();
+        double leftTotal = backLeft.getCurrentPosition() + frontLeft.getCurrentPosition();
+        return leftTotal * 0.5;
+        //return backLeft.getCurrentPosition();
     }
 
     public double getRAvgEncoderPosition() {
-        //double rightTotal = backRight.getCurrentPosition();/* + frontRight.getCurrentPosition();*/
-        //return rightTotal * 0.5;
-        return backRight.getCurrentPosition();
+        double rightTotal = backRight.getCurrentPosition() + frontRight.getCurrentPosition();
+        return rightTotal * 0.5;
+        //return backRight.getCurrentPosition();
     }
 
     public double[] getLRAvgEncoderPosition() {
@@ -224,14 +224,14 @@ public class Drivetrain {
         return encoderDistances;
     }
 
-    public double getFrontRightWheelVelocity() {
+    /*public double getFrontRightWheelVelocity() {
         return backRight.getVelocity();
-    }
+    }*/
 
-    public double[] getWheelVelocities() {
+    /*public double[] getWheelVelocities() {
         double[] wheelVelocities = {encToMM(backLeft.getVelocity(AngleUnit.DEGREES)), encToMM(backRight.getVelocity(AngleUnit.DEGREES))};
         return wheelVelocities;
-    }
+    }*/
 
     public double[] getAllWheelVelocities() {
         double[] wheelVelocities = {encToMM(frontLeft.getVelocity()), encToMM(frontRight.getVelocity()), encToMM(backLeft.getVelocity()), encToMM(backRight.getVelocity())};
