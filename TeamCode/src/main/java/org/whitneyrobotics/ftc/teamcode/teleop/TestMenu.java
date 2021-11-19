@@ -1,15 +1,17 @@
-package org.whitneyrobotics.ftc.teamcode.autoop;
+package org.whitneyrobotics.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SelectionMenu;
 
 import java.util.Arrays;
 
-@Autonomous(group = "Tests",name="Menu Selector Test")
+@TeleOp(group = "Tests",name="Menu Selector Test")
 public class TestMenu extends OpMode {
     private SelectionMenu configureAuto = new SelectionMenu("Auto configuration");
+    private boolean firstLoop = true;
 
     @Override
     public void init() {
@@ -38,14 +40,15 @@ public class TestMenu extends OpMode {
 
     @Override
     public void init_loop() {
-        configureAuto.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_down,gamepad1.dpad_up);
-        telemetry.addLine(configureAuto.formatDisplay());
-        telemetry.update();
+
     }
 
     @Override
     public void loop() {
+        configureAuto.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_down,gamepad1.dpad_up);
+        telemetry.addLine(configureAuto.formatDisplay());
         telemetry.addData("Selection output", Arrays.toString(configureAuto.getOutputs()));
         telemetry.addData("Value of color",configureAuto.getPrompts().get(0).getValueOfActive());
+        telemetry.update();
     }
 }

@@ -16,20 +16,26 @@ public class Outtake {
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
-        //linearSlides.setDirection(DcMotor.Direction.REVERSE);
+        gate.setPosition(gatePositions[GatePositions.CLOSE.ordinal()]);
+        linearSlides.setDirection(DcMotor.Direction.REVERSE);
         resetEncoder();
     }
 
-    public double level1 = -43;
-    public double level2 = -340;
-    public double level3 = -971;
-    private double motorSpeed = 0.75;
-    private double acceptableError = 15;
+    public double level1 = 0;
+    public double level2 = -1296;
+    public double level3 = -2092;
+    private double motorSpeed = 0.10;
+    private double acceptableError = 100;
     private double[] orderedLevels = {level1, level2, level3};
 
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler(3);
     private SimpleTimer outtakeGateTimer = new SimpleTimer();
+
+    private enum GatePositions{
+        CLOSE, OPEN
+    }
+    private double[] gatePositions = {1,0.6};
 
     public boolean slidingInProgress = false;
     public boolean dropFirstLoop = true; //for setting drop timer
@@ -44,11 +50,11 @@ public class Outtake {
         if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
             linearSlides.setPower(0);
             slidingInProgress = false;
-        } else if(linearSlides.getCurrentPosition()>currentTarget){
-            linearSlides.setPower(-motorSpeed);
-            slidingInProgress = true;
-        } else {
+        } else if(linearSlides.getCurrentPosition()<currentTarget && linearSlides.getCurrentPosition()<10){
             linearSlides.setPower(motorSpeed);
+            slidingInProgress = true;
+        } else if(!(linearSlides.getCurrentPosition()<-2500)){
+            linearSlides.setPower(-motorSpeed);
             slidingInProgress = true;
         }
     }
@@ -93,9 +99,9 @@ public class Outtake {
     public void togglerServoGate(boolean pressed){
         servoGateTog.changeState(pressed);
         if (servoGateTog.currentState() == 0) {
-            gate.setPosition(0.01);
+            gate.setPosition(gatePositions[GatePositions.CLOSE.ordinal()]);
         } else {
-            gate.setPosition(0.5);
+            gate.setPosition(gatePositions[GatePositions.OPEN.ordinal()]);
         }
     }
 

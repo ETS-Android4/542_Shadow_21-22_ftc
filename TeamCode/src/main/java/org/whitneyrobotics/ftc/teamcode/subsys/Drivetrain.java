@@ -274,10 +274,17 @@ public class Drivetrain {
 //        vFR = r * Math.sin(robotAngle) - rightX;
 //        vBL = r * Math.sin(robotAngle) + rightX;
 //        vBR = r * Math.cos(robotAngle) - rightX;
+        vFL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
+        vFR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
+        vBL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
+        vBR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
+
+        /* INVERTED
         vFL = -gamepadInputY + gamepadInputX + gamepadInputTurn;
         vFR = -gamepadInputY - gamepadInputX - gamepadInputTurn;
         vBL = -gamepadInputY - gamepadInputX + gamepadInputTurn;
         vBR = -gamepadInputY + gamepadInputX - gamepadInputTurn;
+         */
         frontLeft.setPower(vFL);
         frontRight.setPower(vFR);
         backLeft.setPower(vBL);
@@ -289,10 +296,16 @@ public class Drivetrain {
         double scaledX = Math.pow(gamepadInputX, 3);
         double scaledTurn = Math.pow(gamepadInputTurn, 3);
 
+        vFL = -scaledY - scaledX - scaledTurn;
+        vFR = -scaledY + scaledX + scaledTurn;
+        vBL = -scaledY + scaledX - scaledTurn;
+        vBR = -scaledY - scaledX + scaledTurn;
+        /*INVERTED:
         vFL = -scaledY + scaledX + scaledTurn;
         vFR = -scaledY - scaledX - scaledTurn;
         vBL = -scaledY - scaledX + scaledTurn;
         vBR = -scaledY + scaledX - scaledTurn;
+         */
         frontLeft.setPower(vFL);
         frontRight.setPower(vFR);
         backLeft.setPower(vBL);

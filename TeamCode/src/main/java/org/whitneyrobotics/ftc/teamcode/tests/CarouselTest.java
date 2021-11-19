@@ -25,6 +25,6 @@ public class CarouselTest extends OpMode {
         telemetry.addData("Toggler State: ", carousel.getTogglerState());
 
         carousel.operate(gamepad1.y);
-        carousel.togglerOperate(gamepad1.a);
+        carousel.togglerOperate(gamepad1.a,false);
     }
 }

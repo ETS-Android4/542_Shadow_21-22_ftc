@@ -33,11 +33,11 @@ public class Carousel {
         if(!rotateInProgress){ spinner.setPower(analogValue); }
     }*/
 
-    public void togglerOperate(boolean on){
+    public void togglerOperate(boolean on, boolean rev){
             if(!rotateInProgress) {
                 onOff.changeState(on);
                 if (onOff.currentState() == 1) {
-                    spinner.setPower(-1);
+                    spinner.setPower((rev) ? 1 : -1);
                     //rotateInProgress = true;
                 } else {
                     spinner.setPower(0);

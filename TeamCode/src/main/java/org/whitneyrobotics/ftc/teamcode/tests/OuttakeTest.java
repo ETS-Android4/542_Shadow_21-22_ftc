@@ -15,12 +15,13 @@ import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
 public class OuttakeTest extends OpMode {
 
     public Outtake outtake;
-    public double power = 1;
+    public double power = -0.2;
     public double servoPosition;
     FtcDashboard dashboard;
     //Telemetry dashboardTelemetry;
     TelemetryPacket packet = new TelemetryPacket();
     private Toggler modeTog = new Toggler(2);
+    private Toggler gateTog = new Toggler(2);
 
     @Override
     public void init() {
@@ -43,10 +44,10 @@ public class OuttakeTest extends OpMode {
             outtake.togglerOuttake(gamepad1.a, gamepad1.b);
             if (gamepad1.y) { outtake.reset(); }
         }else {
-            if (gamepad1.dpad_down) {
+            if (gamepad1.dpad_up) {
                 outtake.linearSlides.setPower(power);
             }
-            else if (gamepad1.dpad_up) {
+            else if (gamepad1.dpad_down) {
                 outtake.linearSlides.setPower(-power);
             }
             else {
@@ -54,15 +55,7 @@ public class OuttakeTest extends OpMode {
             }
         }
 
-        if (gamepad1.dpad_left){
-            servoPosition --;
-            servoPosition = servoPosition<0 ? 1 : servoPosition;
-            outtake.gate.setPosition(servoPosition);
-        } else if(gamepad1.dpad_right){
-            servoPosition++;
-            servoPosition = servoPosition>1 ? 0 : servoPosition;
-            outtake.gate.setPosition(servoPosition);
-        }
+        outtake.togglerServoGate(gamepad1.dpad_right);
 
         if(gamepad1.left_bumper){
             outtake.level1 =  outtake.linearSlides.getCurrentPosition();

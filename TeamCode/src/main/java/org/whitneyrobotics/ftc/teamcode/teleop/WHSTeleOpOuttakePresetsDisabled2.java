@@ -1,6 +1,5 @@
 package org.whitneyrobotics.ftc.teamcode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,8 +8,8 @@ import org.whitneyrobotics.ftc.teamcode.subsys.Intake;
 import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
-@TeleOp(name = "WHS TeleOp Outtake Presets Disabled", group = "TeleOp")
-public class WHSTeleOp extends OpMode {
+@TeleOp(name = "WHS TeleOp BLUE Presets Dsiabled", group = "TeleOp")
+public class WHSTeleOpOuttakePresetsDisabled2 extends OpMode {
     WHSRobotImpl robot;
     @Override
     public void init() {robot = new WHSRobotImpl(hardwareMap);}
@@ -32,7 +31,7 @@ public class WHSTeleOp extends OpMode {
         }
         // Carousel
         robot.robotCarousel.operate(gamepad1.right_bumper);
-        robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,gamepad1.y);
+        robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,true);
 
         // DRIVER 2 CONTROLS
         // Intake
@@ -44,18 +43,16 @@ public class WHSTeleOp extends OpMode {
         //robot.robotOuttake.togglerOuttake(gamepad2.dpad_right, gamepad2.dpad_left);
 
         //In case line outtake levels don't work properly
-        if(gamepad1.dpad_up){
+        /*if(gamepad1.dpad_up){
             robot.robotOuttake.linearSlides.setPower(-0.2);
         } else if (gamepad1.dpad_down){
-            robot.robotOuttake.linearSlides.setPower(0.2);
-        } else {
-            robot.robotOuttake.linearSlides.setPower(0);
-        }
+            robot.robotOuttake.linearSlides.setPower(-0.2);
+        }*/
 
         //if(gamepad2.a) { robot.robotOuttake.reset(); }
 
         // - Hatch | Servo gate
-        robot.robotOuttake.togglerServoGate(gamepad2.x);
+        robot.robotOuttake.togglerServoGate(gamepad1.x);
 
     }
 }

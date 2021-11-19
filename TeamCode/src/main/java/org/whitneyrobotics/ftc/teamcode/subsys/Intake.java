@@ -21,9 +21,9 @@ public class Intake {
     int state = 0;
     public boolean intakeAutoDone = false;
 
-    public int[] armPositions = {500, 0}; //change numbers later
+    public int[] armPositions = {0, 179}; //change numbers later
     public enum ArmPositions {
-        DOWN, UP
+        UP, DOWN
     }
 
     public double[] pusherPositions = {1, 0.6, 0.5};
@@ -42,7 +42,8 @@ public class Intake {
         surgicalTubes = map.dcMotor.get("intakeMotor");
         arm = map.dcMotor.get("armMotor");
         eject = map.servo.get("ejectServo");
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        eject.setPosition(pusherPositions[PusherPositions.IN.ordinal()]);
+        //arm.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /*public void operate(boolean armState, boolean roll, boolean reverse, boolean reject) {
@@ -98,24 +99,36 @@ public class Intake {
         armPositionTog.changeState(armState);
         intakeStateTog.changeState(togOnOff);
         if (reverse) {
-            surgicalTubes.setPower(-1);
-        } else if (intakeStateTog.currentState() == 0) {
+            surgicalTubes.setPower(-0.5);
+        } else if (intakeStateTog.currentState() == 1) {
             if(armPositionTog.currentState() != 0){
-                surgicalTubes.setPower(1);
+                surgicalTubes.setPower(0.5);
                 //eject.setPosition(pusherPositions[PusherPositions.OUT.ordinal()]);
             } else {
                 surgicalTubes.setPower(0);
             }
-        } else if (deposit && armPositionTog.currentState() != 0) {
-            surgicalTubes.setPower(1);
+        } else if (deposit && armPositionTog.currentState() == 0) { //<-
+            surgicalTubes.setPower(0.1);
         } else {
             surgicalTubes.setPower(0);
         }
 
-        if(armPositionTog.currentState() == 0){
-            arm.setTargetPosition(armPositions[ArmPositions.UP.ordinal()]);
+        if (armPositionTog.currentState() == 0){
+            if(Math.abs(arm.getCurrentPosition() - armPositions[ArmPositions.UP.ordinal()]) < 30){
+                arm.setTargetPosition(armPositions[ArmPositions.UP.ordinal()]);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(0.1);
+            } else {
+                arm.setPower(0);
+            }
         } else {
-            arm.setTargetPosition(armPositions[ArmPositions.DOWN.ordinal()]);
+            if (Math.abs(arm.getCurrentPosition() - armPositions[ArmPositions.DOWN.ordinal()]) < 30) {
+                arm.setTargetPosition(armPositions[ArmPositions.DOWN.ordinal()]);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(-0.1);
+            } else {
+                arm.setPower(0);
+            }
         }
     }
 

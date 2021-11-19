@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
@@ -38,9 +39,10 @@ public class AutoOp extends OpMode {
     final int STARTING_ALLIANCE = RED;
     final int STARTING_SIDE = BOTTOM;
 
-    private int scanLevel = 3;
+    private int scanLevel = 2;
 
     Position[][] startingPositions = new Position[2][2];
+    Position[][] startingOffsetPositions = new Position[2][2];
     Position[] carouselPositions = new Position[2];
     Position[] shippingHubPosition = new Position[2];
     Position[] sharedShippingHub = new Position[2];
@@ -134,6 +136,11 @@ public class AutoOp extends OpMode {
         startingPositions[BLUE][BOTTOM] = new Position(-1647.6,-900);
         startingPositions[BLUE][TOP] = new Position(-1647.6,300);
 
+        startingOffsetPositions[RED][BOTTOM] = new Position(-1547.6,900);
+        startingOffsetPositions[RED][TOP] = new Position(-1547.6,-300);
+        startingOffsetPositions[BLUE][BOTTOM] = new Position(-1547.6,-900);
+        startingOffsetPositions[BLUE][TOP] = new Position(-1547.6,300);
+
         shippingHubPosition[RED] = new Position(-752.4,452.4);
         shippingHubPosition[BLUE] = new Position(-752.4,-452.4);
 
@@ -218,9 +225,21 @@ public class AutoOp extends OpMode {
                         subState++;
                         break;
                     case 1:
-                        robot.robotDrivetrain.resetEncoders();
-                        advanceState();
-                        break;
+                        switch (subState){
+                            case 0:
+                                robot.robotDrivetrain.resetEncoders();
+                                //advanceState();
+                                Coordinate initial = new Coordinate(startingPositions[STARTING_ALLIANCE][STARTING_SIDE],90);
+                                robot.setInitialCoordinate(initial);
+                                robot.driveToTarget(startingPositions[STARTING_ALLIANCE][STARTING_SIDE], false);
+                                subState++;
+                                break;
+                            case 1:
+                                robot.driveToTarget(startingOffsetPositions[STARTING_ALLIANCE][STARTING_SIDE],false);
+                                if (!robot.driveToTargetInProgress()){
+                                    subState++;
+                                }
+                        }
                 }
             case ROTATE_CAROUSEL:
                 switch (subState){
@@ -248,7 +267,7 @@ public class AutoOp extends OpMode {
                         break;
                     case 1:
                         robot.robotOuttake.autoControl(scanLevel);
-                        if(robot.robotOuttake.slidingInProgress){
+                        if(!robot.robotOuttake.slidingInProgress){
                             if(robot.robotOuttake.autoDrop()){ subState++; }
                             break;
                         }
