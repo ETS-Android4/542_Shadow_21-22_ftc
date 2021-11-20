@@ -42,12 +42,9 @@ public class Intake {
         surgicalTubes = map.dcMotor.get("intakeMotor");
         arm = map.dcMotor.get("armMotor");
         eject = map.servo.get("ejectServo");
-<<<<<<< HEAD
         eject.setPosition(pusherPositions[PusherPositions.IN.ordinal()]);
         //arm.setDirection(DcMotorSimple.Direction.REVERSE);
-=======
         // arm.setDirection(DcMotorSimple.Direction.REVERSE); -- For Review
->>>>>>> master
     }
 
     /*public void operate(boolean armState, boolean roll, boolean reverse, boolean reject) {

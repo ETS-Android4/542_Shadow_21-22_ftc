@@ -8,18 +8,18 @@ import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 
-public class WHSRobotImpl {
-// <<<<<<< HEAD (error so commented out fix later)
-    public Carousel robotCarousel;
+public class WHSRobotImplDrivetrainOnly {
+    // <<<<<<< HEAD (error so commented out fix later)
+    //public Carousel robotCarousel;
     public Drivetrain robotDrivetrain;
-    public Outtake robotOuttake;
+    //public Outtake robotOuttake;
     public IMU robotIMU;
-    public Intake robotIntake;
+    //public Intake robotIntake;
 
 // ======= (error so commented out fix later)
 
-   // SwervePath currentSwervePath; (error so commented out fix later)
-   // public SwerveFollower swerveFollower; (error so commented out fix later)
+    // SwervePath currentSwervePath; (error so commented out fix later)
+    // public SwerveFollower swerveFollower; (error so commented out fix later)
 // >>>>>>> master (error so commented out fix later)
 
     Coordinate currentCoord;
@@ -55,21 +55,15 @@ public class WHSRobotImpl {
     private double robotY;
     private double distance;
 
-    public WHSRobotImpl (HardwareMap robotMap){
+    public WHSRobotImplDrivetrainOnly (HardwareMap robotMap){
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-//<<<<<<< HEAD (error so commented out fix later)
-        robotCarousel = new Carousel(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
-        robotOuttake = new Outtake(robotMap);
-        robotIntake = new Intake(robotMap);
-//=======
-       // intake = new OldIntake(hardwareMap); (error so commented out fix later)
-       // outtake = new OldOuttake2(hardwareMap); (error so commented out fix later)
-       // canister = new Canister(hardwareMap); (error so commented out fix later)
-       // wobble = new Wobble(hardwareMap); (error so commented out fix later)
-// >>>>>>> master
+        // intake = new OldIntake(hardwareMap); (error so commented out fix later)
+        // outtake = new OldOuttake2(hardwareMap); (error so commented out fix later)
+        // canister = new Canister(hardwareMap); (error so commented out fix later)
+        // wobble = new Wobble(hardwareMap); (error so commented out fix later)
 
         DRIVE_MIN = RobotConstants.drive_min;
         DRIVE_MAX = RobotConstants.drive_max;
