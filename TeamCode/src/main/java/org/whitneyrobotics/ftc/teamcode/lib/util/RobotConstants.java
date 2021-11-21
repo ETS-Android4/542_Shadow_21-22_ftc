@@ -15,8 +15,16 @@ public class RobotConstants {
     public final static double rotate_min = 0;
     public final static double rotate_max = 0.6;
 
-    public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(0.6, 0.007, 0.08);
-    public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(1.2, 0.0015, 0.85);
+    public static double DRIVE_KP = 0.6;
+    public static double DRIVE_KI = 0.007;
+    public static double DRIVE_KD = 0.08;
+
+    public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(DRIVE_KP,DRIVE_KI,DRIVE_KD);
+
+    public static double ROTATE_KP = 1.2;
+    public static double ROTATE_KI = 0.0015;
+    public static double ROTATE_KD = 0.85;
+    public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
     //Outtake
     public final static double OUTTAKE_MAX_VELOCITY = 2120;

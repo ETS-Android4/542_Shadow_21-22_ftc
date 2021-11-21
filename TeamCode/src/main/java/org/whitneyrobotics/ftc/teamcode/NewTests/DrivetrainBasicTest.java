@@ -1,12 +1,17 @@
-package org.whitneyrobotics.ftc.teamcode.tests;
+package org.whitneyrobotics.ftc.teamcode.NewTests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Arrays;
 import java.util.Arrays.*;
+import java.util.HashMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
@@ -28,9 +33,18 @@ public class DrivetrainBasicTest extends OpMode {
     private final int DTT = 3;
     private Toggler modeTog = new Toggler(4);
     private String driveMode = "Exponential Drive";
+    FtcDashboard dashboard;
+    Telemetry dashboardTelemetry;
+    TelemetryPacket packet = new TelemetryPacket();
 
     @Override
     public void init(){
+        dashboard = FtcDashboard.getInstance();
+        dashboardTelemetry = dashboard.getTelemetry();;
+        dashboardTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        dashboard.sendTelemetryPacket(packet);
+
         robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
         robot.robotDrivetrain.resetEncoders(); // May already run without encoders
         robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -41,11 +55,12 @@ public class DrivetrainBasicTest extends OpMode {
 
     @Override
     public void loop(){
+        HashMap<String,Object> data = new HashMap<>();
         //robot.estimateCoordinate();
         robot.estimateHeading();
         robot.estimatePosition();
         modeTog.changeState(gamepad1.x);
-        telemetry.addData("Current Mode: ", modeTog.currentState());
+        data.put("Current Mode: ", modeTog.currentState());
         if(gamepad1.y){
             robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             robot.robotDrivetrain.operate(0,0);
@@ -89,34 +104,40 @@ public class DrivetrainBasicTest extends OpMode {
                 break;
 
         }
-        telemetry.addLine("------------uwu");
-        telemetry.addData("Robot X",robot.getCoordinate().getX());
-        telemetry.addData("Target X",target.getX());
-        telemetry.addData("Robot Y",robot.getCoordinate().getY());
-        telemetry.addData("Target Y",target.getY());
-        telemetry.addLine();
-        telemetry.addData("Mecanum mode",driveMode);
-        telemetry.addData(" Drive to Target",robot.driveToTargetInProgress());
-        telemetry.addData("Drive kP", RobotConstants.DRIVE_CONSTANTS.kP);
-        telemetry.addData("Drive kD", RobotConstants.DRIVE_CONSTANTS.kD);
-        telemetry.addData("Drive kI", RobotConstants.DRIVE_CONSTANTS.kI);
-        telemetry.addData("Drive PID output",robot.driveController.getOutput());
-        telemetry.addData("Drive derivative",robot.driveController.getDerivative());
-        telemetry.addData("Drive integral",robot.driveController.getIntegral());
-        telemetry.addData("Distance to target",robot.distanceToTargetDebug);
+        data.put("------------uwu","");
+        data.put("Robot X",robot.getCoordinate().getX());
+        data.put("Target X",target.getX());
+        data.put("Robot Y",robot.getCoordinate().getY());
+        data.put("Target Y",target.getY());
+        data.put("","");
+        data.put("Mecanum mode",driveMode);
+        data.put(" Drive to Target",robot.driveToTargetInProgress());
+        data.put("Drive kP", RobotConstants.DRIVE_CONSTANTS.kP);
+        data.put("Drive kD", RobotConstants.DRIVE_CONSTANTS.kD);
+        data.put("Drive kI", RobotConstants.DRIVE_CONSTANTS.kI);
+        data.put("Drive PID output",robot.driveController.getOutput());
+        data.put("Drive derivative",robot.driveController.getDerivative());
+        data.put("Drive integral",robot.driveController.getIntegral());
+        data.put("Distance to target",robot.distanceToTargetDebug);
 
-        telemetry.addData("Robot heading",robot.getCoordinate().getHeading());
-        telemetry.addData("Rotate Error",robot.angleToTargetDebug);
-        telemetry.addData("Rotate to Target",robot.rotateToTargetInProgress());
-        telemetry.addData("Rotate kP", RobotConstants.ROTATE_CONSTANTS.kP);
-        telemetry.addData("Rotate kD", RobotConstants.ROTATE_CONSTANTS.kD);
-        telemetry.addData("Rotate kI", RobotConstants.ROTATE_CONSTANTS.kI);
-        telemetry.addData("Rotate PID output",robot.rotateController.getOutput());
-        telemetry.addData("Rotate derivative",robot.rotateController.getDerivative());
-        telemetry.addData("Rotate integral",robot.rotateController.getIntegral());
-        telemetry.addData("Encoder position in ticks", Arrays.toString(robot.robotDrivetrain.getAllEncoderPositions()));
-        telemetry.addData("Encoder Deltas in ticks",Arrays.toString(robot.robotDrivetrain.getAllEncoderDelta()));
-        telemetry.addData("Wheel velocities (ticks/sec)",Arrays.toString(robot.robotDrivetrain.getAllWheelVelocities()));
+        data.put("Robot heading",robot.getCoordinate().getHeading());
+        data.put("Rotate Error",robot.angleToTargetDebug);
+        data.put("Rotate to Target",robot.rotateToTargetInProgress());
+        data.put("Rotate kP", RobotConstants.ROTATE_CONSTANTS.kP);
+        data.put("Rotate kD", RobotConstants.ROTATE_CONSTANTS.kD);
+        data.put("Rotate kI", RobotConstants.ROTATE_CONSTANTS.kI);
+        data.put("Rotate PID output",robot.rotateController.getOutput());
+        data.put("Rotate derivative",robot.rotateController.getDerivative());
+        data.put("Rotate integral",robot.rotateController.getIntegral());
+        data.put("Encoder position in ticks", Arrays.toString(robot.robotDrivetrain.getAllEncoderPositions()));
+        data.put("Encoder Deltas in ticks",Arrays.toString(robot.robotDrivetrain.getAllEncoderDelta()));
+        data.put("Wheel velocities (ticks/sec)",Arrays.toString(robot.robotDrivetrain.getAllWheelVelocities()));
+        for(String i : data.keySet()){
+            telemetry.addData(i,data.get(i));
+            packet.put(i,data.get(i));
+        }
+        dashboard.sendTelemetryPacket(packet);
+
     }
 
     @Override
