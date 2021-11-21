@@ -8,15 +8,15 @@ import org.whitneyrobotics.ftc.teamcode.lib.control.ControlConstants;
 @Config
 public class RobotConstants {
     //Drivetrain
-    public final static double DEADBAND_DRIVE_TO_TARGET = 24.5;
-    public final static double DEADBAND_ROTATE_TO_TARGET = 10.0;
-    public final static double drive_min = .2;//.1245;
-    public final static double drive_max = 1.0;//.6;
-    public final static double rotate_min = 0.2;
-    public final static double rotate_max = 1.0;
+    public final static double DEADBAND_DRIVE_TO_TARGET = 5;
+    public final static double DEADBAND_ROTATE_TO_TARGET = 15;
+    public final static double drive_min = .1;//.1245;
+    public final static double drive_max = 0.6;//.6;
+    public final static double rotate_min = 0;
+    public final static double rotate_max = 0.6;
 
-    public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(1.7, 0.7, 0.8);
-    public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(1.5, 0.085, 0.3);
+    public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(0.6, 0.007, 0.08);
+    public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(1.2, 0.0015, 0.85);
 
     //Outtake
     public final static double OUTTAKE_MAX_VELOCITY = 2120;

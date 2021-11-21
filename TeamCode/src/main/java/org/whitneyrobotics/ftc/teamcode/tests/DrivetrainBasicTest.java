@@ -18,8 +18,9 @@ import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 public class DrivetrainBasicTest extends OpMode {
     private WHSRobotImplDrivetrainOnly robot;
 
-    private final double robotCenterWidthOffset = 6;
+    private final double robotCenterWidthOffset = 152.4;
     private final double robotCenterLengthOffset = 6.5;
+    private Position target;
 
     private final int TANK_DRIVE = 0;
     private final int MECANUM_DRIVE = 1;
@@ -35,23 +36,33 @@ public class DrivetrainBasicTest extends OpMode {
         robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,90);
         robot.setInitialCoordinate(init);
+        target = new Position(-1638,910);
     }
 
     @Override
     public void loop(){
-        robot.estimateCoordinate();
+        //robot.estimateCoordinate();
+        robot.estimateHeading();
         robot.estimatePosition();
         modeTog.changeState(gamepad1.x);
         telemetry.addData("Current Mode: ", modeTog.currentState());
         if(gamepad1.y){
-            stop();
+            robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.robotDrivetrain.operate(0,0);
+            throw new RuntimeException("Kill command issued");
+
+
+        }
+        if(gamepad1.b){
+            robot.robotDrivetrain.resetEncoders();
+            target = new Position(-1638,910);
         }
         switch(modeTog.currentState()){
             case TANK_DRIVE:
                 if(gamepad1.left_bumper){
-                    robot.robotDrivetrain.operate(-gamepad1.left_stick_y/2.54,-gamepad1.right_stick_y/2.54);
+                    robot.robotDrivetrain.operate(gamepad1.left_stick_y/2.54,gamepad1.right_stick_y/2.54);
                 } else {
-                    robot.robotDrivetrain.operate(-gamepad1.left_stick_y,-gamepad1.right_stick_y);
+                    robot.robotDrivetrain.operate(gamepad1.left_stick_y,gamepad1.right_stick_y);
                 }
                 break;
             case MECANUM_DRIVE:
@@ -67,23 +78,22 @@ public class DrivetrainBasicTest extends OpMode {
                 }
                 break;
             case RTT:
-                if(gamepad1.a){
-                    robot.robotDrivetrain.resetEncoders();
-                    robot.rotateToTarget(robot.getCoordinate().getHeading()+45,false);
-                } if (robot.rotateToTargetInProgress()){
-                robot.rotateToTarget(robot.getCoordinate().getHeading()+45,false);
-            }
-            case DTT:
-                if(gamepad1.a){
-                    robot.robotDrivetrain.resetEncoders();
-                    Position target = new Position(robot.getCoordinate().getX()+300,robot.getCoordinate().getY()+300);
-                    robot.driveToTarget(target,false);
-                    if(robot.driveToTargetInProgress()){
-                        robot.driveToTarget(target,false);
-                    }
+                if(gamepad1.right_bumper){
+                    robot.rotateToTarget(270,false);
                 }
+                break;
+            case DTT:
+                if(gamepad1.right_bumper){
+                    robot.driveToTarget(target,false);
+                }
+                break;
 
         }
+        telemetry.addLine("------------uwu");
+        telemetry.addData("Robot X",robot.getCoordinate().getX());
+        telemetry.addData("Target X",target.getX());
+        telemetry.addData("Robot Y",robot.getCoordinate().getY());
+        telemetry.addData("Target Y",target.getY());
         telemetry.addLine();
         telemetry.addData("Mecanum mode",driveMode);
         telemetry.addData(" Drive to Target",robot.driveToTargetInProgress());
@@ -93,6 +103,8 @@ public class DrivetrainBasicTest extends OpMode {
         telemetry.addData("Drive PID output",robot.driveController.getOutput());
         telemetry.addData("Drive derivative",robot.driveController.getDerivative());
         telemetry.addData("Drive integral",robot.driveController.getIntegral());
+        telemetry.addData("Distance to target",robot.distanceToTargetDebug);
+
         telemetry.addData("Robot heading",robot.getCoordinate().getHeading());
         telemetry.addData("Rotate Error",robot.angleToTargetDebug);
         telemetry.addData("Rotate to Target",robot.rotateToTargetInProgress());
@@ -109,8 +121,6 @@ public class DrivetrainBasicTest extends OpMode {
 
     @Override
     public void stop() {
-        robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.robotDrivetrain.operate(0,0);
         super.stop();
     }
 }

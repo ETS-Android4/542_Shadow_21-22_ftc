@@ -228,10 +228,10 @@ public class Drivetrain {
         return backRight.getVelocity();
     }*/
 
-    /*public double[] getWheelVelocities() {
+    public double[] getWheelVelocities() {
         double[] wheelVelocities = {encToMM(backLeft.getVelocity(AngleUnit.DEGREES)), encToMM(backRight.getVelocity(AngleUnit.DEGREES))};
         return wheelVelocities;
-    }*/
+    }
 
     public double[] getAllWheelVelocities() {
         double[] wheelVelocities = {encToMM(frontLeft.getVelocity()), encToMM(frontRight.getVelocity()), encToMM(backLeft.getVelocity()), encToMM(backRight.getVelocity())};
@@ -274,10 +274,10 @@ public class Drivetrain {
 //        vFR = r * Math.sin(robotAngle) - rightX;
 //        vBL = r * Math.sin(robotAngle) + rightX;
 //        vBR = r * Math.cos(robotAngle) - rightX;
-        vFL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
-        vFR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
-        vBL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
-        vBR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
+        vFL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
+        vFR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
+        vBL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
+        vBR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
 
         /* INVERTED
         vFL = -gamepadInputY + gamepadInputX + gamepadInputTurn;
@@ -296,10 +296,10 @@ public class Drivetrain {
         double scaledX = Math.pow(gamepadInputX, 3);
         double scaledTurn = Math.pow(gamepadInputTurn, 3);
 
-        vFL = -scaledY - scaledX - scaledTurn;
-        vFR = -scaledY + scaledX + scaledTurn;
-        vBL = -scaledY + scaledX - scaledTurn;
-        vBR = -scaledY - scaledX + scaledTurn;
+        vFL = -scaledY + scaledX - scaledTurn;
+        vFR = -scaledY - scaledX + scaledTurn;
+        vBL = -scaledY - scaledX - scaledTurn;
+        vBR = -scaledY + scaledX + scaledTurn;
         /*INVERTED:
         vFL = -scaledY + scaledX + scaledTurn;
         vFR = -scaledY - scaledX - scaledTurn;

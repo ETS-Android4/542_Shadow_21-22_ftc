@@ -80,7 +80,7 @@ public class WHSRobotImplDrivetrainOnly {
         Position vectorToTarget = Functions.Positions.subtract(targetPos, currentCoord.getPos()); //field frame
         vectorToTarget = Functions.field2body(vectorToTarget, currentCoord); //body frame
         vectorToTargetDebug = vectorToTarget;
-        double distanceToTarget = vectorToTarget.getX()/*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
+        double distanceToTarget = targetPos.getX() - currentCoord.getX()/*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
         distanceToTargetDebug = distanceToTarget;
 
         double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
@@ -116,8 +116,8 @@ public class WHSRobotImplDrivetrainOnly {
                 }
                 if (Math.abs(distanceToTarget) > DEADBAND_DRIVE_TO_TARGET) {
                     driveToTargetInProgress = true;
-                    robotDrivetrain.operateLeft(power);
-                    robotDrivetrain.operateRight(power);
+                    robotDrivetrain.operateLeft(-power);
+                    robotDrivetrain.operateRight(-power);
                 } else {
                     robotDrivetrain.operateRight(0.0);
                     robotDrivetrain.operateLeft(0.0);
@@ -164,8 +164,8 @@ public class WHSRobotImplDrivetrainOnly {
         double power = (rotateController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(rotateController.getOutput()), 0, 180, ROTATE_MIN, ROTATE_MAX));
 
         if (Math.abs(angleToTarget) > DEADBAND_ROTATE_TO_TARGET/* && rotateController.getDerivative() < 40*/) {
-            robotDrivetrain.operateLeft(power);
-            robotDrivetrain.operateRight(-power);
+            robotDrivetrain.operateLeft(-power);
+            robotDrivetrain.operateRight(power);
             rotateToTargetInProgress = true;
         } else {
             robotDrivetrain.operateLeft(0.0);
