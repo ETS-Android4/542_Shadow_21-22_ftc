@@ -71,6 +71,12 @@ public class DrivetrainBasicTest extends OpMode {
         if(gamepad1.b){
             robot.robotDrivetrain.resetEncoders();
             target = new Position(-1638,910);
+            Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,90);
+            robot.setInitialCoordinate(init);
+            robot.rotateToTargetInProgress = false;
+            robot.driveToTargetInProgress = false;
+            robot.firstDriveLoop = false;
+            robot.firstRotateLoop = false;
         }
         switch(modeTog.currentState()){
             case TANK_DRIVE:

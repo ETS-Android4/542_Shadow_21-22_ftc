@@ -40,14 +40,14 @@ public class WHSRobotImplDrivetrainOnly {
     public PIDController rotateController = new PIDController(RobotConstants.ROTATE_CONSTANTS);
     public PIDController driveController = new PIDController(RobotConstants.DRIVE_CONSTANTS);
 
-    private boolean firstRotateLoop = true;
-    private boolean firstDriveLoop = true;
+    public boolean firstRotateLoop = true;
+    public boolean firstDriveLoop = true;
     private boolean driveBackwards;
 
     private int driveSwitch = 0;
 
-    private boolean driveToTargetInProgress = false;
-    private boolean rotateToTargetInProgress = false;
+    public boolean driveToTargetInProgress = false;
+    public boolean rotateToTargetInProgress = false;
 
     private double[] encoderDeltas = {0.0, 0.0};
     private double[] encoderValues = {0.0, 0.0};
@@ -164,8 +164,8 @@ public class WHSRobotImplDrivetrainOnly {
         double power = (rotateController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(rotateController.getOutput()), 0, 180, ROTATE_MIN, ROTATE_MAX));
 
         if (Math.abs(angleToTarget) > DEADBAND_ROTATE_TO_TARGET/* && rotateController.getDerivative() < 40*/) {
-            robotDrivetrain.operateLeft(-power);
-            robotDrivetrain.operateRight(power);
+            robotDrivetrain.operateLeft(power);
+            robotDrivetrain.operateRight(-power);
             rotateToTargetInProgress = true;
         } else {
             robotDrivetrain.operateLeft(0.0);

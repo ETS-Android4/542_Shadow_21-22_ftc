@@ -9,7 +9,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.control.ControlConstants;
 public class RobotConstants {
     //Drivetrain
     public final static double DEADBAND_DRIVE_TO_TARGET = 5;
-    public final static double DEADBAND_ROTATE_TO_TARGET = 15;
+    public final static double DEADBAND_ROTATE_TO_TARGET = 3;
     public final static double drive_min = .1;//.1245;
     public final static double drive_max = 0.6;//.6;
     public final static double rotate_min = 0;
