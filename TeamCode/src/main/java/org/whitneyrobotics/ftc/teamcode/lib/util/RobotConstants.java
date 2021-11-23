@@ -26,6 +26,15 @@ public class RobotConstants {
     public static double ROTATE_KD = 0.060;
     public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
+    public final static double DEADBAND_SLIDE_TO_TARGET = 50;
+    public final static double slide_min = 0.2;
+    public final static double slide_max = 0.4;
+
+    public static double SLIDE_KP = 0.1;
+    public static double SLIDE_KI = 0;
+    public static double SLIDE_KD = 0;
+    public final static ControlConstants SLIDE_CONSTANTS = new ControlConstants(SLIDE_KP,SLIDE_KI,SLIDE_KD);
+
     //Outtake
     public final static double OUTTAKE_MAX_VELOCITY = 2120;
     public final static ControlConstants.FeedforwardFunction flywheelKF = (double currentPosition, double currentVelocity) -> 1/OUTTAKE_MAX_VELOCITY;

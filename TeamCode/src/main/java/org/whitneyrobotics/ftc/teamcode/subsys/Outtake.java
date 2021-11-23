@@ -6,130 +6,108 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.whitneyrobotics.ftc.teamcode.lib.control.PIDController;
+import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
+import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Outtake {
     public Servo gate;
-    public DcMotor linearSlides;
+    public DcMotorEx linearSlides;
 
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
-        gate.setPosition(gatePositions[GatePositions.CLOSE.ordinal()]);
+        gate.setPosition(GatePositions.CLOSE.getPosition());
         linearSlides.setDirection(DcMotor.Direction.REVERSE);
         resetEncoder();
     }
 
-    public double level1 = 0;
-    public double level2 = -1296;
-    public double level3 = -2092;
-    private double motorSpeed = 0.10;
-    private double acceptableError = 100;
-    private double[] orderedLevels = {level1, level2, level3};
-
     private Toggler servoGateTog = new Toggler(2);
     private Toggler linearSlidesTog = new Toggler(3);
     private SimpleTimer outtakeGateTimer = new SimpleTimer();
+    public double errorDebug = 0;
 
     private enum GatePositions{
-        CLOSE, OPEN
+        CLOSE(1),
+        OPEN(0.6);
+        private double position;
+        private GatePositions(double position){
+            this.position = position;
+        }
+        public double getPosition(){return this.position;}
     }
-    private double[] gatePositions = {1,0.6};
 
+    private enum MotorLevels{
+        LEVEL1(0.0),
+        LEVEL2(1296.0),
+        LEVEL3(2092.0);
+        private double encoderPos;
+        private MotorLevels(double encoderPos){
+            this.encoderPos = encoderPos;
+        }
+        public double getPosition(){return this.encoderPos;}
+
+    }
+    private double[] orderedPositions = {MotorLevels.LEVEL1.getPosition(), MotorLevels.LEVEL2.getPosition(),MotorLevels.LEVEL3.getPosition()};
     public boolean slidingInProgress = false;
+    public PIDController slidesController = new PIDController(RobotConstants.SLIDE_CONSTANTS);
+    public boolean slidesFirstLoop = true;
     public boolean dropFirstLoop = true; //for setting drop timer
+    public int gateDelay = 500;
     //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
-    public void togglerOuttake(boolean up, boolean down) {
+    public void operate(boolean up, boolean down) {
         if (!slidingInProgress){linearSlidesTog.changeState(up, down);}
-
-        double currentTarget = orderedLevels[linearSlidesTog.currentState()];
-
-        if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
-            linearSlides.setPower(0);
-            slidingInProgress = false;
-        } else if(linearSlides.getCurrentPosition()<currentTarget && linearSlides.getCurrentPosition()<10){
-            linearSlides.setPower(motorSpeed);
-            slidingInProgress = true;
-        } else if(!(linearSlides.getCurrentPosition()<-2500)){
-            linearSlides.setPower(-motorSpeed);
-            slidingInProgress = true;
-        }
+        operateWithoutController(linearSlidesTog.currentState());
     }
 
-    public void togglerOuttakeOld(boolean up,boolean down){
-        linearSlidesTog.changeState(up,down);
-        if (linearSlidesTog.currentState() == 0) {
-            if(linearSlides.getCurrentPosition()>level1){
-                linearSlides.setPower(-motorSpeed);
-            } else if (linearSlides.getCurrentPosition()<level1) {
-                linearSlides.setPower(motorSpeed);
-            } else {
-                linearSlides.setPower(0);
-            }
-            if (linearSlides.getCurrentPosition() == level1) {
-                slidingInProgress = false;
-            } else {slidingInProgress = true;}
-        } else if (linearSlidesTog.currentState() == 1) {
-            if(linearSlides.getCurrentPosition()>level2){
-                linearSlides.setPower(-motorSpeed);
-            } else if (linearSlides.getCurrentPosition()<level2){
-                linearSlides.setPower(motorSpeed);
-            } else {
-                linearSlides.setPower(0);
-            }
-            if (linearSlides.getCurrentPosition() == level2) {
-                slidingInProgress = false;
-            } else {slidingInProgress = true;}
-        } else if (linearSlidesTog.currentState() == 2) {
-            if(linearSlides.getCurrentPosition()>level3){
-                linearSlides.setPower(-motorSpeed);
-            } else if (linearSlides.getCurrentPosition()<level3){
-                linearSlides.setPower(motorSpeed);
-            } else {
-                linearSlides.setPower(0);
-            }
-            if (linearSlides.getCurrentPosition() == level3) {
-                slidingInProgress = false;
-            } else {slidingInProgress = true;}
-        }
-    }
     public void togglerServoGate(boolean pressed){
         servoGateTog.changeState(pressed);
         if (servoGateTog.currentState() == 0) {
-            gate.setPosition(gatePositions[GatePositions.CLOSE.ordinal()]);
+            gate.setPosition(GatePositions.CLOSE.getPosition());
         } else {
-            gate.setPosition(gatePositions[GatePositions.OPEN.ordinal()]);
+            gate.setPosition(GatePositions.OPEN.getPosition());
         }
     }
 
-    public void autoControl(int levelIndex) {
-        double currentTarget = orderedLevels[levelIndex];
+    public void operateWithoutController(int levelIndex) {
+        double currentTarget = orderedPositions[levelIndex];
+        double error = linearSlides.getCurrentPosition()-currentTarget;
+        errorDebug = error;
 
-        if(Math.abs(linearSlides.getCurrentPosition()-currentTarget) <= acceptableError){
+        if (slidesFirstLoop){
+            slidingInProgress = true;
+            slidesController.init(error);
+            slidesFirstLoop = false;
+        }
+
+        slidesController.calculate(error);
+
+        double power = (slidesController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(slidesController.getOutput()), RobotConstants.DEADBAND_SLIDE_TO_TARGET, 3000, RobotConstants.slide_min, RobotConstants.slide_max));
+
+        if(Math.abs(error) <= RobotConstants.DEADBAND_SLIDE_TO_TARGET){
             linearSlides.setPower(0);
             slidingInProgress = false;
-        } else if(linearSlides.getCurrentPosition()>currentTarget){
-            linearSlides.setPower(-motorSpeed);
-            slidingInProgress = true;
-        } else {
-            linearSlides.setPower(motorSpeed);
+            slidesFirstLoop = true;
+        }
+        else {
+            linearSlides.setPower(power);
             slidingInProgress = true;
         }
     }
 
     public boolean autoDrop() { //boolean so our autoop knows if its done
         if(dropFirstLoop) {
-            togglerServoGate(true);
-            outtakeGateTimer.set(500); /*ms to keep the flap open*/
+            gate.setPosition(GatePositions.OPEN.getPosition());
+            outtakeGateTimer.set(gateDelay); /*ms to keep the flap open*/
             dropFirstLoop = false;
         }
 
         if(outtakeGateTimer.isExpired()){
-            togglerServoGate(false);
-            togglerServoGate(true);
+            gate.setPosition(GatePositions.CLOSE.getPosition());
             dropFirstLoop = true;
             return true;
         }
@@ -138,6 +116,7 @@ public class Outtake {
 
     public void reset() {
         linearSlidesTog.setState(0);
+        operateWithoutController(0);
     }
 
     public void resetEncoder() {

@@ -3,9 +3,6 @@ package org.whitneyrobotics.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
-import org.whitneyrobotics.ftc.teamcode.subsys.Intake;
-import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
 @TeleOp(name = "WHS TeleOp RED Presets Dsiabled", group = "TeleOp")

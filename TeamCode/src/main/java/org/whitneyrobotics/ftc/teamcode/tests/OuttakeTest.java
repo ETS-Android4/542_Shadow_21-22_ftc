@@ -2,19 +2,17 @@ package org.whitneyrobotics.ftc.teamcode.tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
-import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
+import org.whitneyrobotics.ftc.teamcode.subsys.SussyOuttake;
 
 @TeleOp (name="Outtake Test", group="Tests")
 public class OuttakeTest extends OpMode {
 
-    public Outtake outtake;
+    public SussyOuttake outtake;
     public double power = -0.2;
     public double servoPosition;
     FtcDashboard dashboard;
@@ -25,7 +23,7 @@ public class OuttakeTest extends OpMode {
 
     @Override
     public void init() {
-        outtake = new Outtake(hardwareMap);
+        outtake = new SussyOuttake(hardwareMap);
         outtake.linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtake.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //outtake.linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);

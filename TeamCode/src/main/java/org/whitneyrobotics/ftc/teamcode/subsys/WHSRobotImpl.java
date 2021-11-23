@@ -12,7 +12,7 @@ public class WHSRobotImpl {
 // <<<<<<< HEAD (error so commented out fix later)
     public Carousel robotCarousel;
     public Drivetrain robotDrivetrain;
-    public Outtake robotOuttake;
+    public SussyOuttake robotOuttake;
     public IMU robotIMU;
     public Intake robotIntake;
 
@@ -62,7 +62,7 @@ public class WHSRobotImpl {
 //<<<<<<< HEAD (error so commented out fix later)
         robotCarousel = new Carousel(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
-        robotOuttake = new Outtake(robotMap);
+        robotOuttake = new SussyOuttake(robotMap);
         robotIntake = new Intake(robotMap);
 //=======
        // intake = new OldIntake(hardwareMap); (error so commented out fix later)
