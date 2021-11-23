@@ -47,10 +47,12 @@ public class SelectionMenu {
 
     public String formatDisplay(){
         String formatted = "";
-        formatted += this.name + "\n\n";
-        Prompt currentPrompt = prompts.get(promptSelector.currentState());
-        formatted += currentPrompt.caption + "\n";
-        formatted += currentPrompt.getPrintableOutput();
+        if(initialized){
+            formatted += this.name + "\n\n";
+            Prompt currentPrompt = prompts.get(promptSelector.currentState());
+            formatted += currentPrompt.caption + "\n";
+            formatted += currentPrompt.getPrintableOutput();
+        }
         return formatted;
     }
 

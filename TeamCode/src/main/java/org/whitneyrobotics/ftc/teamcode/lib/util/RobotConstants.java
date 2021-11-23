@@ -10,20 +10,20 @@ public class RobotConstants {
     //Drivetrain
     public final static double DEADBAND_DRIVE_TO_TARGET = 5;
     public final static double DEADBAND_ROTATE_TO_TARGET = 3;
-    public final static double drive_min = .1;//.1245;
-    public final static double drive_max = 0.6;//.6;
-    public final static double rotate_min = 0;
-    public final static double rotate_max = 0.6;
+    public final static double drive_min = .15;//.1245;
+    public final static double drive_max = 1;//.6;
+    public final static double rotate_min = 0.15;
+    public final static double rotate_max = 1;
 
-    public static double DRIVE_KP = 0.6;
-    public static double DRIVE_KI = 0.007;
-    public static double DRIVE_KD = 0.08;
+    public static double DRIVE_KP = 5.8;
+    public static double DRIVE_KI = 0.00012;
+    public static double DRIVE_KD = 0.65;
 
     public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(DRIVE_KP,DRIVE_KI,DRIVE_KD);
 
-    public static double ROTATE_KP = 1.2;
-    public static double ROTATE_KI = 0.0015;
-    public static double ROTATE_KD = 0.85;
+    public static double ROTATE_KP = 0.6;
+    public static double ROTATE_KI = 0.00085;
+    public static double ROTATE_KD = 0.065;
     public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
     //Outtake

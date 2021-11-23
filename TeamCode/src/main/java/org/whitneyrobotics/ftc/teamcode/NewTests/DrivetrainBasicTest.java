@@ -48,9 +48,9 @@ public class DrivetrainBasicTest extends OpMode {
         robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
         robot.robotDrivetrain.resetEncoders(); // May already run without encoders
         robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,90);
+        Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,0);
         robot.setInitialCoordinate(init);
-        target = new Position(-1638,910);
+        target = new Position(-1147.6,1400);
     }
 
     @Override
@@ -70,13 +70,13 @@ public class DrivetrainBasicTest extends OpMode {
         }
         if(gamepad1.b){
             robot.robotDrivetrain.resetEncoders();
-            target = new Position(-1638,910);
-            Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,90);
+            target = new Position(-1147.6,1400);
+            Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,0);
             robot.setInitialCoordinate(init);
             robot.rotateToTargetInProgress = false;
             robot.driveToTargetInProgress = false;
-            robot.firstDriveLoop = false;
-            robot.firstRotateLoop = false;
+            robot.firstDriveLoop = true;
+            robot.firstRotateLoop = true;
         }
         switch(modeTog.currentState()){
             case TANK_DRIVE:
@@ -88,24 +88,26 @@ public class DrivetrainBasicTest extends OpMode {
                 break;
             case MECANUM_DRIVE:
                 if(gamepad1.left_bumper){
-                    robot.robotDrivetrain.operateMecanumDrive(gamepad1.left_stick_x/2.54,-gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
+                    robot.robotDrivetrain.operateMecanumDrive(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
                     driveMode = "Slow linear drive";
                 } else if (gamepad1.right_bumper){
-                    robot.robotDrivetrain.operateMecanumDriveScaled(gamepad1.left_stick_x/2.54,-gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
+                    robot.robotDrivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
                     driveMode = "Slow exponential drive";
                 } else {
-                    robot.robotDrivetrain.operateMecanumDriveScaled(gamepad1.left_stick_x,-gamepad1.left_stick_y,gamepad1.right_stick_x,robot.getCoordinate().getHeading());
+                    robot.robotDrivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,robot.getCoordinate().getHeading());
                     driveMode = "Exponential drive";
                 }
                 break;
             case RTT:
                 if(gamepad1.right_bumper){
-                    robot.rotateToTarget(270,false);
+                    robot.rotateToTarget(45,false);
                 }
                 break;
             case DTT:
-                if(gamepad1.right_bumper){
-                    robot.driveToTarget(target,false);
+                robot.driveToTarget(target,false);
+                if(!robot.driveToTargetInProgress()){
+                    //robot.robotDrivetrain.resetEncoders();
+                    modeTog.setState(0);
                 }
                 break;
 
