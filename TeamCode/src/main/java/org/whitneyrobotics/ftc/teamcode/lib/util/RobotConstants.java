@@ -9,7 +9,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.control.ControlConstants;
 public class RobotConstants {
     //Drivetrain
     public final static double DEADBAND_DRIVE_TO_TARGET = 5;
-    public final static double DEADBAND_ROTATE_TO_TARGET = 3;
+    public final static double DEADBAND_ROTATE_TO_TARGET = 1.5;
     public final static double drive_min = .15;//.1245;
     public final static double drive_max = 1;//.6;
     public final static double rotate_min = 0.15;
@@ -21,9 +21,9 @@ public class RobotConstants {
 
     public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(DRIVE_KP,DRIVE_KI,DRIVE_KD);
 
-    public static double ROTATE_KP = 0.6;
-    public static double ROTATE_KI = 0.00085;
-    public static double ROTATE_KD = 0.065;
+    public static double ROTATE_KP = 0.70;
+    public static double ROTATE_KI = 0.0014;
+    public static double ROTATE_KD = 0.060;
     public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
     //Outtake
