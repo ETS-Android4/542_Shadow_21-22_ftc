@@ -1,0 +1,85 @@
+package org.whitneyrobotics.ftc.teamcode.NewTests;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+@TeleOp(name = "Motor Sus Test")
+public class DrivetrainMotorTest extends OpMode {
+    public DcMotorEx frontLeft;
+    public DcMotorEx frontRight;
+    public DcMotorEx backLeft;
+    public DcMotorEx backRight;
+
+    double frontLeftVelocity = 0;
+    double frontRightVelocity = 0;
+    double backRightVelocity = 0;
+    double backLeftVelocity = 0;
+
+
+    @Override
+    public void init() {
+        frontLeft = hardwareMap.get(DcMotorEx.class, "driveFL");
+        frontRight = hardwareMap.get(DcMotorEx.class, "driveFR");
+        backLeft = hardwareMap.get(DcMotorEx.class, "driveBL");
+        backRight = hardwareMap.get(DcMotorEx.class, "driveBR");
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftOdometry.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //leftOdometry.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    @Override
+    public void loop() {
+        if (gamepad1.a) {
+            frontLeft.setPower(1);
+            frontLeft.getVelocity();
+            if (frontLeft.getVelocity() > frontLeftVelocity) {
+                frontLeftVelocity = frontLeft.getVelocity();
+            }
+        } else {
+            frontLeft.setPower(0);
+        }
+        if (gamepad1.b) {
+            frontRight.setPower(1);
+            if (frontRight.getVelocity() > frontRightVelocity) {
+                frontRightVelocity = frontRight.getVelocity();
+            } else {
+                frontRight.setPower(0);
+            }
+            if (gamepad1.y) {
+                backLeft.setPower(1);
+                if (backLeft.getVelocity() > backLeftVelocity) {
+                    backLeftVelocity = backLeft.getVelocity();
+                } else {
+                    backLeft.setPower(0);
+                }
+                if (gamepad1.x) {
+                    backRight.setPower(1);
+                    if (backRight.getVelocity() > backRightVelocity) {
+                        backRightVelocity = backRight.getVelocity();
+                    } else {
+                        backRight.setPower(0);
+                    }
+                }
+                telemetry.addData("Highest Velocity FL", frontLeftVelocity);
+                telemetry.addData("Highest Velocity FR", frontRightVelocity);
+                telemetry.addData("Highest Velocity BL", backLeftVelocity);
+                telemetry.addData("Highest Velocity BR", backRightVelocity);
+            }
+        }
+    }
+}
