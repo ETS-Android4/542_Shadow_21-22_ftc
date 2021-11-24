@@ -87,3 +87,7 @@ lint/tmp/
 # lint/reports/
 
 TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/subsys/BasicDrivetrainPIDPH.java
+
+TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/NewTests/IntakePowerTest.java
+
+TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/subsys/IntakePH.java
