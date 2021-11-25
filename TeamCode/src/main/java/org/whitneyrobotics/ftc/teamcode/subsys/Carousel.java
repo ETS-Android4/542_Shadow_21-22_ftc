@@ -1,97 +1,114 @@
 package org.whitneyrobotics.ftc.teamcode.subsys;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 public class Carousel {
-    private CRServo spinner;
-
-    public Carousel(HardwareMap hardwareMap) {
-        spinner = hardwareMap.crservo.get("spinnerServo");
-    }
-
-    /*public final double WHEEL_CIRCUMFERENCE = 6.2831853072;
-    public final double CAROUSEL_CIRCUMFERENCE = 47.1238898038;
-    public final double SERVO_RPM = 90;
-    private double rotations = CAROUSEL_CIRCUMFERENCE/WHEEL_CIRCUMFERENCE;
-    private double seconds = (rotations/SERVO_RPM*60 + 0.5)*2;*/
-    private double seconds = 6;
-
-    private boolean rotateInProgress = false;
-    private boolean firstLoop = true;
-
-    private Toggler onOff= new Toggler(2);
+    private DcMotorEx wheel;
+    private final static double slowPower = 0.4;
+    private final static double zoomPower = 1;
     private SimpleTimer timer = new SimpleTimer();
-    //toggler based teleop
+    private Toggler allianceSwitch = new Toggler(2);
+    private boolean carouselInProgress = false;
+    private boolean slowDone = false;
+    private boolean firstSlow = true;
+    private boolean firstFast = true;
+    public String carouselAlliance;
+    public int carouselState = 0;
+    private Toggler powerSwitch = new Toggler(2);
 
-    /*public void spinServo(double analogValue){
-        if(!rotateInProgress){ spinner.setPower(analogValue); }
-    }*/
+    public Carousel(HardwareMap hardwareMap){
+        wheel = hardwareMap.get(DcMotorEx.class,"carouselMotor");
+        wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
-    public void togglerOperate(boolean on, boolean rev){
-            if(!rotateInProgress) {
-                onOff.changeState(on);
-                if (onOff.currentState() == 1) {
-                    spinner.setPower((rev) ? 1 : -1);
-                    //rotateInProgress = true;
+    public void operate(boolean start, boolean changeAlliance){
+        allianceSwitch.changeState(changeAlliance);
+        if(start && !carouselInProgress) {
+            switch (carouselState) {
+                case 0:
+                    timer.set(1);
+                    carouselInProgress = true;
+                    carouselState++;
+                    break;
+                case 1:
+                    if (!timer.isExpired()) {
+                        wheel.setPower(slowPower * (allianceSwitch.currentState() == 1 ? -1 : 1));
+                    } else {
+                        carouselState++;
+                    }
+                    break;
+                case 2:
+                    timer.set(2);
+                    carouselState++;
+                    break;
+                case 3:
+                    if (!timer.isExpired()) {
+                        wheel.setPower(zoomPower * (allianceSwitch.currentState() == 1 ? -1 : 1));
+                    } else {
+                        carouselState++;
+                    }
+                    break;
+                case 4:
+                    wheel.setPower(0);
+                    carouselInProgress = false;
+                    carouselState = 0;
+                    break;
+            }
+        }
+    }
+
+    public void getCarouselAlliance(){
+        carouselAlliance = allianceSwitch.currentState() == 0 ? "Red" : "Blue";
+    }
+
+    public void operateAuto(boolean blue){
+        switch (carouselState){
+            case 0:
+                timer.set(1);
+                carouselInProgress = true;
+                carouselState++;
+                break;
+            case 1:
+                if (!timer.isExpired()){
+                    wheel.setPower(slowPower * (blue ? -1 : 1));
                 } else {
-                    spinner.setPower(0);
-                    //rotateInProgress = false;
+                    carouselState++;
                 }
-            }
-    }
-    //tele-op [BUGGED]
-    public void operate(boolean buttonInput) {
-        //telemetry.addData("Spin ducky: ", rotateInProgress);
-        if (!rotateInProgress){
-            if(buttonInput){
-                rotateInProgress = true;
-            }
-        }  else if ( rotateInProgress){
-            if(firstLoop){
-                timer.set(seconds);
-                firstLoop = false;
-            } else if (timer.isExpired()){
-                spinner.setPower(0);
-                firstLoop = true;
-                rotateInProgress = false;
-            } else {
-                spinner.setPower(-1);
-            }
-
-        }
-
-    }
-
-
-    //autonomous
-    public void operate() {
-        //telemetry.addData("Spin ducky: ", rotateInProgress);
-        if(!rotateInProgress) {
-            if (firstLoop) {
-                rotateInProgress = true;
-                timer.set(seconds);
-                firstLoop = false;
-            } else if (timer.isExpired()) {
-                spinner.setPower(0);
-                firstLoop = true;
-                rotateInProgress = false;
-            } else {
-                spinner.setPower(-1);
-            }
+                break;
+            case 2:
+                timer.set(2);
+                carouselState++;
+                break;
+            case 3:
+                if (!timer.isExpired()){
+                    wheel.setPower(zoomPower * (blue ? -1 : 1));
+                } else {
+                    carouselState++;
+                }
+                break;
+            case 4:
+                wheel.setPower(0);
+                carouselInProgress = false;
+                carouselState = 0;
+                break;
         }
     }
 
-    //public double getRotations() { return rotations; }
-    public double getSeconds() { return seconds; }
-    public boolean getTimer() {return timer.isExpired(); }
-    public boolean rotateInProgress() { return rotateInProgress; }
-    public boolean firstLoop() { return firstLoop; }
-    public int getTogglerState() {return onOff.currentState();}
+    public void togglerOperate(boolean input, boolean alliance){
+        allianceSwitch.changeState(alliance);
+        if(!carouselInProgress){powerSwitch.changeState(input);}
+        if(powerSwitch.currentState() == 0){
+            wheel.setPower(0);
+        } else {
+            wheel.setPower(0.5 * ((allianceSwitch.currentState() == 0) ? 1 : -1));
+        }
+    }
 
+    public String getAlliance(){return (allianceSwitch.currentState() == 0) ? "Red" : "Blue";}
+    public boolean isCarouselInProgress() {return carouselInProgress;}
 }

@@ -10,7 +10,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 
 public class WHSRobotImpl {
 // <<<<<<< HEAD (error so commented out fix later)
-    public Carousel robotCarousel;
+    public CarouselOld robotCarousel;
     public Drivetrain robotDrivetrain;
     public SussyOuttake robotOuttake;
     public IMU robotIMU;
@@ -60,7 +60,7 @@ public class WHSRobotImpl {
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
 //<<<<<<< HEAD (error so commented out fix later)
-        robotCarousel = new Carousel(robotMap);
+        robotCarousel = new CarouselOld(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
         robotOuttake = new SussyOuttake(robotMap);
         robotIntake = new Intake(robotMap);

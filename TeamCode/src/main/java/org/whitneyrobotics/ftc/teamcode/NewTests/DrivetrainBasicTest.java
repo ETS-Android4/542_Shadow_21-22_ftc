@@ -70,7 +70,7 @@ public class DrivetrainBasicTest extends OpMode {
         }
         if(gamepad1.b){
             robot.robotDrivetrain.resetEncoders();
-            target = new Position(-1147.6,1400);
+            target = new Position(-1000+robotCenterWidthOffset,900);
             Coordinate init = new Coordinate(-1800 + robotCenterWidthOffset,900,0);
             robot.setInitialCoordinate(init);
             robot.rotateToTargetInProgress = false;

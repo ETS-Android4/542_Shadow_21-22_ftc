@@ -3,17 +3,16 @@ package org.whitneyrobotics.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.checkerframework.checker.units.qual.C;
-import org.whitneyrobotics.ftc.teamcode.subsys.Carousel;
+import org.whitneyrobotics.ftc.teamcode.subsys.CarouselOld;
 
 @TeleOp(name = "CarouselTest")
 public class CarouselTest extends OpMode {
 
-    private Carousel carousel;
+    private CarouselOld carousel;
 
     @Override
     public void init() {
-        carousel = new Carousel(hardwareMap);
+        carousel = new CarouselOld(hardwareMap);
     }
 
     @Override

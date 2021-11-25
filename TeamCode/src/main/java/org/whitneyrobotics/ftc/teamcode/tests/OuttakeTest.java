@@ -1,37 +1,47 @@
 package org.whitneyrobotics.ftc.teamcode.tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
+import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
 import org.whitneyrobotics.ftc.teamcode.subsys.SussyOuttake;
 
 @TeleOp (name="Outtake Test", group="Tests")
 public class OuttakeTest extends OpMode {
 
-    public SussyOuttake outtake;
-    public double power = -0.2;
+    public Outtake outtake;
+    public double power = 0.1;
     public double servoPosition;
     FtcDashboard dashboard;
-    //Telemetry dashboardTelemetry;
+    Telemetry dashboardTelemetry;
     TelemetryPacket packet = new TelemetryPacket();
     private Toggler modeTog = new Toggler(2);
     private Toggler gateTog = new Toggler(2);
+    private double level1 = 0;
+    private double level2 = 10;
+    private double level3 = 20;
+    private int autoDropState = 1;
 
     @Override
     public void init() {
-        outtake = new SussyOuttake(hardwareMap);
-        outtake.linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        outtake.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //outtake.linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
-        servoPosition = outtake.gate.getPosition();
+        dashboard = FtcDashboard.getInstance();
+        dashboardTelemetry = dashboard.getTelemetry();
+        dashboardTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        dashboardTelemetry.setMsTransmissionInterval(10);
+
+        outtake = new Outtake(hardwareMap);
+        servoPosition = outtake.getServoPosition();
+        outtake.toggleTestPositions();
     }
 
     public void kill() {
-        outtake.linearSlides.setPower(0);
+        outtake.operateSlides(0);
         throw new RuntimeException("Kill command issued.");
     }
 
@@ -39,32 +49,43 @@ public class OuttakeTest extends OpMode {
     public void loop() {
         modeTog.changeState(gamepad1.x);
         if(modeTog.currentState() == 1){
-            outtake.togglerOuttake(gamepad1.a, gamepad1.b);
+            outtake.setTestPositions(new double[]{level1,level2,level3});
+            outtake.operate(gamepad1.dpad_up, gamepad1.dpad_down);
             if (gamepad1.y) { outtake.reset(); }
         }else {
             if (gamepad1.dpad_up) {
-                outtake.linearSlides.setPower(power);
+                outtake.operateSlides(power);
             }
             else if (gamepad1.dpad_down) {
-                outtake.linearSlides.setPower(-power);
+                outtake.operateSlides(-power);
             }
             else {
-                outtake.linearSlides.setPower(0);
+                outtake.operateSlides(0);
             }
         }
-
-        outtake.togglerServoGate(gamepad1.dpad_right);
+        if(autoDropState == 1){
+            outtake.togglerServoGate(gamepad1.a);
+        }
+        switch(autoDropState){
+            case 0:
+                if(outtake.autoDrop()){
+                    autoDropState++;
+                }
+                break;
+            case 1:
+                if(gamepad1.b){autoDropState = 0;}
+        }
 
         if(gamepad1.left_bumper){
-            outtake.level1 =  outtake.linearSlides.getCurrentPosition();
+            level1 =  outtake.getSlidesPosition();
             gamepad1.rumble(250);
         }
         else if (gamepad1.right_bumper) {
-            outtake.level2 = outtake.linearSlides.getCurrentPosition();
+            level2 = outtake.getSlidesPosition();
             gamepad1.rumble(250);
         }
         else if (gamepad1.right_trigger >= 0.01) {
-            outtake.level3 = outtake.linearSlides.getCurrentPosition();
+            level3 = outtake.getSlidesPosition();
             gamepad1.rumble(250);
         }
 
@@ -72,21 +93,24 @@ public class OuttakeTest extends OpMode {
 
 
         //emergency kill switch
-        if(gamepad1.left_trigger > 0.99){kill();}
+        if(gamepad1.y){kill();}
 
         telemetry.addData("Mode", (modeTog.currentState() == 0) ? "Manual Configure Mode" : "Test Mode");
-        telemetry.addData("Encoder Position", outtake.linearSlides.getCurrentPosition());
+        telemetry.addData("Error",outtake.errorDebug);
+        telemetry.addData("Encoder Position", outtake.getSlidesPosition());
         telemetry.addData("Current Tier (0-2)", outtake.getTier());
-        telemetry.addData("Level 1", outtake.level1);
-        telemetry.addData("Level 2", outtake.level2);
-        telemetry.addData("Level 3", outtake.level3);
+        telemetry.addData("Level 1", level1);
+        telemetry.addData("Level 2", level2);
+        telemetry.addData("Level 3", level3);
 
-        packet.put("Encoder Position", outtake.linearSlides.getCurrentPosition());
+        packet.put("Mode", (modeTog.currentState() == 0) ? "Manual Configure Mode" : "Test Mode");
+        packet.put("Error",outtake.errorDebug);
+        packet.put("Encoder Position", outtake.getSlidesPosition());
         packet.put("Current Tier (0-2)",outtake.getTier());
-        packet.put("Level 1", outtake.level1);
-        packet.put("Level 2", outtake.level2);
-        packet.put("Level 3", outtake.level3);
-        //dashboard.sendTelemetryPacket(packet);
+        packet.put("Level 1", level1);
+        packet.put("Level 2", level2);
+        packet.put("Level 3", level3);
+        dashboard.sendTelemetryPacket(packet);
     }
 
 }
