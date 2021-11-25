@@ -80,7 +80,7 @@ public class Outtake {
 
     public void operateWithoutGamepad(int levelIndex) {
         double currentTarget = orderedPositions[levelIndex];
-        double error = linearSlides.getCurrentPosition()-currentTarget;
+        double error = currentTarget-linearSlides.getCurrentPosition();
         errorDebug = error;
 
         if (slidesFirstLoop){
@@ -93,7 +93,7 @@ public class Outtake {
 
         double power = (slidesController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(slidesController.getOutput()), RobotConstants.DEADBAND_SLIDE_TO_TARGET, 3000, RobotConstants.slide_min, RobotConstants.slide_max));
 
-        if(Math.abs(error) <= RobotConstants.DEADBAND_SLIDE_TO_TARGET && error > slidesLowerBound && error < slidesUpperBound){
+        if(Math.abs(error) <= RobotConstants.DEADBAND_SLIDE_TO_TARGET || linearSlides.getCurrentPosition() < slidesLowerBound || linearSlides.getCurrentPosition() > slidesUpperBound){
             linearSlides.setPower(0);
             slidingInProgress = false;
             slidesFirstLoop = true;
