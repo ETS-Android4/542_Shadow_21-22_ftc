@@ -80,7 +80,7 @@ public class Outtake {
 
     public void operateWithoutGamepad(int levelIndex) {
         double currentTarget = orderedPositions[levelIndex];
-        double error = linearSlides.getCurrentPosition()-currentTarget;
+        double error = currentTarget-linearSlides.getCurrentPosition();
         errorDebug = error;
 
         if (slidesFirstLoop){
