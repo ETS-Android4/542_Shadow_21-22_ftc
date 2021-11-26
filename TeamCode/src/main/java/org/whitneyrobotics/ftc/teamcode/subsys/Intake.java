@@ -2,6 +2,7 @@ package org.whitneyrobotics.ftc.teamcode.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
@@ -16,11 +17,19 @@ public class Intake {
     public boolean isReversed;
 
     private SimpleTimer autoIntakeTimer = new SimpleTimer();
-    private Toggler intakePowerState = new Toggler(2);
+    private Toggler intakePowerState;
 
     public void resetAllEncoder(){
         intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public Intake (HardwareMap hardwareMap){
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "SurgicalTubes");
+        intakePowerState = new Toggler(2);
+
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     // TeleOp
