@@ -13,6 +13,9 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
  */
 
 public class Drivetrain {
+    // if all drivetrain motors consistent, remove implementation of these reductions
+    private double motorReductionForFRAndBL = 1;
+    private double motorReductionForBR = 1;
 
     public DcMotorEx frontLeft;
     public DcMotorEx frontRight;
@@ -128,9 +131,9 @@ public class Drivetrain {
 
     public void operate(double leftPower, double rightPower) {
         frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower);
-        frontRight.setPower(rightPower);
-        backRight.setPower(rightPower);
+        backLeft.setPower(leftPower * motorReductionForFRAndBL);
+        frontRight.setPower(rightPower * motorReductionForFRAndBL);
+        backRight.setPower(rightPower * motorReductionForBR);
     }
 
 
@@ -140,27 +143,27 @@ public class Drivetrain {
         }
         if (powers.length == 2) {
             frontLeft.setPower(powers[0]);
-            backLeft.setPower(powers[0]);
-            frontRight.setPower(powers[1]);
-            backRight.setPower(powers[1]);
+            backLeft.setPower(powers[0] * motorReductionForFRAndBL);
+            frontRight.setPower(powers[1] * motorReductionForFRAndBL);
+            backRight.setPower(powers[1] * motorReductionForBR);
         } else if (powers.length == 4) {
             frontLeft.setPower(powers[0]);
-            frontRight.setPower(powers[1]);
-            backLeft.setPower(powers[2]);
-            backRight.setPower(powers[3]);
+            frontRight.setPower(powers[1] * motorReductionForFRAndBL);
+            backLeft.setPower(powers[2] * motorReductionForFRAndBL);
+            backRight.setPower(powers[3] * motorReductionForBR);
         }
     }
 
 
     public void operateLeft(double leftPower) {
         frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower);
+        backLeft.setPower(leftPower * motorReductionForFRAndBL);
     }
 
 
     public void operateRight(double rightPower) {
-        frontRight.setPower(rightPower);
-        backRight.setPower(rightPower);
+        frontRight.setPower(rightPower * motorReductionForFRAndBL);
+        backRight.setPower(rightPower * motorReductionForBR);
     }
 
 
@@ -286,9 +289,9 @@ public class Drivetrain {
         vBR = -gamepadInputY + gamepadInputX - gamepadInputTurn;
          */
         frontLeft.setPower(vFL);
-        frontRight.setPower(vFR);
-        backLeft.setPower(vBL);
-        backRight.setPower(vBR);
+        frontRight.setPower(vFR * motorReductionForFRAndBL);
+        backLeft.setPower(vBL * motorReductionForFRAndBL);
+        backRight.setPower(vBR * motorReductionForBR);
     }
 
     public void operateMecanumDriveScaled(double gamepadInputX, double gamepadInputY, double gamepadInputTurn, double heading) {
@@ -307,9 +310,9 @@ public class Drivetrain {
         vBR = -scaledY + scaledX - scaledTurn;
          */
         frontLeft.setPower(vFL);
-        frontRight.setPower(vFR);
-        backLeft.setPower(vBL);
-        backRight.setPower(vBR);
+        frontRight.setPower(vFR * motorReductionForFRAndBL);
+        backLeft.setPower(vBL * motorReductionForFRAndBL);
+        backRight.setPower(vBR * motorReductionForBR);
     }
 
     /*public void switchFieldCentric(boolean gamepadInput) {
@@ -345,9 +348,9 @@ public class Drivetrain {
         backRight.setTargetPosition(targetPosition);
 
         frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
+        frontRight.setPower(power * motorReductionForFRAndBL);
+        backLeft.setPower(power * motorReductionForFRAndBL);
+        backRight.setPower(power * motorReductionForBR);
 
     }
 

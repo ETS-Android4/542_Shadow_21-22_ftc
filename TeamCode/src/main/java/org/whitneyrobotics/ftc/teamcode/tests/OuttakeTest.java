@@ -16,7 +16,7 @@ import org.whitneyrobotics.ftc.teamcode.subsys.SussyOuttake;
 public class OuttakeTest extends OpMode {
 
     public Outtake outtake;
-    public double power = 0.1;
+    public double power = 0.2;
     public double servoPosition;
     FtcDashboard dashboard;
     Telemetry dashboardTelemetry;
@@ -24,8 +24,8 @@ public class OuttakeTest extends OpMode {
     private Toggler modeTog = new Toggler(2);
     private Toggler gateTog = new Toggler(2);
     private double level1 = 0;
-    private double level2 = 10;
-    private double level3 = 20;
+    private double level2 = 1833.0;
+    private double level3 = 2900.0;
     private int autoDropState = 1;
 
     @Override
@@ -96,6 +96,7 @@ public class OuttakeTest extends OpMode {
         if(gamepad1.y){kill();}
 
         telemetry.addData("Mode", (modeTog.currentState() == 0) ? "Manual Configure Mode" : "Test Mode");
+        telemetry.addData("Amperage",outtake.getAmperage());
         telemetry.addData("Error",outtake.errorDebug);
         telemetry.addData("Encoder Position", outtake.getSlidesPosition());
         telemetry.addData("Current Tier (0-2)", outtake.getTier());
@@ -104,6 +105,7 @@ public class OuttakeTest extends OpMode {
         telemetry.addData("Level 3", level3);
 
         packet.put("Mode", (modeTog.currentState() == 0) ? "Manual Configure Mode" : "Test Mode");
+        packet.put("Amperage",outtake.getAmperage());
         packet.put("Error",outtake.errorDebug);
         packet.put("Encoder Position", outtake.getSlidesPosition());
         packet.put("Current Tier (0-2)",outtake.getTier());

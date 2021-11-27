@@ -4,17 +4,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.whitneyrobotics.ftc.teamcode.lib.util.DataTools;
+import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
 import org.whitneyrobotics.ftc.teamcode.lib.util.SelectionMenu;
 
 import java.util.Arrays;
 
 @TeleOp(group = "Tests",name="Menu Selector Test")
 public class TestMenu extends OpMode {
-    private SelectionMenu configureAuto = new SelectionMenu("Auto configuration");
+    private SelectionMenu configureAuto;
     private boolean firstLoop = true;
 
     @Override
     public void init() {
+        //configureAuto = new SelectionMenu("Auto configuration");
         SelectionMenu.Selection<Integer> RED = new SelectionMenu.Selection<Integer>("Red",0);
         SelectionMenu.Selection<Integer> BLUE = new SelectionMenu.Selection<Integer>("Blue",1);
         SelectionMenu.Prompt color = new SelectionMenu.Prompt("Select alliance color: ", RED, BLUE);
@@ -33,8 +36,10 @@ public class TestMenu extends OpMode {
         SelectionMenu.Prompt park = new SelectionMenu.Prompt("Park State: ")
                 .addSelection("On", true)
                 .addSelection("Off", false);
-        SelectionMenu configureAuto = new SelectionMenu("Autonomous Configuration", color, startingPosition, rotateCarousel, doShippingHub, doWarehouse)
-                .addPrompt(park); //just for fun ;)
+        SelectionMenu.Slider slider = new SelectionMenu.Slider("Test Slider",0,100);
+        configureAuto = new SelectionMenu("Autonomous Configuration", color, startingPosition, rotateCarousel, doShippingHub, doWarehouse)
+                .addPrompt(park) //just for fun ;)
+                .addPrompt(slider);
         configureAuto.init();
     }
 
@@ -48,7 +53,15 @@ public class TestMenu extends OpMode {
         configureAuto.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_down,gamepad1.dpad_up);
         telemetry.addLine(configureAuto.formatDisplay());
         telemetry.addData("Selection output", Arrays.toString(configureAuto.getOutputs()));
-        telemetry.addData("Value of color",configureAuto.getPrompts().get(0).getValueOfActive());
-        telemetry.update();
+        //telemetry.addData("Value of color",configureAuto.getPrompts().get(0).getValueOfActive());
+        //telemetry.addData("# of prompts",configureAuto.prompts);
+        //telemetry.update();
+        if(gamepad1.a){
+            DataTools.Data data = new DataTools.Data();
+            for(int i = 0; i<configureAuto.getOutputs().length; i++){
+                data.put(i,configureAuto.getOutputs()[i]);
+            }
+            DataToolsLite.encode("autoConfig.txt",data);
+        }
     }
 }

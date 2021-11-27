@@ -6,8 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
+
 @TeleOp(name = "Motor Sus Test")
 public class DrivetrainMotorTest extends OpMode {
+    private Toggler speedTog = new Toggler(4);
+    private double[] powers = {0.25,0.5,0.75,1};
     public DcMotorEx frontLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backLeft;
@@ -48,8 +52,18 @@ public class DrivetrainMotorTest extends OpMode {
 
     @Override
     public void loop() {
+        speedTog.changeState(gamepad1.left_bumper);
+        double power = powers[speedTog.currentState()];
+
+        if(gamepad1.right_bumper){
+            frontLeftVelocity = 0;
+            frontRightVelocity = 0;
+            backLeftVelocity = 0;
+            backRightVelocity = 0;
+        }
+
         if (gamepad1.a) {
-            frontLeft.setPower(1);
+            frontLeft.setPower(power);
             frontLeft.getVelocity();
         } else {
             frontLeft.setPower(0);
@@ -58,7 +72,7 @@ public class DrivetrainMotorTest extends OpMode {
             frontLeftVelocity = frontLeft.getVelocity();
         }
         if (gamepad1.b) {
-            frontRight.setPower(1);
+            frontRight.setPower(power);
             } else {
                 frontRight.setPower(0);
         }
@@ -66,7 +80,7 @@ public class DrivetrainMotorTest extends OpMode {
             frontRightVelocity = frontRight.getVelocity();
         }
             if (gamepad1.y) {
-                backLeft.setPower(1);
+                backLeft.setPower(power);
             } else {
                 backLeft.setPower(0);
             }
@@ -76,13 +90,19 @@ public class DrivetrainMotorTest extends OpMode {
 
 
             if (gamepad1.x) {
-                backRight.setPower(1);
+                backRight.setPower(power);
             } else {
                 backRight.setPower(0);
             }
             if (backRight.getVelocity() > backRightVelocity) {
                 backRightVelocity = backRight.getVelocity();
             }
+
+        telemetry.addData("Motor power",power);
+        telemetry.addData("FL",(frontLeft.getPower() > 0 ? true : false));
+        telemetry.addData("FR",(frontRight.getPower() > 0 ? true : false));
+        telemetry.addData("BL",(backLeft.getPower() > 0 ? true : false));
+        telemetry.addData("BR",(backRight.getPower() > 0 ? true : false));
 
         telemetry.addData("Highest Velocity FL", frontLeftVelocity);
         telemetry.addData("Highest Velocity FR", frontRightVelocity);

@@ -12,7 +12,7 @@ public class Intake {
     private DcMotorEx intakeMotor;
 
     private int autoIntakeState = 0;
-    private final double INTAKE_MOTOR_POWER = 0.65;
+    private static final double INTAKE_MOTOR_POWER = 0.65;
     public boolean autoIntakeInProgress = false;
     public boolean isReversed;
 
@@ -46,7 +46,7 @@ public class Intake {
     }
 
     // AutoOp
-    public void autoOperate(int durationInMS, boolean reverse){
+    public void autoOperate(int durationInS, boolean reverse){
 
         // If reversed, set to -1 to reverse speed later
         int direction = reverse ? -1 : 1;
@@ -60,7 +60,7 @@ public class Intake {
                 // Intake has begun, set power, and start timer
                 autoIntakeInProgress = true;
                 intakeMotor.setPower(direction * INTAKE_MOTOR_POWER);
-                autoIntakeTimer.set(durationInMS);
+                autoIntakeTimer.set(durationInS);
                 autoIntakeState++;
                 break;
             case 1:
@@ -75,6 +75,15 @@ public class Intake {
                 break;
 
         }
+    }
+
+    public void enable(){
+        intakePowerState.setState(1);
+    }
+
+    public void disable(){
+        intakePowerState.setState(0);
+        intakeMotor.setPower(0); //in case if theres some weird power left
     }
 
     // Useful for Telemetry

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDController;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
@@ -31,8 +32,8 @@ public class Outtake {
     public double errorDebug = 0;
 
     //Emergency Stop Cases
-    private double slidesUpperBound = 2400;
-    private double slidesLowerBound = -100;
+    private double slidesUpperBound = 3000;
+    private double slidesLowerBound = -40;
 
     private enum GatePositions{
         CLOSE(1),
@@ -46,8 +47,8 @@ public class Outtake {
 
     private enum MotorLevels{
         LEVEL1(0.0),
-        LEVEL2(1296.0),
-        LEVEL3(2092.0);
+        LEVEL2(1833.0),
+        LEVEL3(2900);
         private double encoderPos;
         private MotorLevels(double encoderPos){
             this.encoderPos = encoderPos;
@@ -128,12 +129,14 @@ public class Outtake {
 
     public void resetEncoder() {
         linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        linearSlides.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public int getTier() { return linearSlidesTog.currentState(); }
 
     public double getServoPosition(){return gate.getPosition();}
+
+    public double getAmperage(){return linearSlides.getCurrent(CurrentUnit.MILLIAMPS);}
 
     public void operateSlides(double power){linearSlides.setPower(power);}
 
@@ -142,7 +145,6 @@ public class Outtake {
     public void toggleTestPositions(){useTestPositions = (useTestPositions) ? false : true;}
 
     public boolean UseTestPositions(){return useTestPositions;}
-
 
     public void setTestPositions(double[] levels){
         if(levels.length != 3) {

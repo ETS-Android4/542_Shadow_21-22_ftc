@@ -43,7 +43,11 @@ public class AutoOp extends OpMode {
 
     Position[][] startingPositions = new Position[2][2];
     Position[][] startingOffsetPositions = new Position[2][2];
+    Position[] carouselApproach = new Position[2];
     Position[] carouselPositions = new Position[2];
+    Position[] gapApproach = new Position[2];
+    Position[] gapCrossPositions = new Position[2];
+    Position[] shippingHubApproach = new Position[2];
     Position[] shippingHubPosition = new Position[2];
     Position[] sharedShippingHub = new Position[2];
     Position[] warehouse = new Position[2];
@@ -141,11 +145,20 @@ public class AutoOp extends OpMode {
         startingOffsetPositions[BLUE][BOTTOM] = new Position(-1547.6,-900);
         startingOffsetPositions[BLUE][TOP] = new Position(-1547.6,300);
 
+        shippingHubApproach[RED] = new Position(-900,400);
+        shippingHubApproach[BLUE] = new Position(-900,-400);
+
         shippingHubPosition[RED] = new Position(-752.4,452.4);
         shippingHubPosition[BLUE] = new Position(-752.4,-452.4);
 
         sharedShippingHub[RED] = new Position(-152.4, -1200);
         sharedShippingHub[BLUE] = new Position(-152.4, 1200);
+
+        gapApproach[RED] = new Position(-1626.01,300);
+        gapApproach[BLUE] = new Position(-1626.01,-300);
+
+        gapCrossPositions[RED] = new Position(-1626.01,900);
+        gapCrossPositions[BLUE] = new Position(-1626.01,-900);
 
         warehouse[RED] = new Position(-1500,-1122.6);
         warehouse[BLUE] = new Position(-1500,1122.6);
@@ -155,8 +168,11 @@ public class AutoOp extends OpMode {
         finalParkingPosition[BLUE][TOP] = new Position(-1500,1122.6);
         finalParkingPosition[BLUE][BOTTOM] = new Position(-900, -1500);
 
-        carouselPositions[RED] = new Position(-1400,1400);
-        carouselPositions[BLUE] = new Position(-1400, -1400);
+        carouselApproach[RED] = new Position(-1500, 1500);
+        carouselApproach[BLUE] = new Position(-1500,-1500);
+
+        carouselPositions[RED] = new Position(-1600,1600);
+        carouselPositions[BLUE] = new Position(-1600, -1600);
 
         // INIT Camera
         initVuforia();
@@ -266,7 +282,7 @@ public class AutoOp extends OpMode {
                         }
                         break;
                     case 1:
-                        robot.robotOuttake.autoControl(scanLevel);
+                        //robot.robotOuttake.autoControl(scanLevel);
                         if(!robot.robotOuttake.slidingInProgress){
                             if(robot.robotOuttake.autoDrop()){ subState++; }
                             break;
@@ -283,17 +299,17 @@ public class AutoOp extends OpMode {
                         if (!robot.driveToTargetInProgress()) { subState++; }
                         break;
                     case 1:
-                        robot.robotIntake.autoDropIntake();
-                        if (robot.robotIntake.intakeAutoDone){
+                        //robot.robotIntake.autoDropIntake();
+                        /*if (robot.robotIntake.intakeAutoDone){
                             subState++;
-                        }
+                        }*/
                         break;
                     case 2:
                         robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
                         if (!robot.driveToTargetInProgress()) { subState++; }
                         break;
                     case 3:
-                        robot.robotOuttake.autoControl(1);
+                        //robot.robotOuttake.autoControl(1);
                         if (robot.robotOuttake.autoDrop()) { subState++; }
                         break;
                     case 4:
@@ -319,7 +335,7 @@ public class AutoOp extends OpMode {
         telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
         telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
         telemetry.addData("Outtake extension: ", robot.robotOuttake.slidingInProgress);
-        telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
+        //telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output
         telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())*1000 + "ms");

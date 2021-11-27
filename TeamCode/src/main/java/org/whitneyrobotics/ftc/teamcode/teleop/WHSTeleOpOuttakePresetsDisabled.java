@@ -33,7 +33,7 @@ public class WHSTeleOpOuttakePresetsDisabled extends OpMode {
         // DRIVER 2 CONTROLS
         // Intake
         // - Extend arm/unextend arm
-        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.left_bumper, gamepad2.right_trigger>0,gamepad2.left_trigger>0);
+        //robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.left_bumper, gamepad2.right_trigger>0,gamepad2.left_trigger>0);
 
         // Outtake
         // - Adjust levels

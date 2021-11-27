@@ -34,7 +34,7 @@ public class TeleOpOuttakeManualTest extends OpMode {
         // DRIVER 2 CONTROLS
         // Intake
         // - Extend arm/unextend arm
-        robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.left_bumper, gamepad2.right_trigger>0,gamepad2.left_trigger>0);
+        //robot.robotIntake.operate(gamepad2.right_bumper,gamepad2.left_bumper, gamepad2.right_trigger>0,gamepad2.left_trigger>0);
 
         // Outtake
         // - Adjust levels
@@ -42,9 +42,9 @@ public class TeleOpOuttakeManualTest extends OpMode {
 
         //In case line outtake levels don't work properly
         if(gamepad1.dpad_up){
-            robot.robotOuttake.linearSlides.setPower(-0.2);
+            robot.robotOuttake.operateSlides(0.2);
         } else if (gamepad1.dpad_down){
-            robot.robotOuttake.linearSlides.setPower(-0.2);
+            robot.robotOuttake.operateSlides(-0.2);
         }
 
         //if(gamepad2.a) { robot.robotOuttake.reset(); }

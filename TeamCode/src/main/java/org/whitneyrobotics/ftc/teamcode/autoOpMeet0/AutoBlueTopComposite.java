@@ -1,3 +1,4 @@
+/*
 package org.whitneyrobotics.ftc.teamcode.autoOpMeet0;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -161,7 +162,7 @@ public class AutoBlueTopComposite extends OpMode {
                         }
                         break;
                     case 1:
-                        robot.robotOuttake.autoControl(scanLevel);
+                        //robot.robotOuttake.autoControl(scanLevel);
                         if (!robot.robotOuttake.slidingInProgress) {
                             if (robot.robotOuttake.autoDrop()) {
                                 subState++;
@@ -200,3 +201,4 @@ public class AutoBlueTopComposite extends OpMode {
         lastRecordedTime = System.nanoTime();
     }
 }
+*/

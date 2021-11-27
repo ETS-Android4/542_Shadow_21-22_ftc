@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class SelectionMenu {
     private String name = "Selection Menu";
-    private ArrayList<Prompt> prompts = new ArrayList<Prompt>();
+    public ArrayList<Prompt> prompts = null;
     private Toggler promptSelector;
     private boolean initialized = false;
 
@@ -12,10 +12,12 @@ public class SelectionMenu {
     }
 
     public SelectionMenu(String name) {
+        prompts = new ArrayList<Prompt>();
         this.name = name;
     }
 
     public SelectionMenu(String name, Prompt... prompts) {
+        this.prompts = new ArrayList<Prompt>();
         this.name = name;
         for (Prompt prompt : prompts) {
             this.prompts.add(prompt);
@@ -58,9 +60,14 @@ public class SelectionMenu {
 
     public Object[] getOutputs() {
         Object[] outputs = new Object[prompts.size()];
-        for (int i = 0; i < prompts.size(); i++) {
-            outputs[i] = prompts.get(i).getValueOfActive();
+        try{
+            for (int i = 0; i < prompts.size(); i++) {
+                outputs[i] = prompts.get(i).getValueOfActive();
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return new Object[] {"sus"};
         }
+
         return outputs;
     }
 
@@ -70,7 +77,7 @@ public class SelectionMenu {
         private String caption;
         private int active;
         private Toggler selectionIterator;
-        private ArrayList<Selection> selections = new ArrayList<Selection>();
+        public ArrayList<Selection> selections = new ArrayList<Selection>();
 
         public Prompt() {
         }
@@ -245,7 +252,7 @@ public class SelectionMenu {
 
     }
     public static class Selection<Value> {
-        private String caption;
+        private String caption = "";
         private Value value;
 
         public Selection() {

@@ -7,12 +7,13 @@ import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
+import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class WHSRobotImpl {
 // <<<<<<< HEAD (error so commented out fix later)
     public CarouselOld robotCarousel;
     public Drivetrain robotDrivetrain;
-    public SussyOuttake robotOuttake;
+    public Outtake robotOuttake;
     public IMU robotIMU;
     public Intake robotIntake;
 
@@ -55,6 +56,10 @@ public class WHSRobotImpl {
     private double robotY;
     private double distance;
 
+    public String stateDesc = "Initial";
+    private boolean intakeOuttakeAdvanceLocked = false;
+    private Toggler intakeOuttakeState = new Toggler(5);
+
     public WHSRobotImpl (HardwareMap robotMap){
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
@@ -62,7 +67,7 @@ public class WHSRobotImpl {
 //<<<<<<< HEAD (error so commented out fix later)
         robotCarousel = new CarouselOld(robotMap);
         robotDrivetrain = new Drivetrain(robotMap);
-        robotOuttake = new SussyOuttake(robotMap);
+        robotOuttake = new Outtake(robotMap);
         robotIntake = new Intake(robotMap);
 //=======
        // intake = new OldIntake(hardwareMap); (error so commented out fix later)
@@ -86,7 +91,7 @@ public class WHSRobotImpl {
         Position vectorToTarget = Functions.Positions.subtract(targetPos, currentCoord.getPos()); //field frame
         vectorToTarget = Functions.field2body(vectorToTarget, currentCoord); //body frame
         vectorToTargetDebug = vectorToTarget;
-        double distanceToTarget = vectorToTarget.getX()/*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
+        double distanceToTarget = targetPos.getX() - currentCoord.getX() /*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
         distanceToTargetDebug = distanceToTarget;
 
         double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
@@ -104,6 +109,9 @@ public class WHSRobotImpl {
             case 1:
 
                 if (firstDriveLoop) {
+                    if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET && !(targetPos.getY() < currentCoord.getY())){
+                        distanceToTarget = targetPos.getY() - currentCoord.getY();
+                    }
                     driveToTargetInProgress = true;
                     driveController.init(distanceToTarget);
                     firstDriveLoop = false;
@@ -262,7 +270,38 @@ public class WHSRobotImpl {
         currentCoord.setHeading(Functions.normalizeAngle(currentCoord.getHeading() + Math.toDegrees(deltaTheta)));
     }
 
-
-
+    public void operateIntakeOuttake(boolean changeState, boolean intakePower, boolean intakeReverse, boolean outtakeUp, boolean outtakeDown, boolean reset){
+        switch(intakeOuttakeState.currentState()){
+            case 0:
+                stateDesc = "Initial";
+                robotIntake.disable();
+                robotOuttake.reset();
+                if(changeState){robotIntake.enable();}
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 1:
+                stateDesc = "Intaking";
+                robotIntake.operate(intakePower,intakeReverse);
+                robotOuttake.reset();
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 2:
+                stateDesc = "Outtake Level Selection";
+                robotIntake.disable();
+                robotOuttake.operate(outtakeUp,outtakeDown);
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 3:
+                stateDesc = "Depositing Item";
+                if(robotOuttake.autoDrop()){intakeOuttakeState.setState(4);}
+                break;
+            case 4:
+                stateDesc = "Moving outtake to level 3";
+                robotOuttake.operateWithoutGamepad(2);
+                if(!robotOuttake.slidingInProgress){
+                    intakeOuttakeState.setState(0);
+                }
+        }
+    }
 
 }

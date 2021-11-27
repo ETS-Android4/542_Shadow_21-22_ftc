@@ -9,6 +9,15 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class DataTools {
+
+    public static void encode(Context appContext, Object[] rawData, String fileName){
+        Data formattedItems = new Data<Object>();
+        for(int i = 0; i< rawData.length; i++){
+            formattedItems.put(i,rawData[i]);
+        }
+        encode(appContext,formattedItems,fileName);
+    }
+
     //I think you can use hardwareMap.appContext for this
     public static void encode(Context appContext, Data<Object> data, String fileName){
         File dir = new File(appContext.getFilesDir(),"TeamData");
@@ -50,7 +59,7 @@ public class DataTools {
         public Data(){super();}
 
         public void put(String key, Object value){
-            if (key.contains("=")) {
+            if (key.contains("=") || key.contains(",")) {
                 throw new IllegalArgumentException("Forbidden Character in Key");
             }
             super.put(key,value);
