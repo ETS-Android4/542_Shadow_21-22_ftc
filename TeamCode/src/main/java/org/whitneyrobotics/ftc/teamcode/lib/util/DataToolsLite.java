@@ -6,6 +6,14 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 public class DataToolsLite {
 
+    public static void encode(String fileName, Object... unlabeledData){
+        String content = "";
+        for(int i = 0; i< unlabeledData.length; i++){
+            content += String.format("%s=%s",i,unlabeledData[i]);
+        }
+        ReadWriteFile.writeFile(AppUtil.getInstance().getSettingsFile(fileName),content);
+    }
+
     public static void encode(String fileName, DataTools.Data data){
         String content = "";
         for(Object i : data.keySet()){

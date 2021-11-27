@@ -1,12 +1,14 @@
 package org.whitneyrobotics.ftc.teamcode.lib.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SelectionMenu {
     private String name = "Selection Menu";
     public ArrayList<Prompt> prompts = null;
     private Toggler promptSelector;
     private boolean initialized = false;
+    private Object[] lastRecordedArray = new Object[]{};
 
     public SelectionMenu() {
     }
@@ -52,7 +54,7 @@ public class SelectionMenu {
         if(initialized){
             formatted += this.name + "\n\n";
             Prompt currentPrompt = prompts.get(promptSelector.currentState());
-            formatted += currentPrompt.caption + "\n";
+            formatted += String.format("[Prompt %d of %d]: ",promptSelector.currentState()+1,promptSelector.howManyStates()+1) + currentPrompt.caption + "\n";
             formatted += currentPrompt.getPrintableOutput();
         }
         return formatted;
@@ -69,6 +71,12 @@ public class SelectionMenu {
         }
 
         return outputs;
+    }
+
+    public boolean hasChanged(){
+        boolean changed = (!Arrays.equals(lastRecordedArray,getOutputs()));
+        lastRecordedArray = getOutputs();
+        return changed;
     }
 
     public ArrayList<Prompt> getPrompts(){return this.prompts;}
@@ -199,7 +207,7 @@ public class SelectionMenu {
         public Slider init() {super.selectionIterator = new Toggler(maxIndex-minIndex); return this;}
 
         @Override
-        public String getPrintableOutput(){return super.caption + " " + minIndex+super.selectionIterator.currentState();}
+        public String getPrintableOutput(){return "(" + minIndex + "-" + (maxIndex-1) + ") " + minIndex+super.selectionIterator.currentState() + "\n";}
 
         @Override
         public <Value> Value getValueOfActive(){return (Value) new Integer(minIndex+super.selectionIterator.currentState());}

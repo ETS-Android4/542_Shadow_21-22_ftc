@@ -14,6 +14,8 @@ import java.util.Arrays;
 public class TestMenu extends OpMode {
     private SelectionMenu configureAuto;
     private boolean firstLoop = true;
+    private String fileName = "autoConfig.txt";
+    private boolean saved = false;
 
     @Override
     public void init() {
@@ -50,18 +52,26 @@ public class TestMenu extends OpMode {
 
     @Override
     public void loop() {
+        if(gamepad1.a){
+            saved = true;
+            DataTools.Data data = new DataTools.Data();
+            for(int i = 0; i<configureAuto.getOutputs().length; i++){
+                data.put(i,configureAuto.getOutputs()[i]);
+            }
+            DataToolsLite.encode(fileName,data);
+        }
+
+        if(configureAuto.hasChanged()){
+            saved = false;
+        }
+
         configureAuto.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_down,gamepad1.dpad_up);
         telemetry.addLine(configureAuto.formatDisplay());
         telemetry.addData("Selection output", Arrays.toString(configureAuto.getOutputs()));
         //telemetry.addData("Value of color",configureAuto.getPrompts().get(0).getValueOfActive());
         //telemetry.addData("# of prompts",configureAuto.prompts);
-        //telemetry.update();
-        if(gamepad1.a){
-            DataTools.Data data = new DataTools.Data();
-            for(int i = 0; i<configureAuto.getOutputs().length; i++){
-                data.put(i,configureAuto.getOutputs()[i]);
-            }
-            DataToolsLite.encode("autoConfig.txt",data);
-        }
+
+        telemetry.addData("Saved",saved);
+
     }
 }
