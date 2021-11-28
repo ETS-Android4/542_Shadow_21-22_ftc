@@ -24,6 +24,7 @@ public class OuttakeTest extends OpMode {
     private Toggler modeTog = new Toggler(2);
     private Toggler gateTog = new Toggler(2);
     private double level1 = 0;
+    private double level1_5 = 1200;
     private double level2 = 1833.0;
     private double level3 = 2900.0;
     private int autoDropState = 1;
@@ -49,7 +50,7 @@ public class OuttakeTest extends OpMode {
     public void loop() {
         modeTog.changeState(gamepad1.x);
         if(modeTog.currentState() == 1){
-            outtake.setTestPositions(new double[]{level1,level2,level3});
+            outtake.setTestPositions(new double[]{level1,level1_5,level2,level3});
             outtake.operate(gamepad1.dpad_up, gamepad1.dpad_down);
             if (gamepad1.y) { outtake.reset(); }
         }else {

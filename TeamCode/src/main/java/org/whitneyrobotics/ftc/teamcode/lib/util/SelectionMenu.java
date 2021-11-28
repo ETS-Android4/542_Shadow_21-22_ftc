@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public class SelectionMenu {
     private String name = "Selection Menu";
+    private String instructions;
     public ArrayList<Prompt> prompts = null;
     private Toggler promptSelector;
     private boolean initialized = false;
@@ -32,6 +33,11 @@ public class SelectionMenu {
         return this;
     }
 
+    public SelectionMenu addInstructions(String instructions){
+        this.instructions = instructions;
+        return this;
+    }
+
     public SelectionMenu init() {
         promptSelector = new Toggler(this.prompts.size());
         for (Prompt prompt : this.prompts) {
@@ -52,9 +58,10 @@ public class SelectionMenu {
     public String formatDisplay(){
         String formatted = "";
         if(initialized){
-            formatted += this.name + "\n\n";
+            formatted += this.name + "\n";
+            formatted += (instructions != null) ? instructions + "\n" : "";
             Prompt currentPrompt = prompts.get(promptSelector.currentState());
-            formatted += String.format("[Prompt %d of %d]: ",promptSelector.currentState()+1,promptSelector.howManyStates()+1) + currentPrompt.caption + "\n";
+            formatted += String.format("\n[Prompt %d of %d]: ",promptSelector.currentState()+1,promptSelector.howManyStates()) + currentPrompt.caption + "\n";
             formatted += currentPrompt.getPrintableOutput();
         }
         return formatted;
@@ -185,32 +192,32 @@ public class SelectionMenu {
     }
 
     public static class Slider extends Prompt {
-        private int minIndex;
-        private int maxIndex;
+        private int minInclusive;
+        private int maxExclusive;
 
         public Slider(String caption){
             super(caption);
         }
 
-        public Slider(String caption, int minIndex, int maxIndex){
+        public Slider(String caption, int minInclusive, int maxExclusive){
             super(caption);
-            this.minIndex = minIndex;
-            this.maxIndex = maxIndex;
+            this.minInclusive = minInclusive;
+            this.maxExclusive = maxExclusive;
             init();
         }
 
-        public Slider setMinIndex(int minIndex){this.minIndex = minIndex; return this;}
-        public Slider setMaxIndex(int maxIndex){this.maxIndex = maxIndex; return this;}
-        public Slider setLimits(int min, int max){this.minIndex = min; this.maxIndex = max; return this;}
+        public Slider setMinInclusive(int minInclusive){this.minInclusive = minInclusive; return this;}
+        public Slider setMaxExclusive(int maxExclusive){this.maxExclusive = maxExclusive; return this;}
+        public Slider setLimits(int min, int max){this.minInclusive = min; this.maxExclusive = max; return this;}
 
         @Override
-        public Slider init() {super.selectionIterator = new Toggler(maxIndex-minIndex); return this;}
+        public Slider init() {super.selectionIterator = new Toggler(maxExclusive-minInclusive); return this;}
 
         @Override
-        public String getPrintableOutput(){return "(" + minIndex + "-" + (maxIndex-1) + ") " + minIndex+super.selectionIterator.currentState() + "\n";}
+        public String getPrintableOutput(){return "(" + minInclusive + "-" + (maxExclusive-1) + ") " + minInclusive+super.selectionIterator.currentState() + "\n";}
 
         @Override
-        public <Value> Value getValueOfActive(){return (Value) new Integer(minIndex+super.selectionIterator.currentState());}
+        public <Value> Value getValueOfActive(){return (Value) new Integer(minInclusive+super.selectionIterator.currentState());}
 
         //Disabling parent class methods
         @Override

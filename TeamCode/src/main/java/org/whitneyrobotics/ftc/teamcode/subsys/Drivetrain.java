@@ -94,8 +94,8 @@ public class Drivetrain {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //For 40s. TODO: Change this when we get more 20s.
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -157,13 +157,13 @@ public class Drivetrain {
 
     public void operateLeft(double leftPower) {
         frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower * motorReductionForFRAndBL);
+        backLeft.setPower(leftPower);
     }
 
 
     public void operateRight(double rightPower) {
-        frontRight.setPower(rightPower * motorReductionForFRAndBL);
-        backRight.setPower(rightPower * motorReductionForBR);
+        frontRight.setPower(rightPower);
+        backRight.setPower(rightPower);
     }
 
 

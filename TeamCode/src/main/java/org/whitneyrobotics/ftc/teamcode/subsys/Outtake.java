@@ -27,7 +27,7 @@ public class Outtake {
     }
 
     private Toggler servoGateTog = new Toggler(2);
-    private Toggler linearSlidesTog = new Toggler(3);
+    private Toggler linearSlidesTog = new Toggler(4);
     private SimpleTimer outtakeGateTimer = new SimpleTimer();
     public double errorDebug = 0;
 
@@ -47,6 +47,7 @@ public class Outtake {
 
     private enum MotorLevels{
         LEVEL1(0.0),
+        LEVEL1_5(1200),
         LEVEL2(1833.0),
         LEVEL3(2900);
         private double encoderPos;
@@ -56,12 +57,12 @@ public class Outtake {
         public double getPosition(){return this.encoderPos;}
 
     }
-    private double[] orderedPositions = {MotorLevels.LEVEL1.getPosition(), MotorLevels.LEVEL2.getPosition(),MotorLevels.LEVEL3.getPosition()};
+    private double[] orderedPositions = {MotorLevels.LEVEL1.getPosition(), MotorLevels.LEVEL1_5.getPosition(),MotorLevels.LEVEL2.getPosition(),MotorLevels.LEVEL3.getPosition()};
     public boolean slidingInProgress = false;
     public PIDController slidesController = new PIDController(RobotConstants.SLIDE_CONSTANTS);
     public boolean slidesFirstLoop = true;
     public boolean dropFirstLoop = true; //for setting drop timer
-    public double gateDelay = 0.5;
+    public double gateDelay = 0.6;
     //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
@@ -147,18 +148,18 @@ public class Outtake {
     public boolean UseTestPositions(){return useTestPositions;}
 
     public void setTestPositions(double[] levels){
-        if(levels.length != 3) {
-            useTestPositions = true;
+        if(levels.length != 4) {
+            useTestPositions = false;
         } else {
             if(levels[0] > levels[1]){
                 throw new IllegalArgumentException("Second position cannot be greater than first.");
-            } else if(levels[1] > levels[2]){
+            } else if(levels[2] > levels[3]){
                 throw new IllegalArgumentException("Third position cannot be greater than second.");
             } else {
                 if(useTestPositions){
                     orderedPositions = levels;
                 } else {
-                    orderedPositions = new double[]{MotorLevels.LEVEL1.getPosition(), MotorLevels.LEVEL2.getPosition(), MotorLevels.LEVEL3.getPosition()};
+                    orderedPositions = new double[]{MotorLevels.LEVEL1.getPosition(), MotorLevels.LEVEL1_5.getPosition(),MotorLevels.LEVEL2.getPosition(), MotorLevels.LEVEL3.getPosition()};
                 }
             }
         }

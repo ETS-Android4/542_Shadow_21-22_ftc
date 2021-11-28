@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 public class DataTools {
@@ -55,7 +56,7 @@ public class DataTools {
         return data;
     }
 
-    public static class Data<Object> extends HashMap {
+    public static class Data<Object> extends LinkedHashMap {
         public Data(){super();}
 
         public void put(String key, Object value){

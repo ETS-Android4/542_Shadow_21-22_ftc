@@ -1,7 +1,7 @@
 package org.whitneyrobotics.ftc.teamcode.autoop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -9,12 +9,12 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 
-@Autonomous (name="WHS Freight Frenzy Auto")
-public class AutoOp extends OpMode {
+@TeleOp(name="WHS Freight Frenzy Auto Drivetrain Only")
+public class AutoDrivetrainOnly extends OpMode {
 
-    public WHSRobotImpl robot;
+    public WHSRobotImplDrivetrainOnly robot;
 
     static final int RED = 0;
     static final int BLUE = 1;
@@ -68,7 +68,7 @@ public class AutoOp extends OpMode {
     public void defineStatesEnabled(){
         stateEnabled[INIT] = true;
         stateEnabled[ROTATE_CAROUSEL] = true;
-        stateEnabled[SHIPPING_HUB] = false;
+        stateEnabled[SHIPPING_HUB] = true;
         stateEnabled[WAREHOUSE] = false;
         stateEnabled[PARK] = true;
         stateEnabled[STOP] = true;
@@ -131,22 +131,22 @@ public class AutoOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
         robot.drivetrain.resetEncoders();
         // add outtake reset
         defineStatesEnabled();
 
         try {
             String[] unformattedData = DataToolsLite.decode("autoConfig.txt");
-            Object[] formattedData = DataToolsLite.convertBackToObjects(new DataToolsLite.ObjectTypes[]{DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.BOOLEAN,
-                    DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN}, unformattedData);
-            STARTING_ALLIANCE = (int) formattedData[0];
-            STARTING_SIDE = (int) formattedData[1];
-            stateEnabled[ROTATE_CAROUSEL] = (boolean) formattedData[3];
-            stateEnabled[SHIPPING_HUB] = (boolean) formattedData[4];
-            stateEnabled[WAREHOUSE] = (boolean) formattedData[5];
-            stateEnabled[PARK] = (boolean) formattedData[7];
-            parkLocation = (int)formattedData[8];
+            //Object[] formattedData = DataToolsLite.convertBackToObjects(new DataToolsLite.ObjectTypes[]{DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.BOOLEAN,
+                    //DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN, DataToolsLite.ObjectTypes.INT, DataToolsLite.ObjectTypes.BOOLEAN}, unformattedData);
+            STARTING_ALLIANCE = (int) Integer.parseInt(unformattedData[0]);
+            STARTING_SIDE = (int) Integer.parseInt(unformattedData[1]);
+            stateEnabled[ROTATE_CAROUSEL] = (boolean) Boolean.parseBoolean(unformattedData[3]);
+            stateEnabled[SHIPPING_HUB] = (boolean) Boolean.parseBoolean(unformattedData[4]);
+            stateEnabled[WAREHOUSE] = (boolean) Boolean.parseBoolean(unformattedData[5]);
+            stateEnabled[PARK] = (boolean) Boolean.parseBoolean(unformattedData[7]);
+            parkLocation = (int) Integer.parseInt(unformattedData[8]);
 
         } catch(Exception e){
             telemetry.addData("Data read sus","Reverted back to defaults");
@@ -176,6 +176,26 @@ public class AutoOp extends OpMode {
 
         gapApproach[RED] = new Position(-1626,300);
         gapApproach[BLUE] = new Position(-1626,-300);
+        /*@Override
+    public void init_loop() {
+        if (tfod != null) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                int i = 0;
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel() == "Cube" || recognition.getLabel() == "Duck"){
+                        CAMERA_BOTTOM = recognition.getBottom();
+                        CAMERA_LEFT = recognition.getLeft();
+                        CAMERA_TOP = recognition.getTop();
+                        CAMERA_RIGHT = recognition.getRight();
+                    }
+                    i++;
+                }
+                telemetry.update();
+            }
+        }
+    }*/
 
         gapCrossPositions[RED] = new Position(-1626,900);
         gapCrossPositions[BLUE] = new Position(-1626,-900);
@@ -198,11 +218,11 @@ public class AutoOp extends OpMode {
         if (tfod != null) {
             tfod.activate();
             tfod.setZoom(2.5, 16.0/9.0);
-        }*/
-
+        }
+*/
         // Camera Barcode Object Locations (Based on Red) TEST FOR THESE
         // SCAN LEVEL 0
-        barcodeLocation[0][TESTED_LEFT] = 0; // LEFT
+        /*barcodeLocation[0][TESTED_LEFT] = 0; // LEFT
         barcodeLocation[0][TESTED_TOP] = 1; // TOP
         barcodeLocation[0][TESTED_RIGHT] = 2; // RIGHT
         barcodeLocation[0][TESTED_BOTTOM] = 3; // BOTTOM
@@ -217,116 +237,102 @@ public class AutoOp extends OpMode {
         barcodeLocation[2][TESTED_LEFT] = 0; // LEFT
         barcodeLocation[2][TESTED_TOP] = 1; // TOP
         barcodeLocation[2][TESTED_RIGHT] = 2; // RIGHT
-        barcodeLocation[2][TESTED_BOTTOM] = 3; // BOTTOM
+        barcodeLocation[2][TESTED_BOTTOM] = 3; // BOTTOM*/
+        Coordinate initial = new Coordinate(startingPositions[STARTING_ALLIANCE][STARTING_SIDE],180);
+        robot.setInitialCoordinate(initial);
     }
 
-    /*@Override
-    public void init_loop() {
-        if (tfod != null) {
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                int i = 0;
-                for (Recognition recognition : updatedRecognitions) {
-                    if (recognition.getLabel() == "Cube" || recognition.getLabel() == "Duck"){
-                        CAMERA_BOTTOM = recognition.getBottom();
-                        CAMERA_LEFT = recognition.getLeft();
-                        CAMERA_TOP = recognition.getTop();
-                        CAMERA_RIGHT = recognition.getRight();
-                    }
-                    i++;
-                }
-                telemetry.update();
-            }
-        }
-    }*/
+
 
     @Override
     public void loop() {
         robot.estimateHeading();
         robot.estimatePosition();
-        switch (state){
+        if(gamepad1.a){
+            robot.drivetrain.operate(0,0);
+        } else {
+        switch (state) {
             case INIT:
-                switch (subState){
+                switch (subState) {
                     case 0:
-                        /*if ((((barcodeLocation[0][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[0][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[0][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[0][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
-                            scanLevel = 1;
-                        } else if ((((barcodeLocation[1][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[1][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[1][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[1][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
-                            scanLevel = 2;
-                        } else if ((((barcodeLocation[2][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[2][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[2][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[2][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
-                            scanLevel = 3;
-                        } else {
-                            scanLevel = 1;
-                        }*/
+                            /*if ((((barcodeLocation[0][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[0][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[0][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[0][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
+                                scanLevel = 1;
+                            } else if ((((barcodeLocation[1][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[1][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[1][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[1][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
+                                scanLevel = 2;
+                            } else if ((((barcodeLocation[2][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[2][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[2][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[2][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
+                                scanLevel = 3;
+                            } else {
+                                scanLevel = 1;
+                            }*/
                         subState++;
                         break;
                     case 1:
-                        switch (subState){
+                        switch (subState) {
                             case 0:
                                 robot.drivetrain.resetEncoders();
                                 //advanceState();
-                                Coordinate initial = new Coordinate(startingPositions[STARTING_ALLIANCE][STARTING_SIDE],180);
-                                robot.setInitialCoordinate(initial);
                                 subState++;
                                 break;
                             case 1:
-                                robot.driveToTarget(startingOffsetPositions[STARTING_ALLIANCE][STARTING_SIDE],false);
-                                if (!robot.driveToTargetInProgress()){
+                                robot.driveToTarget(startingOffsetPositions[STARTING_ALLIANCE][STARTING_SIDE], true);
+                                if (!robot.driveToTargetInProgress()) {
                                     subState++;
+                                    advanceState();
                                 }
                                 break;
                         }
                 }
                 break;
             case ROTATE_CAROUSEL:
-                switch (subState){
+                switch (subState) {
                     case 0:
                         robot.driveToTarget(carouselApproach[STARTING_ALLIANCE], true);
-                        if (!robot.driveToTargetInProgress()){
+                        if (!robot.driveToTargetInProgress()) {
                             subState++;
                         }
                         break;
                     case 1:
                         robot.driveToTarget(carouselPositions[STARTING_ALLIANCE], true);
-                        if (!robot.driveToTargetInProgress()){
+                        if (!robot.driveToTargetInProgress()) {
                             subState++;
                         }
                         break;
                     case 2:
                         boolean checkBlue = (STARTING_ALLIANCE) == BLUE ? true : false;
-                        robot.carousel.operateAuto(checkBlue);
-                        if (!robot.carousel.isCarouselInProgress()){
-                            advanceState();
-                            subState++;
-                        }
+                        //robot.robotCarousel.operateAuto(checkBlue);
+                        //if (!robot.robotCarousel.isCarouselInProgress()){
+                        advanceState();
+                        subState++;
+                        //}
                         break;
                 }
                 break;
             case SHIPPING_HUB:
-                switch (subState){
+                switch (subState) {
                     case 0:
-                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE],true); //check if outtake is on the back
-                        if(!robot.driveToTargetInProgress()){
+                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], true); //check if outtake is on the back
+                        if (!robot.driveToTargetInProgress()) {
                             subState++;
                         }
                         break;
                     case 1:
                         robot.driveToTarget(shippingHubPosition[STARTING_ALLIANCE], true);
-                        if (!robot.driveToTargetInProgress()){
+                        if (!robot.driveToTargetInProgress()) {
                             subState++;
                         }
                         break;
                     case 2:
-                        robot.outtake.operateWithoutGamepad(scanLevel);
-                        if(!robot.outtake.slidingInProgress){
-                            if(robot.outtake.autoDrop()){ subState++; }
-                        }
+                        //robot.robotOuttake.operateWithoutGamepad(scanLevel);
+                        //if(!robot.robotOuttake.slidingInProgress){
+                        //if(robot.robotOuttake.autoDrop()){ subState++; }
+                        //}
+                        subState++;
                         break;
                     case 3:
-                        robot.outtake.reset();
-                        if (!robot.outtake.slidingInProgress){
-                            subState++;
-                        }
+                        //robot.robotOuttake.reset();
+                        //if (!robot.robotOuttake.slidingInProgress){
+                        subState++;
+                        //}
                     case 4:
                         robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
                         advanceState();
@@ -334,41 +340,48 @@ public class AutoOp extends OpMode {
                 }
                 break;
             case WAREHOUSE:
-                switch (subState){
+                switch (subState) {
                     case 0:
-                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE],false);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE], false);
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 1:
                         robot.driveToTarget(gapCrossPositions[STARTING_ALLIANCE], false);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 2:
                         //robot.robotIntake.autoDropIntake();
-                        /*if (robot.robotIntake.intakeAutoDone){
-                            subState++;
-                        }*/
+                            /*if (robot.robotIntake.intakeAutoDone){
+                                subState++;
+                            }*/
                         subState++;
                         break;
                     case 3:
                         robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 4:
                         //robot.robotOuttake.autoControl(1);
-                        if (robot.outtake.autoDrop()) { subState++; }
+                        //if (robot.robotOuttake.autoDrop()) { subState++; }
+                        subState++;
                         break;
                     case 5:
-                        robot.outtake.reset();
+                        //robot.robotOuttake.reset();
                         advanceState();
                         break;
 
                 }
                 break;
             case PARK:
-                if(parkLocation == 1){
+                if (parkLocation == 0) {
                     robot.driveToTarget(storageUnitPositions[STARTING_ALLIANCE], false);
-                    if (!robot.driveToTargetInProgress()){
+                    if (!robot.driveToTargetInProgress()) {
                         advanceState();
                     }
                 } else {
@@ -404,11 +417,13 @@ public class AutoOp extends OpMode {
                 break;
 
         }
+    }
         telemetry.addData("Current state: ",stateNames[state]);
         telemetry.addData("Substate: ", subState);
         telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
         telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
-        telemetry.addData("Outtake extension: ", robot.outtake.slidingInProgress);
+        telemetry.addData("DTT error",robot.distanceToTargetDebug);
+        //telemetry.addData("Outtake extension: ", robot.robotOuttake.slidingInProgress);
         //telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output

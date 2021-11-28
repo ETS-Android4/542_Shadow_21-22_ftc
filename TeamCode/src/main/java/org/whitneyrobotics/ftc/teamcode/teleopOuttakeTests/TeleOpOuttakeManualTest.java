@@ -28,8 +28,8 @@ public class TeleOpOuttakeManualTest extends OpMode {
         }*/
 
         // Carousel
-        robot.robotCarousel.operate(gamepad1.right_bumper);
-        robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,false);
+        //robot.robotCarousel.operate(gamepad1.right_bumper);
+        //robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,false);
 
         // DRIVER 2 CONTROLS
         // Intake
@@ -42,15 +42,15 @@ public class TeleOpOuttakeManualTest extends OpMode {
 
         //In case line outtake levels don't work properly
         if(gamepad1.dpad_up){
-            robot.robotOuttake.operateSlides(0.2);
+            robot.outtake.operateSlides(0.2);
         } else if (gamepad1.dpad_down){
-            robot.robotOuttake.operateSlides(-0.2);
+            robot.outtake.operateSlides(-0.2);
         }
 
         //if(gamepad2.a) { robot.robotOuttake.reset(); }
 
         // - Hatch | Servo gate
-        robot.robotOuttake.togglerServoGate(gamepad2.x);
+        robot.outtake.togglerServoGate(gamepad2.x);
 
     }
 }

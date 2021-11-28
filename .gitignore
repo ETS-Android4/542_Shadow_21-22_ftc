@@ -88,8 +88,4 @@ lint/tmp/
 
 TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/subsys/BasicDrivetrainPIDPH.java
 
-TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/NewTests/IntakePowerTest.java
-
 TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/subsys/IntakePH.java
-
-TeamCode/src/main/java/org/whitneyrobotics/ftc/teamcode/lib/geometry/RectangleIntersection.java

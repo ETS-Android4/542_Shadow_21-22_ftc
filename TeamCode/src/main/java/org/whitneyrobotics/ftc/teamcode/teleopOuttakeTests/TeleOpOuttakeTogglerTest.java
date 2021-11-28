@@ -28,8 +28,8 @@ public class TeleOpOuttakeTogglerTest extends OpMode {
         }*/
 
         // Carousel
-        robot.robotCarousel.operate(gamepad1.right_bumper);
-        robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,gamepad1.y);
+        //robot.robotCarousel.operate(gamepad1.right_bumper);
+        //robot.robotCarousel.togglerOperate(gamepad1.right_trigger>0.05,gamepad1.y);
 
         // DRIVER 2 CONTROLS
         // Intake
@@ -47,10 +47,10 @@ public class TeleOpOuttakeTogglerTest extends OpMode {
             robot.robotOuttake.linearSlides.setPower(-0.2);
         }*/
 
-        if(gamepad2.a) { robot.robotOuttake.reset(); }
+        if(gamepad2.a) { robot.outtake.reset(); }
 
         // - Hatch | Servo gate
-        robot.robotOuttake.togglerServoGate(gamepad2.x);
+        robot.outtake.togglerServoGate(gamepad2.x);
 
     }
 }

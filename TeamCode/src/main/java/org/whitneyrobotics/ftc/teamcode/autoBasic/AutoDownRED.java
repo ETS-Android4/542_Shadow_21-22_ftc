@@ -2,10 +2,8 @@ package org.whitneyrobotics.ftc.teamcode.autoBasic;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
-import org.whitneyrobotics.ftc.teamcode.lib.util.Timer;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 
 @Autonomous(name="AutoDownRED",group="A")
@@ -32,11 +30,11 @@ public class AutoDownRED extends OpMode {
                     step1.set(2.5);
                     step1B = true;
                 }
-                robot.robotDrivetrain.operateLeft(-0.25);
-                robot.robotDrivetrain.operateRight(-0.25);
+                robot.drivetrain.operateLeft(-0.25);
+                robot.drivetrain.operateRight(-0.25);
                 if(step1.isExpired()){
-                    robot.robotDrivetrain.operateLeft(0);
-                    robot.robotDrivetrain.operateRight(0);
+                    robot.drivetrain.operateLeft(0);
+                    robot.drivetrain.operateRight(0);
                     state++;
                 }
                 break;
@@ -45,11 +43,11 @@ public class AutoDownRED extends OpMode {
                     step2.set(4);
                     step2B = true;
                 }
-                robot.robotDrivetrain.operateLeft(0.25);
-                robot.robotDrivetrain.operateRight(-0.25);
+                robot.drivetrain.operateLeft(0.25);
+                robot.drivetrain.operateRight(-0.25);
                 if(step2.isExpired()){
-                    robot.robotDrivetrain.operateLeft(0);
-                    robot.robotDrivetrain.operateRight(0);
+                    robot.drivetrain.operateLeft(0);
+                    robot.drivetrain.operateRight(0);
                     state++;
                 }
                 break;
@@ -67,8 +65,8 @@ public class AutoDownRED extends OpMode {
                 }
                 break;*/
             default:
-                robot.robotDrivetrain.operateLeft(-0.1);
-                robot.robotDrivetrain.operateRight(-0.1);
+                robot.drivetrain.operateLeft(-0.1);
+                robot.drivetrain.operateRight(-0.1);
         }
     }
 }

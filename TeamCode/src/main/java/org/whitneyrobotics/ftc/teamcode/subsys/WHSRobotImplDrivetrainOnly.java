@@ -5,22 +5,25 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.whitneyrobotics.ftc.teamcode.lib.control.PIDController;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
+import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.strafetotarget.StrafePath;
+import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwerveFollower;
+import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwervePath;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
+import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class WHSRobotImplDrivetrainOnly {
-    // <<<<<<< HEAD (error so commented out fix later)
     //public Carousel robotCarousel;
-    public Drivetrain robotDrivetrain;
+    public Drivetrain drivetrain;
     //public Outtake robotOuttake;
-    public IMU robotIMU;
+    public IMU imu;
     //public Intake robotIntake;
 
-// ======= (error so commented out fix later)
+    SwervePath currentSwervePath;
+    public SwerveFollower swerveFollower;
 
-    // SwervePath currentSwervePath; (error so commented out fix later)
-    // public SwerveFollower swerveFollower; (error so commented out fix later)
-// >>>>>>> master (error so commented out fix later)
+    private Toggler intakeOuttakeState = new Toggler(5);
+    private String stateDesc = "";
 
     Coordinate currentCoord;
     private double targetHeading; //field frame
@@ -59,7 +62,7 @@ public class WHSRobotImplDrivetrainOnly {
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-        robotDrivetrain = new Drivetrain(robotMap);
+        drivetrain = new Drivetrain(robotMap);
         // intake = new OldIntake(hardwareMap); (error so commented out fix later)
         // outtake = new OldOuttake2(hardwareMap); (error so commented out fix later)
         // canister = new Canister(hardwareMap); (error so commented out fix later)
@@ -71,8 +74,8 @@ public class WHSRobotImplDrivetrainOnly {
         ROTATE_MAX = RobotConstants.rotate_max;
 
 
-        robotDrivetrain.resetEncoders();
-        robotIMU = new IMU(robotMap);
+        drivetrain.resetEncoders();
+        imu = new IMU(robotMap);
         currentCoord = new Coordinate(0.0, 0.0, 0.0);
     }
 
@@ -85,7 +88,7 @@ public class WHSRobotImplDrivetrainOnly {
 
         double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
         degreesToRotate = degreesToRotate * 180 / Math.PI;
-        targetHeading = Functions.normalizeAngle(currentCoord.getHeading() + degreesToRotate); //-180 to 180 deg
+        targetHeading = Functions.normalizeAngle(currentCoord.getHeading() - degreesToRotate); //-180 to 180 deg
 
         switch (driveSwitch) {
             case 0:
@@ -119,11 +122,11 @@ public class WHSRobotImplDrivetrainOnly {
                 }
                 if (Math.abs(distanceToTarget) > DEADBAND_DRIVE_TO_TARGET) {
                     driveToTargetInProgress = true;
-                    robotDrivetrain.operateLeft(power);
-                    robotDrivetrain.operateRight(power);
+                    drivetrain.operateLeft(power);
+                    drivetrain.operateRight(power);
                 } else {
-                    robotDrivetrain.operateRight(0.0);
-                    robotDrivetrain.operateLeft(0.0);
+                    drivetrain.operateRight(0.0);
+                    drivetrain.operateLeft(0.0);
                     driveToTargetInProgress = false;
                     rotateToTargetInProgress = false;
                     firstDriveLoop = true;
@@ -167,12 +170,12 @@ public class WHSRobotImplDrivetrainOnly {
         double power = (rotateController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(rotateController.getOutput()), 0, 180, ROTATE_MIN, ROTATE_MAX));
 
         if (Math.abs(angleToTarget) > DEADBAND_ROTATE_TO_TARGET/* && rotateController.getDerivative() < 40*/) {
-            robotDrivetrain.operateLeft(power);
-            robotDrivetrain.operateRight(-power);
+            drivetrain.operateLeft(power);
+            drivetrain.operateRight(-power);
             rotateToTargetInProgress = true;
         } else {
-            robotDrivetrain.operateLeft(0.0);
-            robotDrivetrain.operateRight(0.0);
+            drivetrain.operateLeft(0.0);
+            drivetrain.operateRight(0.0);
             rotateToTargetInProgress = false;
             firstRotateLoop = true;
         }
@@ -188,19 +191,19 @@ public class WHSRobotImplDrivetrainOnly {
 
     public void estimateHeading() {
         double currentHeading;
-        currentHeading = Functions.normalizeAngle(robotIMU.getHeading() + robotIMU.getImuBias()); //-180 to 180 deg
+        currentHeading = Functions.normalizeAngle(imu.getHeading() + imu.getImuBias()); //-180 to 180 deg
         currentCoord.setHeading(currentHeading); //updates global variable
     }
 
     public void estimateCoordinate() {
-        double[] currentEncoderValues = robotDrivetrain.getLRAvgEncoderPosition();
+        double[] currentEncoderValues = drivetrain.getLRAvgEncoderPosition();
         encoderDeltas[0] = currentEncoderValues[0] - encoderValues[0];
         encoderDeltas[1] = currentEncoderValues[1] - encoderValues[1];
-        double currentHeading = Functions.normalizeAngle(Math.toDegrees(robotDrivetrain.encToMM((currentEncoderValues[1] - currentEncoderValues[0]) / 2 / Drivetrain.getTrackWidth())) + robotIMU.getImuBias()); //-180 to 180 deg
+        double currentHeading = Functions.normalizeAngle(Math.toDegrees(drivetrain.encToMM((currentEncoderValues[1] - currentEncoderValues[0]) / 2 / Drivetrain.getTrackWidth())) + imu.getImuBias()); //-180 to 180 deg
         currentCoord.setHeading(currentHeading); //updates global variable
 
-        double deltaS = robotDrivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
-        double deltaHeading = Math.toDegrees(robotDrivetrain.encToMM((encoderDeltas[1] - encoderDeltas[0]) / Drivetrain.getTrackWidth()));
+        double deltaS = drivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
+        double deltaHeading = Math.toDegrees(drivetrain.encToMM((encoderDeltas[1] - encoderDeltas[0]) / Drivetrain.getTrackWidth()));
         robotX += deltaS * Functions.cosd(lastKnownHeading + deltaHeading / 2);
         robotY += deltaS * Functions.sind(lastKnownHeading + deltaHeading / 2);
 
@@ -216,8 +219,8 @@ public class WHSRobotImplDrivetrainOnly {
     }
 
     public void estimatePosition() {
-        encoderDeltas = robotDrivetrain.getLRAvgEncoderDelta();
-        distance = robotDrivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
+        encoderDeltas = drivetrain.getLRAvgEncoderDelta();
+        distance = drivetrain.encToMM((encoderDeltas[0] + encoderDeltas[1]) / 2);
         robotX += distance * Functions.cosd(getCoordinate().getHeading());
         robotY += distance * Functions.sind(getCoordinate().getHeading());
         currentCoord.setX(robotX);
@@ -228,7 +231,7 @@ public class WHSRobotImplDrivetrainOnly {
         currentCoord = initCoord;
         robotX = initCoord.getX();
         robotY = initCoord.getY();
-        robotIMU.setImuBias(currentCoord.getHeading());
+        imu.setImuBias(currentCoord.getHeading());
         lastKnownHeading = currentCoord.getHeading();
     }
 
@@ -236,7 +239,7 @@ public class WHSRobotImplDrivetrainOnly {
 
         double deltaXRobot, deltaYRobot;
 
-        encoderDeltas = robotDrivetrain.getMMDeadwheelEncoderDeltas();
+        encoderDeltas = drivetrain.getMMDeadwheelEncoderDeltas();
 
         double deltaXWheels = (encoderDeltas[0] - encoderDeltas[2]) / 2;
         double deltaYWheel = encoderDeltas[1];
@@ -259,7 +262,20 @@ public class WHSRobotImplDrivetrainOnly {
         currentCoord.setHeading(Functions.normalizeAngle(currentCoord.getHeading() + Math.toDegrees(deltaTheta)));
     }
 
+    public void updatePath(SwervePath path) {
+        swerveFollower = new SwerveFollower(path);
+    }
 
+    public void updatePath(StrafePath path) {
 
+    }
+
+    public void swerveToTarget() {
+        drivetrain.operate(swerveFollower.calculateMotorPowers(getCoordinate(), drivetrain.getWheelVelocities()));
+    }
+
+    public boolean swerveInProgress() {
+        return swerveFollower.inProgress();
+    }
 
 }

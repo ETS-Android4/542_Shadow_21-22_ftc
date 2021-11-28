@@ -9,12 +9,14 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.subsys.Outtake;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 
-@Autonomous (name="WHS Freight Frenzy Auto")
-public class AutoOp extends OpMode {
+@Autonomous (name="WHS Freight Frenzy Auto No Intake/Carousel")
+public class AutoNoIntakeOrCarousel extends OpMode {
 
-    public WHSRobotImpl robot;
+    public WHSRobotImplDrivetrainOnly robot;
+    public Outtake outtake;
 
     static final int RED = 0;
     static final int BLUE = 1;
@@ -131,7 +133,7 @@ public class AutoOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new WHSRobotImpl(hardwareMap);
+        robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
         robot.drivetrain.resetEncoders();
         // add outtake reset
         defineStatesEnabled();
@@ -294,11 +296,11 @@ public class AutoOp extends OpMode {
                         break;
                     case 2:
                         boolean checkBlue = (STARTING_ALLIANCE) == BLUE ? true : false;
-                        robot.carousel.operateAuto(checkBlue);
-                        if (!robot.carousel.isCarouselInProgress()){
+                        //robot.robotCarousel.operateAuto(checkBlue);
+                        //if (!robot.robotCarousel.isCarouselInProgress()){
                             advanceState();
                             subState++;
-                        }
+                        //}
                         break;
                 }
                 break;
@@ -317,14 +319,14 @@ public class AutoOp extends OpMode {
                         }
                         break;
                     case 2:
-                        robot.outtake.operateWithoutGamepad(scanLevel);
-                        if(!robot.outtake.slidingInProgress){
-                            if(robot.outtake.autoDrop()){ subState++; }
+                        outtake.operateWithoutGamepad(scanLevel);
+                        if(!outtake.slidingInProgress){
+                            if(outtake.autoDrop()){ subState++; }
                         }
                         break;
                     case 3:
-                        robot.outtake.reset();
-                        if (!robot.outtake.slidingInProgress){
+                        outtake.reset();
+                        if (!outtake.slidingInProgress){
                             subState++;
                         }
                     case 4:
@@ -356,17 +358,17 @@ public class AutoOp extends OpMode {
                         break;
                     case 4:
                         //robot.robotOuttake.autoControl(1);
-                        if (robot.outtake.autoDrop()) { subState++; }
+                        if (outtake.autoDrop()) { subState++; }
                         break;
                     case 5:
-                        robot.outtake.reset();
+                        outtake.reset();
                         advanceState();
                         break;
 
                 }
                 break;
             case PARK:
-                if(parkLocation == 1){
+                if(parkLocation == 0){
                     robot.driveToTarget(storageUnitPositions[STARTING_ALLIANCE], false);
                     if (!robot.driveToTargetInProgress()){
                         advanceState();
@@ -408,7 +410,7 @@ public class AutoOp extends OpMode {
         telemetry.addData("Substate: ", subState);
         telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
         telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
-        telemetry.addData("Outtake extension: ", robot.outtake.slidingInProgress);
+        telemetry.addData("Outtake extension: ", outtake.slidingInProgress);
         //telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output

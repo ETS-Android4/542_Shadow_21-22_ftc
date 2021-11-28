@@ -23,9 +23,9 @@ public class TestAutoLoop extends OpMode {
     @Override
     public void init(){
         robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
-        robot.robotDrivetrain.resetEncoders();
-        robot.robotDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Coordinate init = new Coordinate(initP,0);
+        robot.drivetrain.resetEncoders();
+        robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Coordinate init = new Coordinate(initP,180);
         robot.setInitialCoordinate(init);
         currentTarget = one;
     }
@@ -40,7 +40,7 @@ public class TestAutoLoop extends OpMode {
         }
 
         if(gamepad1.a){
-            robot.robotDrivetrain.operate(0,0);
+            robot.drivetrain.operate(0,0);
         } else{
             switch(caseCounter){
                 case 0:

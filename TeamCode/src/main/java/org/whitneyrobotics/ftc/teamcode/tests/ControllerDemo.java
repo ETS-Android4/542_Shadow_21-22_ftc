@@ -11,6 +11,7 @@ public class ControllerDemo extends OpMode {
     private GamepadListener gamepadListener= new GamepadListener();
     private Toggler buttonLongPressToggler = new Toggler(2);
     private Toggler buttonShortPressToggler = new Toggler(2);
+    private Toggler buttonDoublePressToggler = new Toggler(2);
 
     @Override
     public void init() {
@@ -19,8 +20,9 @@ public class ControllerDemo extends OpMode {
 
     @Override
     public void loop() {
-        buttonLongPressToggler.changeState(gamepadListener.longPress(gamepad1.a,2000));
-        buttonShortPressToggler.changeState(gamepadListener.shortPress(gamepad1.b,2000));
+        buttonLongPressToggler.changeState(gamepadListener.longPress(gamepad1.a,500));
+        buttonShortPressToggler.changeState(gamepadListener.shortPress(gamepad1.b,1000));
+        buttonDoublePressToggler.changeState(gamepadListener.doublePress(gamepad1.x,250));
 
         if(gamepad1.a){
             gamepad1.rumble(500);
@@ -32,6 +34,8 @@ public class ControllerDemo extends OpMode {
         telemetry.addData("gamepad1RightStickY: ", gamepad1.right_stick_y);
         telemetry.addData("Long Press A: ", buttonLongPressToggler.currentState());
         telemetry.addData("Short Press B", buttonShortPressToggler.currentState());
+        telemetry.addData("Double Press X",buttonDoublePressToggler.currentState());
+        telemetry.addData("Double press debug",gamepadListener.getDoublePressState());
         telemetry.addData("Gamepad X: ", gamepad1.x);
         telemetry.addData("Right Trigger", gamepad1.right_trigger);
 

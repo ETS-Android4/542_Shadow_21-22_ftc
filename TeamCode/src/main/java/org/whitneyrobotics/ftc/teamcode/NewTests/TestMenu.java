@@ -1,4 +1,4 @@
-package org.whitneyrobotics.ftc.teamcode.teleop;
+package org.whitneyrobotics.ftc.teamcode.NewTests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class TestMenu extends OpMode {
     private SelectionMenu configureAuto;
     private boolean firstLoop = true;
-    private String fileName = "autoConfig.txt";
+    private String fileName = "testConfig.txt";
     private boolean saved = false;
 
     @Override
