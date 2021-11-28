@@ -167,20 +167,20 @@ public class AutoNoIntakeOrCarousel extends OpMode {
         startingOffsetPositions[BLUE][BOTTOM] = new Position(-1547.6,-900);
         startingOffsetPositions[BLUE][TOP] = new Position(-1547.6,300);
 
-        shippingHubApproach[RED] = new Position(-1000,600);
-        shippingHubApproach[BLUE] = new Position(-1000,-600);
+        shippingHubApproach[RED] = new Position(-1000,700);
+        shippingHubApproach[BLUE] = new Position(-1000,-700);
 
-        shippingHubPosition[RED] = new Position(-1190,590);
-        shippingHubPosition[BLUE] = new Position(-1190,-590);
+        shippingHubPosition[RED] = new Position(-867,557);
+        shippingHubPosition[BLUE] = new Position(-867,-557);
 
         //sharedShippingHub[RED] = new Position(-152.4, -1200);
         //sharedShippingHub[BLUE] = new Position(-152.4, 1200);
 
-        gapApproach[RED] = new Position(-1626,300);
-        gapApproach[BLUE] = new Position(-1626,-300);
+        gapApproach[RED] = new Position(-1626,-450);
+        gapApproach[BLUE] = new Position(-1626,450);
 
-        gapCrossPositions[RED] = new Position(-1626,900);
-        gapCrossPositions[BLUE] = new Position(-1626,-900);
+        gapCrossPositions[RED] = new Position(-1626,-900);
+        gapCrossPositions[BLUE] = new Position(-1626,900);
 
         warehouse[RED] = new Position(-1500,-1123);
         warehouse[BLUE] = new Position(-1500,1123);
@@ -188,11 +188,11 @@ public class AutoNoIntakeOrCarousel extends OpMode {
         storageUnitPositions[RED] = new Position(-900,1500);
         storageUnitPositions[BLUE] = new Position(-900,-1500);
 
-        carouselApproach[RED] = new Position(-1462, 1462);
-        carouselApproach[BLUE] = new Position(-1462,-1462);
+        carouselApproach[RED] = new Position(-1400, 1400);
+        carouselApproach[BLUE] = new Position(-1400,-1400);
 
-        carouselPositions[RED] = new Position(-1562,1562);
-        carouselPositions[BLUE] = new Position(-1562, -1562);
+        carouselPositions[RED] = new Position(-1512,1512);
+        carouselPositions[BLUE] = new Position(-1512, -1512);
 
         // INIT Camera
         /*initVuforia();
