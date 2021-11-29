@@ -86,13 +86,13 @@ public class DrivetrainBasicTest extends OpMode {
                 break;
             case MECANUM_DRIVE:
                 if(gamepad1.left_bumper){
-                    robot.drivetrain.operateMecanumDrive(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
+                    robot.drivetrain.operateMecanumDrive(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,-gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
                     driveMode = "Slow linear drive";
                 } else if (gamepad1.right_bumper){
-                    robot.drivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
+                    robot.drivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x/2.54,gamepad1.left_stick_y/2.54,-gamepad1.right_stick_x/2.54,robot.getCoordinate().getHeading());
                     driveMode = "Slow exponential drive";
                 } else {
-                    robot.drivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x,gamepad1.left_stick_y,gamepad1.right_stick_x,robot.getCoordinate().getHeading());
+                    robot.drivetrain.operateMecanumDriveScaled(-gamepad1.left_stick_x,gamepad1.left_stick_y,-gamepad1.right_stick_x,robot.getCoordinate().getHeading());
                     driveMode = "Exponential drive";
                 }
                 break;

@@ -12,7 +12,7 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
  * Created by Jason on 10/20/2017.
  */
 
-public class Drivetrain {
+public class DrivetrainExperimental {
     // if all drivetrain motors consistent, remove implementation of these reductions
     private double motorReductionForFRAndBL = 1;
     private double motorReductionForBR = 1;
@@ -80,7 +80,7 @@ public class Drivetrain {
 
     private double[] lastKnownEncoderValues = {0, 0, 0, 0};
 
-    public Drivetrain(HardwareMap driveMap) {
+    public DrivetrainExperimental(HardwareMap driveMap) {
 
         frontLeft = driveMap.get(DcMotorEx.class, "driveFL");
         frontRight = driveMap.get(DcMotorEx.class, "driveFR");
@@ -241,11 +241,6 @@ public class Drivetrain {
         return wheelVelocities;
     }
 
-    public double[] getAllWheelVelocitiesTPS(){
-        return new double[] {frontLeft.getVelocity(),frontRight.getVelocity(),backLeft.getVelocity(),backRight.getVelocity()};
-
-    }
-
     public static double encToMM(double encoderTicks) {
         return encoderTicks * (1/ENCODER_TICKS_PER_MM);
     }
@@ -278,14 +273,14 @@ public class Drivetrain {
         double a = WHEEL_BASE / 2;
         double b = TRACK_WIDTH / 2;
         rightX = gamepadInputTurn;
-//        vFL = r * Math.cos(robotAngle) + rightX;
-//        vFR = r * Math.sin(robotAngle) - rightX;
-//        vBL = r * Math.sin(robotAngle) + rightX;
-//        vBR = r * Math.cos(robotAngle) - rightX;
-        vFL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
-        vFR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
-        vBL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
-        vBR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
+        vFL = r * Math.cos(robotAngle) + rightX;
+        vFR = r * Math.sin(robotAngle) - rightX;
+        vBL = r * Math.sin(robotAngle) + rightX;
+        vBR = r * Math.cos(robotAngle) - rightX;
+        //vFL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
+        //vFR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
+        //vBL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
+        //vBR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
 
         /* INVERTED
         vFL = -gamepadInputY + gamepadInputX + gamepadInputTurn;
@@ -300,14 +295,25 @@ public class Drivetrain {
     }
 
     public void operateMecanumDriveScaled(double gamepadInputX, double gamepadInputY, double gamepadInputTurn, double heading) {
+        r = Math.hypot(-Math.pow(gamepadInputX,3), -Math.pow(gamepadInputY,3));
+        robotAngle = (Math.atan2(-Math.pow(gamepadInputY,3), -Math.pow(gamepadInputX,3)) - Math.PI / 4);
+        if (fieldCentricSwitch.currentState() == 1) {
+            robotAngle -= heading * Math.PI / 180;
+        }
         double scaledY = Math.pow(gamepadInputY, 3);
         double scaledX = Math.pow(gamepadInputX, 3);
         double scaledTurn = Math.pow(gamepadInputTurn, 3);
 
-        vFL = -scaledY + scaledX - scaledTurn;
-        vFR = -scaledY - scaledX + scaledTurn;
-        vBL = -scaledY - scaledX - scaledTurn;
-        vBR = -scaledY + scaledX + scaledTurn;
+        rightX = Math.pow(gamepadInputTurn,3);
+        vFL = r * Math.cos(robotAngle) + rightX;
+        vFR = r * Math.sin(robotAngle) - rightX;
+        vBL = r * Math.sin(robotAngle) + rightX;
+        vBR = r * Math.cos(robotAngle) - rightX;
+
+        //vFL = -scaledY + scaledX - scaledTurn;
+        //vFR = -scaledY - scaledX + scaledTurn;
+        //vBL = -scaledY - scaledX - scaledTurn;
+        //vBR = -scaledY + scaledX + scaledTurn;
         /*INVERTED:
         vFL = -scaledY + scaledX + scaledTurn;
         vFR = -scaledY - scaledX - scaledTurn;
@@ -320,13 +326,13 @@ public class Drivetrain {
         backRight.setPower(vBR * motorReductionForBR);
     }
 
-    /*public void switchFieldCentric(boolean gamepadInput) {
+    public void switchFieldCentric(boolean gamepadInput) {
         fieldCentricSwitch.changeState(gamepadInput);
     }
 
     public String getFieldCentric() {
         return fieldCentricSwitch.currentState() == 0 ? "Robot Centric" : "Field Centric";
-    }*/ //deal with later
+    } //deal with later
 
 
     public double[] getMecanumEncoderDelta() {

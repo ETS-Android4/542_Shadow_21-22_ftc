@@ -15,15 +15,15 @@ public class RobotConstants {
     public final static double rotate_min = 0.15;
     public final static double rotate_max = 1;
 
-    public static double DRIVE_KP = 5.8;
-    public static double DRIVE_KI = 0.000005;
-    public static double DRIVE_KD = 1.5;
+    public static double DRIVE_KP = 3.7;
+    public static double DRIVE_KI = 0.000002;
+    public static double DRIVE_KD = 0.95;
 
     public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(DRIVE_KP,DRIVE_KI,DRIVE_KD);
 
-    public static double ROTATE_KP = 0.60;
-    public static double ROTATE_KI = 0.0024;
-    public static double ROTATE_KD = 0.060;
+    public static double ROTATE_KP = 1.05;
+    public static double ROTATE_KI = 0.0006;
+    public static double ROTATE_KD = 0.05;
     public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
     public final static double DEADBAND_SLIDE_TO_TARGET = 25;

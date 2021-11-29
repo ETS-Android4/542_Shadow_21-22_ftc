@@ -12,12 +12,13 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
-public class WHSRobotImplDrivetrainOnly {
-    //public Carousel carousel;
-    public Drivetrain drivetrain;
-    //public Outtake outtake;
+public class WHSRobotImplDrivetrainFC {
+    //public CarouselOld robotCarousel;
+    public DrivetrainExperimental drivetrain;
     public IMU imu;
-    //public Intake robotIntake;
+
+    // SwervePath currentSwervePath; (error so commented out fix later)
+    // public SwerveFollower swerveFollower; (error so commented out fix later)
 
     SwervePath currentSwervePath;
     public SwerveFollower swerveFollower;
@@ -58,17 +59,11 @@ public class WHSRobotImplDrivetrainOnly {
     private double robotY;
     private double distance;
 
-    public WHSRobotImplDrivetrainOnly (HardwareMap robotMap){
+    public WHSRobotImplDrivetrainFC (HardwareMap robotMap){
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-        drivetrain = new Drivetrain(robotMap);
-        ///carousel = new Carousel(robotMap);
-        ///outtake = new Outtake(robotMap);
-        // intake = new OldIntake(hardwareMap); (error so commented out fix later)
-        // outtake = new OldOuttake2(hardwareMap); (error so commented out fix later)
-        // canister = new Canister(hardwareMap); (error so commented out fix later)
-        // wobble = new Wobble(hardwareMap); (error so commented out fix later)
+        drivetrain = new DrivetrainExperimental(robotMap);
 
         DRIVE_MIN = RobotConstants.drive_min;
         DRIVE_MAX = RobotConstants.drive_max;
@@ -89,7 +84,7 @@ public class WHSRobotImplDrivetrainOnly {
         distanceToTargetDebug = distanceToTarget;
 
         double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
-        degreesToRotate = -degreesToRotate * 180 / Math.PI;
+        degreesToRotate = degreesToRotate * 180 / Math.PI;
         targetHeading = Functions.normalizeAngle(currentCoord.getHeading() - degreesToRotate); //-180 to 180 deg
 
         switch (driveSwitch) {
@@ -103,8 +98,8 @@ public class WHSRobotImplDrivetrainOnly {
             case 1:
 
                 if (firstDriveLoop) {
-                    if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET){
-                        distanceToTarget = vectorToTarget.getY();
+                    if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET && !(targetPos.getY() < currentCoord.getY())){
+                        distanceToTarget = targetPos.getY() - currentCoord.getY();
                     }
                     driveToTargetInProgress = true;
                     driveController.init(distanceToTarget);
@@ -172,8 +167,8 @@ public class WHSRobotImplDrivetrainOnly {
         double power = (rotateController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(rotateController.getOutput()), 0, 180, ROTATE_MIN, ROTATE_MAX));
 
         if (Math.abs(angleToTarget) > DEADBAND_ROTATE_TO_TARGET/* && rotateController.getDerivative() < 40*/) {
-            drivetrain.operateLeft(-power);
-            drivetrain.operateRight(power);
+            drivetrain.operateLeft(power);
+            drivetrain.operateRight(-power);
             rotateToTargetInProgress = true;
         } else {
             drivetrain.operateLeft(0.0);

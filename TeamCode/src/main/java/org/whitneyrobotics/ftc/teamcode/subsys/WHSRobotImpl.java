@@ -13,22 +13,15 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class WHSRobotImpl {
-// <<<<<<< HEAD (error so commented out fix later)
-    //public CarouselOld robotCarousel;
     public Carousel carousel;
     public Drivetrain drivetrain;
     public Outtake outtake;
     public IMU imu;
     public Intake intake;
 
-// ======= (error so commented out fix later)
 
-   // SwervePath currentSwervePath; (error so commented out fix later)
-   // public SwerveFollower swerveFollower; (error so commented out fix later)
-// >>>>>>> master (error so commented out fix later)
-
-    SwervePath currentSwervePath;
-    public SwerveFollower swerveFollower;
+   SwervePath currentSwervePath;
+   public SwerveFollower swerveFollower;
 
     private Toggler intakeOuttakeState = new Toggler(5);
     private String stateDesc = "";
@@ -90,7 +83,7 @@ public class WHSRobotImpl {
         Position vectorToTarget = Functions.Positions.subtract(targetPos, currentCoord.getPos()); //field frame
         vectorToTarget = Functions.field2body(vectorToTarget, currentCoord); //body frame
         vectorToTargetDebug = vectorToTarget;
-        double distanceToTarget = targetPos.getX() - currentCoord.getX() /*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
+        double distanceToTarget = vectorToTarget.getX(); /*Functions.calculateMagnitude(vectorToTarget) * (vectorToTarget.getX() >= 0 ? 1 : -1)*/;
         distanceToTargetDebug = distanceToTarget;
 
         double degreesToRotate = Math.atan2(vectorToTarget.getY(), vectorToTarget.getX()); //from -pi to pi rad
@@ -108,8 +101,8 @@ public class WHSRobotImpl {
             case 1:
 
                 if (firstDriveLoop) {
-                    if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET && !(targetPos.getY() < currentCoord.getY())){
-                        distanceToTarget = targetPos.getY() - currentCoord.getY();
+                    if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET){
+                        distanceToTarget = vectorToTarget.getY();
                     }
                     driveToTargetInProgress = true;
                     driveController.init(distanceToTarget);

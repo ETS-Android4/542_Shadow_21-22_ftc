@@ -62,7 +62,7 @@ public class Outtake {
     public PIDController slidesController = new PIDController(RobotConstants.SLIDE_CONSTANTS);
     public boolean slidesFirstLoop = true;
     public boolean dropFirstLoop = true; //for setting drop timer
-    public double gateDelay = 0.6;
+    public double gateDelay = 0.7;
     //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
@@ -125,7 +125,9 @@ public class Outtake {
 
     public void reset() {
         linearSlidesTog.setState(0);
-        operateWithoutGamepad(0);
+        if(Math.abs(linearSlides.getCurrentPosition() - MotorLevels.LEVEL1.getPosition()) > RobotConstants.DEADBAND_SLIDE_TO_TARGET){
+            operateWithoutGamepad(0);
+        }
     }
 
     public void resetEncoder() {

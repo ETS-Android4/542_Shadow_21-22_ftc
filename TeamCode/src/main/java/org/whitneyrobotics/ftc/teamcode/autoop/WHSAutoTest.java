@@ -1,5 +1,6 @@
 package org.whitneyrobotics.ftc.teamcode.autoop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,12 +10,13 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
+import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 
-@TeleOp(name="WHS Freight Frenzy Auto Drivetrain Only")
-public class AutoDrivetrainOnly extends OpMode {
+@Autonomous(name="WHS Freight Frenzy Auto TEST")
+public class WHSAutoTest extends OpMode {
 
-    public WHSRobotImplDrivetrainOnly robot;
+    public WHSRobotImpl robot;
 
     static final int RED = 0;
     static final int BLUE = 1;
@@ -37,7 +39,7 @@ public class AutoDrivetrainOnly extends OpMode {
     int STARTING_ALLIANCE = RED;
     int STARTING_SIDE = BOTTOM;
 
-    private int scanLevel = 0;
+    private int scanLevel = 1;
 
     Position[][] startingPositions = new Position[2][2];
     Position[][] startingOffsetPositions = new Position[2][2];
@@ -131,7 +133,7 @@ public class AutoDrivetrainOnly extends OpMode {
 
     @Override
     public void init() {
-        robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
+        robot = new WHSRobotImpl(hardwareMap);
         robot.drivetrain.resetEncoders();
         // add outtake reset
         defineStatesEnabled();
@@ -160,16 +162,16 @@ public class AutoDrivetrainOnly extends OpMode {
         startingPositions[BLUE][BOTTOM] = new Position(-1647.6,-900);
         startingPositions[BLUE][TOP] = new Position(-1647.6,300);
 
-        startingOffsetPositions[RED][BOTTOM] = new Position(-1547.6,900);
-        startingOffsetPositions[RED][TOP] = new Position(-1547.6,-300);
-        startingOffsetPositions[BLUE][BOTTOM] = new Position(-1547.6,-900);
-        startingOffsetPositions[BLUE][TOP] = new Position(-1547.6,300);
+        startingOffsetPositions[RED][BOTTOM] = new Position(-1447.6,900);
+        startingOffsetPositions[RED][TOP] = new Position(-1447.6,-300);
+        startingOffsetPositions[BLUE][BOTTOM] = new Position(-1447.6,-900);
+        startingOffsetPositions[BLUE][TOP] = new Position(-1447.6,300);
 
-        shippingHubApproach[RED] = new Position(-1000,700);
-        shippingHubApproach[BLUE] = new Position(-1000,-700);
+        shippingHubApproach[RED] = new Position(-1100,800);
+        shippingHubApproach[BLUE] = new Position(-1100,-800);
 
-        shippingHubPosition[RED] = new Position(-867,557);
-        shippingHubPosition[BLUE] = new Position(-867,-557);
+        shippingHubPosition[RED] = new Position(-857,547);
+        shippingHubPosition[BLUE] = new Position(-857,-547);
 
         //sharedShippingHub[RED] = new Position(-152.4, -1200);
         //sharedShippingHub[BLUE] = new Position(-152.4, 1200);
@@ -183,14 +185,14 @@ public class AutoDrivetrainOnly extends OpMode {
         warehouse[RED] = new Position(-1500,-1123);
         warehouse[BLUE] = new Position(-1500,1123);
 
-        storageUnitPositions[RED] = new Position(-900,1500);
-        storageUnitPositions[BLUE] = new Position(-900,-1500);
+        storageUnitPositions[RED] = new Position(-900,1600);
+        storageUnitPositions[BLUE] = new Position(-900,-1600);
 
-        carouselApproach[RED] = new Position(-1400, 1400);
-        carouselApproach[BLUE] = new Position(-1400,-1400);
+        carouselApproach[RED] = new Position(-1250, 1300);
+        carouselApproach[BLUE] = new Position(-1250,-1300);
 
-        carouselPositions[RED] = new Position(-1512,1512);
-        carouselPositions[BLUE] = new Position(-1512, -1512);
+        carouselPositions[RED] = new Position(-1512,1612);
+        carouselPositions[BLUE] = new Position(-1512, -1612);
 
         // INIT Camera
         /*initVuforia();
@@ -218,7 +220,7 @@ public class AutoDrivetrainOnly extends OpMode {
         barcodeLocation[2][TESTED_TOP] = 1; // TOP
         barcodeLocation[2][TESTED_RIGHT] = 2; // RIGHT
         barcodeLocation[2][TESTED_BOTTOM] = 3; // BOTTOM*/
-        Coordinate initial = new Coordinate(startingPositions[STARTING_ALLIANCE][STARTING_SIDE],180);
+        Coordinate initial = new Coordinate(startingPositions[STARTING_ALLIANCE][STARTING_SIDE],0);
         robot.setInitialCoordinate(initial);
     }
 
@@ -245,8 +247,13 @@ public class AutoDrivetrainOnly extends OpMode {
 
     @Override
     public void loop() {
+        if(gamepad1.y){
+            throw new RuntimeException("bad");
+        }
+
         robot.estimateHeading();
         robot.estimatePosition();
+
         if(gamepad1.a){
             robot.drivetrain.operate(0,0);
         } else {
@@ -273,7 +280,7 @@ public class AutoDrivetrainOnly extends OpMode {
                                 subState++;
                                 break;
                             case 1:
-                                robot.driveToTarget(startingOffsetPositions[STARTING_ALLIANCE][STARTING_SIDE], true);
+                                robot.driveToTarget(startingOffsetPositions[STARTING_ALLIANCE][STARTING_SIDE], false);
                                 if (!robot.driveToTargetInProgress()) {
                                     subState++;
                                     advanceState();
@@ -297,12 +304,12 @@ public class AutoDrivetrainOnly extends OpMode {
                         }
                         break;
                     case 2:
-                        boolean checkBlue = (STARTING_ALLIANCE) == BLUE ? true : false;
-                        //robot.robotCarousel.operateAuto(checkBlue);
-                        //if (!robot.robotCarousel.isCarouselInProgress()){
-                        advanceState();
+                        boolean checkBlue = ((STARTING_ALLIANCE) == BLUE) ? true : false;
+                        robot.carousel.operateAuto(checkBlue);
+                        if (!robot.carousel.isCarouselInProgress()){
                         subState++;
-                        //}
+                        advanceState();
+                        }
                         break;
                 }
                 break;
@@ -321,18 +328,23 @@ public class AutoDrivetrainOnly extends OpMode {
                         }
                         break;
                     case 2:
-                        //robot.robotOuttake.operateWithoutGamepad(scanLevel);
-                        //if(!robot.robotOuttake.slidingInProgress){
-                        //if(robot.robotOuttake.autoDrop()){ subState++; }
-                        //}
-                        subState++;
+                        robot.outtake.operateWithoutGamepad(scanLevel);
+                        if(!robot.outtake.slidingInProgress) {
+                            subState++;
+                        }
                         break;
                     case 3:
-                        //robot.robotOuttake.reset();
-                        //if (!robot.robotOuttake.slidingInProgress){
-                        subState++;
-                        //}
+                        if(robot.outtake.autoDrop()){
+                            subState++;
+                        }
+                        break;
                     case 4:
+                        robot.outtake.operateWithoutGamepad(0);
+                        if (!robot.outtake.slidingInProgress){
+                        subState++;
+                        }
+                        break;
+                    case 5:
                         robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
                         advanceState();
                         break;
@@ -378,7 +390,7 @@ public class AutoDrivetrainOnly extends OpMode {
                 }
                 break;
             case PARK:
-                if (parkLocation == 0) {
+                if (parkLocation == 1) {
                     robot.driveToTarget(storageUnitPositions[STARTING_ALLIANCE], false);
                     if (!robot.driveToTargetInProgress()) {
                         advanceState();
@@ -411,6 +423,7 @@ public class AutoDrivetrainOnly extends OpMode {
                 }
                 break;
             case STOP:
+                DataToolsLite.encode("heading.txt",robot.getCoordinate().getHeading());
                 break;
             default:
                 break;
@@ -419,6 +432,9 @@ public class AutoDrivetrainOnly extends OpMode {
     }
         telemetry.addData("Current state: ",stateNames[state]);
         telemetry.addData("Substate: ", subState);
+        telemetry.addData("Starting Side",(STARTING_SIDE==BOTTOM) ? "BOTTOM" : "TOP");
+        telemetry.addData("Starting Alliance",(STARTING_ALLIANCE == 0) ? "RED" : "BLUE");
+        telemetry.addData("Estimated Position",String.format("%s,%s",robot.getCoordinate().getX(),robot.getCoordinate().getY()));
         telemetry.addData("Drive to target:", robot.driveToTargetInProgress());
         telemetry.addData("Rotate to target:", robot.rotateToTargetInProgress());
         telemetry.addData("DTT error",robot.distanceToTargetDebug);
@@ -426,7 +442,7 @@ public class AutoDrivetrainOnly extends OpMode {
         //telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output
-        telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())*1000 + "ms");
+        telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())/1E6 + "ms");
         lastRecordedTime = System.nanoTime();
     }
 }

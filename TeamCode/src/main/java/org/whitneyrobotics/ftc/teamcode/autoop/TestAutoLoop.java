@@ -25,7 +25,7 @@ public class TestAutoLoop extends OpMode {
         robot = new WHSRobotImplDrivetrainOnly(hardwareMap);
         robot.drivetrain.resetEncoders();
         robot.drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Coordinate init = new Coordinate(initP,180);
+        Coordinate init = new Coordinate(initP,0);
         robot.setInitialCoordinate(init);
         currentTarget = one;
     }

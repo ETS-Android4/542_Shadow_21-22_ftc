@@ -75,10 +75,11 @@ public class AutoOp extends OpMode {
     }
 
     private int parkLocation = 0;
+    private boolean saveHeading = true;
 
     public String[] stateNames = {"Init", "Rotate Carousel", "Shipping Hub", "Warehouse", "Park", "Stop"};
 
-    public float[][] barcodeLocation;
+    public float[][] barcodeLocation = new float[3][4];
 
     public void advanceState(){
         if (stateEnabled[state + 1]){
@@ -147,6 +148,7 @@ public class AutoOp extends OpMode {
             stateEnabled[WAREHOUSE] = (boolean) formattedData[5];
             stateEnabled[PARK] = (boolean) formattedData[7];
             parkLocation = (int)formattedData[8];
+            saveHeading = (boolean)formattedData[9];
 
         } catch(Exception e){
             telemetry.addData("Data read sus","Reverted back to defaults");
@@ -256,7 +258,7 @@ public class AutoOp extends OpMode {
                         } else if ((((barcodeLocation[2][TESTED_LEFT] - ERROR_MARGIN) <= CAMERA_LEFT) && ((barcodeLocation[2][TESTED_LEFT] + ERROR_MARGIN) >= CAMERA_LEFT)) && (((barcodeLocation[2][TESTED_RIGHT] - ERROR_MARGIN) <= CAMERA_RIGHT) && ((barcodeLocation[2][TESTED_RIGHT] + ERROR_MARGIN) >= CAMERA_RIGHT))){
                             scanLevel = 3;
                         } else {
-                            scanLevel = 1;
+                            scanLevel = 3;
                         }*/
                         subState++;
                         break;
@@ -399,6 +401,9 @@ public class AutoOp extends OpMode {
                 }
                 break;
             case STOP:
+                if(saveHeading){
+                    DataToolsLite.encode("heading.txt",new Object[]{robot.getCoordinate().getHeading()});
+                }
                 break;
             default:
                 break;
