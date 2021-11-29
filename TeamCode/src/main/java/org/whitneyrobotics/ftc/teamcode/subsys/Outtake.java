@@ -17,6 +17,8 @@ public class Outtake {
     private DcMotorEx linearSlides;
     private boolean useTestPositions = false;
 
+    private int resetState = 0;
+
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
         linearSlides = outtakeMap.get(DcMotorEx.class, "linearSlides");
@@ -126,7 +128,21 @@ public class Outtake {
     public void reset() {
         linearSlidesTog.setState(0);
         if(Math.abs(linearSlides.getCurrentPosition() - MotorLevels.LEVEL1.getPosition()) > RobotConstants.DEADBAND_SLIDE_TO_TARGET){
-            operateWithoutGamepad(0);
+            resetState = 0;
+        } else {
+            resetState = 1;
+        }
+        switch(resetState){
+            case 0:
+                operateWithoutGamepad(0);
+                if(!slidingInProgress){
+                    resetState++;
+                }
+                break;
+            case 1:
+                operateSlides(0);
+                linearSlidesTog.setState(0);
+                break;
         }
     }
 

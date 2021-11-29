@@ -46,7 +46,7 @@ public class Intake {
     }
 
     // AutoOp
-    public void autoOperate(int durationInS, boolean reverse){
+    public void autoOperate(double durationInS, boolean reverse){
 
         // If reversed, set to -1 to reverse speed later
         int direction = reverse ? -1 : 1;

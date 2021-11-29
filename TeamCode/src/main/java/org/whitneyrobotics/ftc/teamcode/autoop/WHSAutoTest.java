@@ -40,6 +40,8 @@ public class WHSAutoTest extends OpMode {
     int STARTING_SIDE = BOTTOM;
 
     private int scanLevel = 1;
+    private int numCycles = 0;
+    private int cycleCounter = 0;
 
     Position[][] startingPositions = new Position[2][2];
     Position[][] startingOffsetPositions = new Position[2][2];
@@ -64,6 +66,7 @@ public class WHSAutoTest extends OpMode {
 
     int state = INIT;
     int subState = 0;
+    int superSubState = 0;
 
     boolean[] stateEnabled = new boolean[NUMBER_OF_STATES];
 
@@ -85,6 +88,7 @@ public class WHSAutoTest extends OpMode {
     public void advanceState(){
         if (stateEnabled[state + 1]){
             subState = 0;
+            superSubState = 0;
             state++;
         } else {
             state++;
@@ -147,13 +151,13 @@ public class WHSAutoTest extends OpMode {
             stateEnabled[ROTATE_CAROUSEL] = (boolean) Boolean.parseBoolean(unformattedData[3]);
             stateEnabled[SHIPPING_HUB] = (boolean) Boolean.parseBoolean(unformattedData[4]);
             stateEnabled[WAREHOUSE] = (boolean) Boolean.parseBoolean(unformattedData[5]);
+            numCycles = (int) Integer.parseInt(unformattedData[6]);
             stateEnabled[PARK] = (boolean) Boolean.parseBoolean(unformattedData[7]);
             parkLocation = (int) Integer.parseInt(unformattedData[8]);
-
         } catch(Exception e){
             telemetry.addData("Data read sus","Reverted back to defaults");
             //delete this
-            throw new RuntimeException("sussy bussy");
+            //throw new RuntimeException("sussy bussy");
         }
 
         // figure out actual values for this
@@ -305,6 +309,7 @@ public class WHSAutoTest extends OpMode {
                         break;
                     case 2:
                         boolean checkBlue = ((STARTING_ALLIANCE) == BLUE) ? true : false;
+                        robot.drivetrain.operate(-0.05,-0.05);
                         robot.carousel.operateAuto(checkBlue);
                         if (!robot.carousel.isCarouselInProgress()){
                         subState++;
@@ -365,26 +370,71 @@ public class WHSAutoTest extends OpMode {
                         }
                         break;
                     case 2:
-                        //robot.robotIntake.autoDropIntake();
-                            /*if (robot.robotIntake.intakeAutoDone){
-                                subState++;
-                            }*/
-                        subState++;
+                        robot.intake.autoOperate(1.5,false);
+                        switch(superSubState){
+                            case 0:
+                                robot.driveToTarget(warehouse[STARTING_ALLIANCE], false);
+                                if(!robot.driveToTargetInProgress()){
+                                    superSubState++;
+                                }
+                                break;
+                            case 1:
+                                if(!robot.intake.autoIntakeInProgress){
+                                    subState++;
+                                }
+                                break;
+                        }
                         break;
                     case 3:
-                        robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
+                        robot.driveToTarget(gapCrossPositions[STARTING_ALLIANCE], true);
                         if (!robot.driveToTargetInProgress()) {
                             subState++;
                         }
                         break;
                     case 4:
-                        //robot.robotOuttake.autoControl(1);
-                        //if (robot.robotOuttake.autoDrop()) { subState++; }
-                        subState++;
-                        break;
+                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE], true);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
                     case 5:
-                        //robot.robotOuttake.reset();
-                        advanceState();
+                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
+                        break;
+                    case 6:
+                        robot.driveToTarget(shippingHubPosition[STARTING_ALLIANCE], true);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
+                        break;
+                    case 7:
+                        robot.outtake.operateWithoutGamepad(0);
+                        if(!robot.outtake.slidingInProgress){
+                            subState++;
+                        }
+                        break;
+                    case 8:
+                        if(robot.outtake.autoDrop()){
+                            subState++;
+                        }
+                        break;
+                    case 9:
+                        robot.outtake.operateWithoutGamepad(0);
+                        if(!robot.outtake.slidingInProgress){
+                            subState++;
+                        }
+                        break;
+                    case 10:
+                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
+                        break;
+                    case 11:
+                        cycleCounter++;
+                        if(cycleCounter >= numCycles){
+                            advanceState();
+                        } else {
+                            subState = 0;
+                        }
                         break;
 
                 }

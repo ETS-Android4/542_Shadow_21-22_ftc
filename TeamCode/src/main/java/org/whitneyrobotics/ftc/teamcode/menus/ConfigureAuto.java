@@ -23,7 +23,7 @@ public class ConfigureAuto extends OpMode {
         SelectionMenu.Prompt startingPosition = new SelectionMenu.Prompt("Starting Position")
                 .addSelection("BOTTOM",0)
                 .addSelection("TOP",1);
-        SelectionMenu.Prompt scanEnabled = new SelectionMenu.Prompt("Use Webcam to Scan Barcode")
+        SelectionMenu.Prompt scanEnabled = new SelectionMenu.Prompt("Use Webcam to Scan Barcode [Disabled]")
                 .addSelection("YES",true)
                 .addSelection("NO",false);
         SelectionMenu.Prompt rotateCarousel = new SelectionMenu.Prompt("Rotate Carousel in Auto: ")
@@ -39,7 +39,7 @@ public class ConfigureAuto extends OpMode {
         SelectionMenu.Prompt park = new SelectionMenu.Prompt("Park State: ")
                 .addSelection("On", true)
                 .addSelection("Off", false);
-        SelectionMenu.Prompt parkDestination = new SelectionMenu.Prompt("Park destination [unused]")
+        SelectionMenu.Prompt parkDestination = new SelectionMenu.Prompt("Park destination")
                 .addSelection("Warehouse",0)
                 .addSelection("Storage Unit",1);
         SelectionMenu.Prompt saveHeading = new SelectionMenu.Prompt("Save Heading at end of Auto")

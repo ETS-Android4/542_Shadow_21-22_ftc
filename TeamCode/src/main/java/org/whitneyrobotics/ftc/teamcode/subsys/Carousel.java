@@ -9,9 +9,9 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class Carousel {
     private DcMotorEx wheel;
-    private final static double slowPower = 0.15;
-    private final static double secondsForSlow = 0.65;
-    private final static double zoomPower = 1;
+    private final static double slowPower = 0.25;
+    private final static double secondsForSlow = 1;
+    private final static double zoomPower = 0.5;
     private final static double secondsForFast = 0.5;
     private SimpleTimer timer = new SimpleTimer();
     private Toggler allianceSwitch = new Toggler(2);

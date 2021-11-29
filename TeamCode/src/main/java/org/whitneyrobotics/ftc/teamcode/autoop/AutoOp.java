@@ -38,6 +38,8 @@ public class AutoOp extends OpMode {
     int STARTING_SIDE = BOTTOM;
 
     private int scanLevel = 0;
+    private int numCycles = 0;
+    private int cycleCounter = 0;
 
     Position[][] startingPositions = new Position[2][2];
     Position[][] startingOffsetPositions = new Position[2][2];
@@ -62,6 +64,7 @@ public class AutoOp extends OpMode {
 
     int state = INIT;
     int subState = 0;
+    int superSubState = 0;
 
     boolean[] stateEnabled = new boolean[NUMBER_OF_STATES];
 
@@ -83,6 +86,7 @@ public class AutoOp extends OpMode {
 
     public void advanceState(){
         if (stateEnabled[state + 1]){
+            superSubState = 0;
             subState = 0;
             state++;
         } else {
@@ -336,35 +340,86 @@ public class AutoOp extends OpMode {
                 }
                 break;
             case WAREHOUSE:
-                switch (subState){
+                switch (subState) {
                     case 0:
-                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE],false);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE], false);
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 1:
                         robot.driveToTarget(gapCrossPositions[STARTING_ALLIANCE], false);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 2:
-                        //robot.robotIntake.autoDropIntake();
-                        /*if (robot.robotIntake.intakeAutoDone){
-                            subState++;
-                        }*/
-                        subState++;
+                        robot.intake.autoOperate(1.5,false);
+                        switch(superSubState){
+                            case 0:
+                                robot.driveToTarget(warehouse[STARTING_ALLIANCE], false);
+                                if(!robot.driveToTargetInProgress()){
+                                    superSubState++;
+                                }
+                                break;
+                            case 1:
+                                if(!robot.intake.autoIntakeInProgress){
+                                    subState++;
+                                }
+                                break;
+                        }
                         break;
                     case 3:
-                        robot.driveToTarget(sharedShippingHub[STARTING_ALLIANCE], true);
-                        if (!robot.driveToTargetInProgress()) { subState++; }
+                        robot.driveToTarget(gapCrossPositions[STARTING_ALLIANCE], true);
+                        if (!robot.driveToTargetInProgress()) {
+                            subState++;
+                        }
                         break;
                     case 4:
-                        //robot.robotOuttake.autoControl(1);
-                        if (robot.outtake.autoDrop()) { subState++; }
-                        break;
+                        robot.driveToTarget(gapApproach[STARTING_ALLIANCE], true);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
                     case 5:
-                        robot.outtake.reset();
-                        advanceState();
+                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
                         break;
-
+                    case 6:
+                        robot.driveToTarget(shippingHubPosition[STARTING_ALLIANCE], true);
+                        if(!robot.driveToTargetInProgress()){
+                            subState++;
+                        }
+                        break;
+                    case 7:
+                        robot.outtake.operateWithoutGamepad(0);
+                        if(!robot.outtake.slidingInProgress){
+                            subState++;
+                        }
+                        break;
+                    case 8:
+                        if(robot.outtake.autoDrop()){
+                            subState++;
+                        }
+                        break;
+                    case 9:
+                        robot.outtake.operateWithoutGamepad(0);
+                        if(!robot.outtake.slidingInProgress){
+                            subState++;
+                        }
+                        break;
+                    case 10:
+                        robot.driveToTarget(shippingHubApproach[STARTING_ALLIANCE], false);
+                        break;
+                    case 11:
+                        cycleCounter++;
+                        if(cycleCounter >= numCycles){
+                            advanceState();
+                        } else {
+                            subState = 0;
+                        }
+                        break;
                 }
                 break;
             case PARK:
