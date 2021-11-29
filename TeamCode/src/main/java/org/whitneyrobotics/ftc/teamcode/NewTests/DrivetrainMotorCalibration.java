@@ -111,7 +111,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 packet.addLine("Accelerating...");
                 break;
             case CALIBRATE:
-                if(robot.getCoordinate().getX()>1200 && onMat){
+                if(robot.getCoordinate().getX()>1800 && onMat){
                     state = REVERSE;
                     break;
                 }
