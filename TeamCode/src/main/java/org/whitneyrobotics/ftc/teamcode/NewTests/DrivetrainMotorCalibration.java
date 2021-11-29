@@ -96,7 +96,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 packet.addLine(config.formatDisplay());
                 break;
             case ACCELERATE:
-                robot.drivetrain.operate(new double[]{motorPower,motorPower});
+                robot.drivetrain.operate(new double[]{motorPower*FLReduction,motorPower*FRReduction,motorPower*BLReduction,motorPower*BRReduction});
                 switch(substate){
                     case 0:
                         accelerationTime.set(0.1);
@@ -111,7 +111,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 packet.addLine("Accelerating...");
                 break;
             case CALIBRATE:
-                if(robot.getCoordinate().getX()>1200 && onMat){
+                if(robot.getCoordinate().getX()>1800 && onMat){
                     state = REVERSE;
                     break;
                 }
