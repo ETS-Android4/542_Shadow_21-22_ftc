@@ -12,13 +12,11 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
+//For use if we can get field-centric to work
 public class WHSRobotImplDrivetrainFC {
     //public CarouselOld robotCarousel;
     public DrivetrainExperimental drivetrain;
     public IMU imu;
-
-    // SwervePath currentSwervePath; (error so commented out fix later)
-    // public SwerveFollower swerveFollower; (error so commented out fix later)
 
     SwervePath currentSwervePath;
     public SwerveFollower swerveFollower;
@@ -99,7 +97,7 @@ public class WHSRobotImplDrivetrainFC {
 
                 if (firstDriveLoop) {
                     if(Math.abs(distanceToTarget) < DEADBAND_DRIVE_TO_TARGET && !(targetPos.getY() < currentCoord.getY())){
-                        distanceToTarget = targetPos.getY() - currentCoord.getY();
+                        distanceToTarget = vectorToTarget.getY();
                     }
                     driveToTargetInProgress = true;
                     driveController.init(distanceToTarget);
@@ -274,5 +272,40 @@ public class WHSRobotImplDrivetrainFC {
     public boolean swerveInProgress() {
         return swerveFollower.inProgress();
     }
+
+    /*public void operateIntakeOuttake(boolean changeState, boolean intakePower, boolean intakeReverse, boolean outtakeUp, boolean outtakeDown, boolean reset){
+        switch(intakeOuttakeState.currentState()){
+            case 0:
+                stateDesc = "Initial";
+                //intake.disable();
+                outtake.reset();
+                //if(changeState){intake.enable();}
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 1:
+                stateDesc = "Intaking";
+                //intake.operate(intakePower,intakeReverse);
+                outtake.reset();
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 2:
+                stateDesc = "Outtake Level Selection";
+                //intake.disable();
+                outtake.operate(outtakeUp,outtakeDown);
+                intakeOuttakeState.changeState(changeState);
+                break;
+            case 3:
+                stateDesc = "Depositing Item";
+                outtake.operateSlides(0);
+                if(outtake.autoDrop()){intakeOuttakeState.setState(4);}
+                break;
+            case 4:
+                stateDesc = "Moving outtake to level 3";
+                outtake.operateWithoutGamepad(Outtake.MotorLevels.values().length);
+                if(!outtake.slidingInProgress){
+                    intakeOuttakeState.setState(0);
+                }
+        }
+    }*/
 
 }

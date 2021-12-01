@@ -47,7 +47,7 @@ public class Outtake {
         public double getPosition(){return this.position;}
     }
 
-    private enum MotorLevels{
+    public enum MotorLevels{
         LEVEL1(0.0),
         LEVEL1_5(1200),
         LEVEL2(1833.0),
