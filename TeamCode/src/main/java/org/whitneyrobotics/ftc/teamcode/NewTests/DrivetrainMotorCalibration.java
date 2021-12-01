@@ -17,7 +17,6 @@ import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 import java.util.LinkedHashMap;
 
 @TeleOp(name="Drivetrain Motor Calibration",group="Tests")
-@Disabled
 public class DrivetrainMotorCalibration extends OpMode {
     private WHSRobotImplDrivetrainOnly robot;
     private double FLReduction = 1;

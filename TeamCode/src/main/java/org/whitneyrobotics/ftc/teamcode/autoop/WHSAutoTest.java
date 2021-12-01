@@ -180,11 +180,11 @@ public class WHSAutoTest extends OpMode {
         //sharedShippingHub[RED] = new Position(-152.4, -1200);
         //sharedShippingHub[BLUE] = new Position(-152.4, 1200);
 
-        gapApproach[RED] = new Position(-1626,-450);
-        gapApproach[BLUE] = new Position(-1626,450);
+        gapApproach[RED] = new Position(-1630,-450);
+        gapApproach[BLUE] = new Position(-1630,450);
 
-        gapCrossPositions[RED] = new Position(-1626,-900);
-        gapCrossPositions[BLUE] = new Position(-1626,900);
+        gapCrossPositions[RED] = new Position(-1630,-900);
+        gapCrossPositions[BLUE] = new Position(-1630,900);
 
         warehouse[RED] = new Position(-1500,-1123);
         warehouse[BLUE] = new Position(-1500,1123);
