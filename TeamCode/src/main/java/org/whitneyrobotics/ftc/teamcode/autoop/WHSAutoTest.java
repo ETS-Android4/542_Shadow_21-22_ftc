@@ -492,7 +492,7 @@ public class WHSAutoTest extends OpMode {
         //telemetry.addData("Intaking item from warehouse: ", robot.robotIntake.intakeAutoDone);
 
         //lag output
-        telemetry.addData("Current processing latency: ", (lastRecordedTime-System.nanoTime())/1E6 + "ms");
+        telemetry.addData("Current processing latency: ", (Math.round(System.nanoTime()-lastRecordedTime)/1E6) + "ms");
         lastRecordedTime = System.nanoTime();
     }
 }

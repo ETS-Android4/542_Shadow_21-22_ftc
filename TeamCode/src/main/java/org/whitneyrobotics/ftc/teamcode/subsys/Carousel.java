@@ -2,6 +2,7 @@ package org.whitneyrobotics.ftc.teamcode.subsys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
@@ -26,6 +27,7 @@ public class Carousel {
     public Carousel(HardwareMap hardwareMap){
         wheel = hardwareMap.get(DcMotorEx.class,"carouselMotor");
         wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheel.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void operate(boolean start, boolean changeAlliance){

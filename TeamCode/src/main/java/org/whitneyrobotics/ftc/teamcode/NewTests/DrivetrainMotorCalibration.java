@@ -199,7 +199,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 packet.put("BR Reduction",BRReduction);
                 packet.addLine("");
                 packet.addLine("Hold X to recalibrate.");
-                if(gamepadListener.longPress(gamepad1.x,1000)){
+                if(gamepadListener.longPress(gamepad1.x,3000)){
                     state = 0;
                     substate = 0;
                 }

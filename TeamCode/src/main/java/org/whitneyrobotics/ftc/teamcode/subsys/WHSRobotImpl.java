@@ -301,11 +301,12 @@ public class WHSRobotImpl {
                 break;
             case 3:
                 stateDesc = "Depositing Item";
+                outtake.operateSlides(0);
                 if(outtake.autoDrop()){intakeOuttakeState.setState(4);}
                 break;
             case 4:
                 stateDesc = "Moving outtake to level 3";
-                outtake.operateWithoutGamepad(2);
+                outtake.operateWithoutGamepad(Outtake.MotorLevels.values().length);
                 if(!outtake.slidingInProgress){
                     intakeOuttakeState.setState(0);
                 }
