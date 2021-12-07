@@ -9,22 +9,31 @@ import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.strafetotarget.StrafePat
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwerveFollower;
 import org.whitneyrobotics.ftc.teamcode.lib.purepursuit.swervetotarget.SwervePath;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Functions;
+import org.whitneyrobotics.ftc.teamcode.lib.util.GamepadListener;
 import org.whitneyrobotics.ftc.teamcode.lib.util.RobotConstants;
+import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 
 public class WHSRobotImpl {
     public Carousel carousel;
-    public Drivetrain drivetrain;
+    public DrivetrainExperimental drivetrain;
     public Outtake outtake;
     public IMU imu;
     public Intake intake;
 
-
    SwervePath currentSwervePath;
    public SwerveFollower swerveFollower;
 
-    private Toggler intakeOuttakeState = new Toggler(5);
-    private String stateDesc = "";
+    private Toggler outtakeState = new Toggler(4);
+    private Toggler levelSelector = new Toggler(4);
+    private Toggler outtakeResetDisabler = new Toggler(2);
+
+    private SimpleTimer outtakeResetDisableTimer = new SimpleTimer();
+
+    private int outtakeSubState = 0;
+    private GamepadListener outtakeListener = new GamepadListener();
+    private String[] outtakeLabels = {"Level 1","Level 1.5 (unbalanced)", "Level 2", "Level 3"};
+    public String stateDesc = "";
 
     Coordinate currentCoord;
     private double targetHeading; //field frame
@@ -49,6 +58,8 @@ public class WHSRobotImpl {
     private boolean driveBackwards;
 
     private int driveSwitch = 0;
+    private int autoDropState;
+    int outtakeResetState = 0;
 
     public boolean driveToTargetInProgress = false;
     public boolean rotateToTargetInProgress = false;
@@ -63,7 +74,7 @@ public class WHSRobotImpl {
         DEADBAND_DRIVE_TO_TARGET = RobotConstants.DEADBAND_DRIVE_TO_TARGET; //in mm
         DEADBAND_ROTATE_TO_TARGET = RobotConstants.DEADBAND_ROTATE_TO_TARGET; //in degrees
 
-        drivetrain = new Drivetrain(robotMap);
+        drivetrain = new DrivetrainExperimental(robotMap);
         intake = new Intake(robotMap);
         outtake = new Outtake(robotMap);
         carousel = new Carousel(robotMap);
@@ -72,7 +83,6 @@ public class WHSRobotImpl {
         DRIVE_MAX = RobotConstants.drive_max;
         ROTATE_MIN = RobotConstants.rotate_min;
         ROTATE_MAX = RobotConstants.rotate_max;
-
 
         drivetrain.resetEncoders();
         imu = new IMU(robotMap);
@@ -278,39 +288,135 @@ public class WHSRobotImpl {
         return swerveFollower.inProgress();
     }
 
-    public void operateIntakeOuttake(boolean changeState, boolean intakePower, boolean intakeReverse, boolean outtakeUp, boolean outtakeDown, boolean reset){
+    /*public void operateIntakeOuttake(boolean changeState, boolean intakePower, boolean intakeReverse, boolean outtakeUp, boolean outtakeDown, boolean reset){
+
+        if(outtake.getTier() != 0){
+            intake.disable();
+        } else {
+            intake.operate(intakePower,intakeReverse);
+        }
+        if(reset){intakeOuttakeState.setState(0);}
         switch(intakeOuttakeState.currentState()){
             case 0:
                 stateDesc = "Initial";
-                //robotIntake.disable();
+                //intake.disable();
                 outtake.reset();
-                //if(changeState){robotIntake.enable();}
+                intake.disable();
+                if(changeState){intake.enable();}
                 intakeOuttakeState.changeState(changeState);
                 break;
             case 1:
                 stateDesc = "Intaking";
-                //robotIntake.operate(intakePower,intakeReverse);
-                outtake.reset();
-                intakeOuttakeState.changeState(changeState);
+                intakeOuttakeState.setState(3);
                 break;
             case 2:
-                stateDesc = "Outtake Level Selection";
-                //robotIntake.disable();
+                stateDesc = "Intake Rejection";
+                //intake.disable();
+                outtake.operate(outtakeUp,outtakeDown);
+                intakeOuttakeState.setState(3);
+                //if(intake.reject(0.5)){intakeOuttakeState.setState(3);}
+            case 3:
+                stateDesc = "Intaking & Outtake Level Selection";
+                //intake.operate(intakePower,intakeReverse);
                 outtake.operate(outtakeUp,outtakeDown);
                 intakeOuttakeState.changeState(changeState);
-                break;
-            case 3:
-                stateDesc = "Depositing Item";
-                outtake.operateSlides(0);
-                if(outtake.autoDrop()){intakeOuttakeState.setState(4);}
+                autoDropState=0;
                 break;
             case 4:
+                stateDesc = "Depositing Item";
+                //outtake.operateSlides(0);
+                *//*switch(autoDropState){
+                    case 0:
+                        if(outtake.autoDrop()){
+                            autoDropState++;
+                        }
+                        break;
+                    case 1:
+                        intakeOuttakeState.setState(5);
+                        break;
+                }*//*
+                intake.disable();
+                if(outtake.autoDrop()){
+                    intakeOuttakeState.setState(5);
+                    break;
+                }
+                break;
+            case 5:
+                if(outtake.getTier() == 0){
+                    intakeOuttakeState.setState(0);
+                    break;
+                }
                 stateDesc = "Moving outtake to level 3";
-                outtake.operateWithoutGamepad(Outtake.MotorLevels.values().length);
+                outtake.operateWithoutGamepad(2);
                 if(!outtake.slidingInProgress){
                     intakeOuttakeState.setState(0);
                 }
+                break;
         }
+
+    }*/
+
+    public void outtakeInStates(boolean forwards, boolean backwards, boolean outtakeUp, boolean outtakeDown, boolean zeroOuttake, double manualAdjustment, boolean override, boolean reverseState){
+        outtakeResetDisabler.changeState(reverseState);
+        if (outtakeResetDisabler.currentState() == 1){
+                switch (outtakeResetState){
+                    case 0:
+                        outtakeResetDisableTimer.set(2);
+                        outtakeState.changeState(false, true);
+                        outtakeResetState++;
+                    case 1:
+                        if (!outtakeResetDisableTimer.isExpired()){
+                            outtakeResetDisabler.setState(0);
+                        }
+                        if (!outtake.slidingInProgress){
+                            outtakeResetState = 0;
+                        }
+                }
+
+        }
+        if(zeroOuttake){
+            outtake.resetEncoder();
+        }
+        if(!outtake.slidingInProgress) {
+            outtake.operateSlides(manualAdjustment / 3);
+        }
+        if (!(outtakeResetDisabler.currentState() == 1)) {
+            switch (outtakeState.currentState()) {
+                case 0:
+                    stateDesc = "Outtake Level Selection";
+                    levelSelector.changeState(outtakeUp, outtakeDown);
+                    outtakeState.changeState(forwards, backwards);
+                    outtakeSubState = 0;
+                    break;
+                case 1:
+                    stateDesc = "Moving Slides With PID";
+                    levelSelector.changeState(outtakeUp, outtakeDown);
+                    outtake.operateWithoutGamepad(levelSelector.currentState());
+                    if (!outtake.slidingInProgress) {
+                        outtakeSubState++;
+                    }
+                    outtakeState.changeState(forwards, backwards);
+                    break;
+                case 2:
+                    stateDesc = "Depositing";
+                    outtake.operateSlides(0);
+                    if (outtake.autoDrop() && !override) {
+                        outtakeState.setState(3);
+                    }
+                    break;
+                case 3:
+                    stateDesc = "Resetting Slides";
+                    outtake.operateWithoutGamepad(0);
+                    if (!outtake.slidingInProgress) {
+                        outtakeState.setState(0);
+                    }
+                    break;
+            }
+        }
+    }
+
+    public String outtakeLevel(){
+        return outtakeLabels[levelSelector.currentState()];
     }
 
 }

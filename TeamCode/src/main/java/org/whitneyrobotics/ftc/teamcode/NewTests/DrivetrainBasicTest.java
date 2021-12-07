@@ -98,7 +98,7 @@ public class DrivetrainBasicTest extends OpMode {
                 break;
             case RTT:
                 if(gamepad1.right_bumper){
-                    robot.rotateToTarget(45,false);
+                    robot.rotateToTarget(60,false);
                 }
                 break;
             case DTT:

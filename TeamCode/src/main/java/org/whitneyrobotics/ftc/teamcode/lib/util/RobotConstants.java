@@ -12,25 +12,25 @@ public class RobotConstants {
     public final static double DEADBAND_ROTATE_TO_TARGET = 2.5;
     public final static double drive_min = .15;//.1245;
     public final static double drive_max = 1;//.6;
-    public final static double rotate_min = 0.15;
+    public final static double rotate_min = 0.2;
     public final static double rotate_max = 1;
 
-    public static double DRIVE_KP = 3.7;
-    public static double DRIVE_KI = 0.000002;
-    public static double DRIVE_KD = 0.95;
+    public static double DRIVE_KP = 3.55;
+    public static double DRIVE_KI = 0.000010;
+    public static double DRIVE_KD = 1;
 
     public final static ControlConstants DRIVE_CONSTANTS = new ControlConstants(DRIVE_KP,DRIVE_KI,DRIVE_KD);
 
-    public static double ROTATE_KP = 1.05;
-    public static double ROTATE_KI = 0.0006;
-    public static double ROTATE_KD = 0.05;
+    public static double ROTATE_KP = 1.0;
+    public static double ROTATE_KI = 0.00085;
+    public static double ROTATE_KD = 0.09;
     public final static ControlConstants ROTATE_CONSTANTS = new ControlConstants(ROTATE_KP,ROTATE_KI,ROTATE_KD);
 
     public final static double DEADBAND_SLIDE_TO_TARGET = 25;
     public final static double slide_min = 0.2;
     public final static double slide_max = 0.8;
 
-    public static double SLIDE_KP = 14.9;
+    public static double SLIDE_KP = 14.5;
     public static double SLIDE_KI = 0.001;
     public static double SLIDE_KD = 0.9;
     public final static ControlConstants SLIDE_CONSTANTS = new ControlConstants(SLIDE_KP,SLIDE_KI,SLIDE_KD);

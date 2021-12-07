@@ -16,8 +16,10 @@ public class Outtake {
     private Servo gate;
     private DcMotorEx linearSlides;
     private boolean useTestPositions = false;
+    private boolean gateOverride = false;
 
     private int resetState = 0;
+    private int outtakeState = 0;
 
     public Outtake(HardwareMap outtakeMap) {
         gate = outtakeMap.servo.get("gateServo");
@@ -34,7 +36,7 @@ public class Outtake {
     public double errorDebug = 0;
 
     //Emergency Stop Cases
-    private double slidesUpperBound = 3000;
+    private double slidesUpperBound = 3200;
     private double slidesLowerBound = -40;
 
     private enum GatePositions{
@@ -50,7 +52,7 @@ public class Outtake {
     public enum MotorLevels{
         LEVEL1(0.0),
         LEVEL1_5(1200),
-        LEVEL2(1833.0),
+        LEVEL2(1683.0),
         LEVEL3(2900);
         private double encoderPos;
         private MotorLevels(double encoderPos){
@@ -64,7 +66,7 @@ public class Outtake {
     public PIDController slidesController = new PIDController(RobotConstants.SLIDE_CONSTANTS);
     public boolean slidesFirstLoop = true;
     public boolean dropFirstLoop = true; //for setting drop timer
-    public double gateDelay = 0.7;
+    public double gateDelay = 1;
     //private boolean outtakeTimerSet = true; <<I don't know what this is used for
 
     //toggler based teleop
@@ -75,7 +77,7 @@ public class Outtake {
 
     public void togglerServoGate(boolean pressed){
         servoGateTog.changeState(pressed);
-        if (servoGateTog.currentState() == 0) {
+        if (servoGateTog.currentState() == 0 && !gateOverride) {
             gate.setPosition(GatePositions.CLOSE.getPosition());
         } else {
             gate.setPosition(GatePositions.OPEN.getPosition());
@@ -86,7 +88,6 @@ public class Outtake {
         double currentTarget = orderedPositions[levelIndex];
         double error = currentTarget-linearSlides.getCurrentPosition();
         errorDebug = error;
-
         if (slidesFirstLoop){
             slidingInProgress = true;
             slidesController.init(error);
@@ -97,7 +98,7 @@ public class Outtake {
 
         double power = (slidesController.getOutput() >= 0 ? 1 : -1) * (Functions.map(Math.abs(slidesController.getOutput()), RobotConstants.DEADBAND_SLIDE_TO_TARGET, 3000, RobotConstants.slide_min, RobotConstants.slide_max));
 
-        if(Math.abs(error) <= RobotConstants.DEADBAND_SLIDE_TO_TARGET || linearSlides.getCurrentPosition() < slidesLowerBound || linearSlides.getCurrentPosition() > slidesUpperBound){
+        if(Math.abs(error) <= RobotConstants.DEADBAND_SLIDE_TO_TARGET ){
             linearSlides.setPower(0);
             slidingInProgress = false;
             slidesFirstLoop = true;
@@ -116,11 +117,13 @@ public class Outtake {
             dropFirstLoop = false;
         }
 
-        if(outtakeGateTimer.isExpired()){
+        if(outtakeGateTimer.isExpired() && !gateOverride){
             servoGateTog.setState(0);
             gate.setPosition(GatePositions.CLOSE.getPosition());
             dropFirstLoop = true;
             return true;
+        } if(gateOverride){
+            gate.setPosition(GatePositions.CLOSE.getPosition());
         }
         return false;
     }
@@ -163,7 +166,20 @@ public class Outtake {
 
     public void toggleTestPositions(){useTestPositions = (useTestPositions) ? false : true;}
 
-    public boolean UseTestPositions(){return useTestPositions;}
+    public boolean useTestPositions(){return useTestPositions;}
+
+    public void updateGateOverride(boolean override){
+        if(override){
+            gate.setPosition(GatePositions.OPEN.getPosition());
+        } else if(outtakeGateTimer.isExpired()){
+            gate.setPosition(GatePositions.CLOSE.getPosition());
+        }
+        gateOverride = override;
+    }
+
+    public boolean isGateBusy(){
+        return gate.getPosition() > GatePositions.CLOSE.getPosition() + 0.05;
+    }
 
     public void setTestPositions(double[] levels){
         if(levels.length != 4) {

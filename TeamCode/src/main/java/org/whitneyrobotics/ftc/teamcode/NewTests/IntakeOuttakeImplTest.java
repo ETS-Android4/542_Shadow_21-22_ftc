@@ -29,18 +29,26 @@ public class IntakeOuttakeImplTest extends OpMode {
                 //robotIntake.operate(intakePower,intakeReverse);
                 robotOuttake.reset();
                 intakeOuttakeState.changeState(changeState);
+                /*
+                if(changeState){
+                    intakeOuttakeState.setState(3);
+                }
+                 */
                 break;
             case 2:
+                stateDesc = "Intake rejection";
+                //if(robotIntake.reject(1500)){intakeOuttakeState.setState(3)};
+            case 3:
                 stateDesc = "Outtake Level Selection";
                 //robotIntake.disable();
                 robotOuttake.operate(outtakeUp,outtakeDown);
                 intakeOuttakeState.changeState(changeState);
                 break;
-            case 3:
+            case 4:
                 stateDesc = "Depositing Item";
                 if(robotOuttake.autoDrop()){intakeOuttakeState.setState(4);}
                 break;
-            case 4:
+            case 5:
                 stateDesc = "Moving outtake to level 3";
                 robotOuttake.operateWithoutGamepad(2);
                 if(!robotOuttake.slidingInProgress){
@@ -52,6 +60,7 @@ public class IntakeOuttakeImplTest extends OpMode {
     @Override
     public void init() {
         robotOuttake = new Outtake(hardwareMap);
+        //robotIntake = new Intake(hardwareMap);
     }
 
     @Override

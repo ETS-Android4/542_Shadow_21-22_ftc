@@ -14,6 +14,8 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.Drivetrain;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 
 @TeleOp(name="Drivetrain Motor Calibration",group="Tests")
@@ -31,6 +33,8 @@ public class DrivetrainMotorCalibration extends OpMode {
 
     private double lastRecAverage = 0;
     private double deltaAverage = 0;
+
+    private long startTime;
 
     private int state = 0;
     private int substate = 0;
@@ -84,11 +88,13 @@ public class DrivetrainMotorCalibration extends OpMode {
         robot.estimatePosition();
         switch(state){
             case CONFIG:
-                config.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_up,gamepad1.dpad_down);
+                config.run(gamepad1.dpad_right,gamepad1.dpad_left,gamepad1.dpad_down,gamepad1.dpad_up);
                 if(gamepad1.a && gamepad1.b){
-                    motorPower = (double)config.getOutputs()[0];
-                    marginOfError = (int)config.getOutputs()[1];
-                    onMat = (boolean)config.getOutputs()[2];
+                    Object[] results = config.getOutputs();
+                    motorPower = (double)results[0];
+                    marginOfError = (int)results[1];
+                    onMat = (boolean)results[2];
+                    startTime = System.nanoTime();
                     advanceState();
                 }
                 telemetry.addLine(config.formatDisplay());
@@ -98,7 +104,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 robot.drivetrain.operate(new double[]{motorPower*FLReduction,motorPower*FRReduction,motorPower*BLReduction,motorPower*BRReduction});
                 switch(substate){
                     case 0:
-                        accelerationTime.set(0.1);
+                        accelerationTime.set(0.2);
                         substate++;
                         break;
                     case 1:
@@ -106,7 +112,9 @@ public class DrivetrainMotorCalibration extends OpMode {
                             advanceState();
                         }
                 }
+                telemetry.addData("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 telemetry.addLine("Accelerating...");
+                packet.put("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 packet.addLine("Accelerating...");
                 break;
             case CALIBRATE:
@@ -142,6 +150,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 if(consecutiveAverageLoops >= endAfterXStableAvgLoops){
                     state = END;
                 }
+                telemetry.addData("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 telemetry.addData("Motor power",motorPower);
                 telemetry.addData("Margin of Error",marginOfError);
                 telemetry.addData("On mats", onMat);
@@ -153,6 +162,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 telemetry.addLine();
                 telemetry.addData("Waiting for average to stabilize",String.format("(%d/%d)",consecutiveAverageLoops,endAfterXStableAvgLoops));
 
+                packet.put("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 packet.put("Motor power",motorPower);
                 packet.put("Margin of Error",marginOfError);
                 packet.put("On mats", onMat);
@@ -172,7 +182,9 @@ public class DrivetrainMotorCalibration extends OpMode {
                     state = ACCELERATE;
                     substate = 0;
                 }
+                telemetry.addData("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 telemetry.addLine("Reversing...");
+                packet.put("Elapsed time",calculateAndFormatTimeElapsed(startTime));
                 packet.addLine("Reversing...");
                 break;
             case END:
@@ -201,6 +213,7 @@ public class DrivetrainMotorCalibration extends OpMode {
                 if(gamepadListener.longPress(gamepad1.x,3000)){
                     state = 0;
                     substate = 0;
+                    break;
                 }
                 break;
         }
@@ -210,5 +223,11 @@ public class DrivetrainMotorCalibration extends OpMode {
     private void advanceState(){
         state++;
         substate = 0;
+    }
+
+    private String calculateAndFormatTimeElapsed(long initTime){
+        int ElapsedSeconds = (int)Math.round((System.nanoTime()-initTime)/1E9);
+        DecimalFormat secondsFormat = new DecimalFormat("##");
+        return String.format("%d:%d",Math.floor(ElapsedSeconds/60),secondsFormat.format(ElapsedSeconds%60));
     }
 }

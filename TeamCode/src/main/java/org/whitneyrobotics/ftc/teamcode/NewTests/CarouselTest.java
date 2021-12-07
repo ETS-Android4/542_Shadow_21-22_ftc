@@ -17,7 +17,7 @@ public class CarouselTest extends OpMode {
 
     @Override
     public void loop() {
-        carousel.operate(gamepad1.a,gamepad1.b);
+        carousel.operate(gamepad1.a,gamepad1.x,gamepad1.b);
         /*switch(state){
             case 0:
                 carousel.operateAuto(gamepad1.b);
@@ -32,6 +32,6 @@ public class CarouselTest extends OpMode {
         }*/
         carousel.togglerOperate(gamepad1.right_bumper,gamepad1.b);
         telemetry.addData("Alliance",carousel.getAlliance());
-        telemetry.addData("Carousel in Progress",carousel.isCarouselInProgress());
+        telemetry.addData("Carousel in Progress",carousel.isTimerCarouselInProgress());
     }
 }

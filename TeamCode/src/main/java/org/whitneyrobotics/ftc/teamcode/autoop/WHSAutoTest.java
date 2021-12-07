@@ -2,7 +2,6 @@ package org.whitneyrobotics.ftc.teamcode.autoop;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -10,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Coordinate;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 import org.whitneyrobotics.ftc.teamcode.lib.util.DataToolsLite;
+import org.whitneyrobotics.ftc.teamcode.lib.util.SimpleTimer;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
-import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImplDrivetrainOnly;
 
 @Autonomous(name="WHS Freight Frenzy Auto TEST")
 public class WHSAutoTest extends OpMode {
@@ -54,6 +53,8 @@ public class WHSAutoTest extends OpMode {
     Position[] sharedShippingHub = new Position[2];
     Position[] warehouse = new Position[2];
     Position[] storageUnitPositions = new Position[2];
+
+    private SimpleTimer generalTimer = new SimpleTimer();
 
     static final int INIT = 0;
     static final int ROTATE_CAROUSEL = 1;
@@ -180,11 +181,11 @@ public class WHSAutoTest extends OpMode {
         //sharedShippingHub[RED] = new Position(-152.4, -1200);
         //sharedShippingHub[BLUE] = new Position(-152.4, 1200);
 
-        gapApproach[RED] = new Position(-1630,-450);
-        gapApproach[BLUE] = new Position(-1630,450);
+        gapApproach[RED] = new Position(-1647,-450);
+        gapApproach[BLUE] = new Position(-1647,450);
 
-        gapCrossPositions[RED] = new Position(-1630,-900);
-        gapCrossPositions[BLUE] = new Position(-1630,900);
+        gapCrossPositions[RED] = new Position(-1647,-900);
+        gapCrossPositions[BLUE] = new Position(-1647,900);
 
         warehouse[RED] = new Position(-1500,-1123);
         warehouse[BLUE] = new Position(-1500,1123);
@@ -192,8 +193,8 @@ public class WHSAutoTest extends OpMode {
         storageUnitPositions[RED] = new Position(-900,1600);
         storageUnitPositions[BLUE] = new Position(-900,-1600);
 
-        carouselApproach[RED] = new Position(-1250, 1300);
-        carouselApproach[BLUE] = new Position(-1250,-1300);
+        carouselApproach[RED] = new Position(-1500, 1350);
+        carouselApproach[BLUE] = new Position(-1450,-1350);
 
         carouselPositions[RED] = new Position(-1512,1612);
         carouselPositions[BLUE] = new Position(-1512, -1612);
@@ -309,13 +310,27 @@ public class WHSAutoTest extends OpMode {
                         break;
                     case 2:
                         boolean checkBlue = ((STARTING_ALLIANCE) == BLUE) ? true : false;
-                        robot.drivetrain.operate(-0.05,-0.05);
+                        //robot.drivetrain.operate(-0.01,-0.01);
                         robot.carousel.operateAuto(checkBlue);
-                        if (!robot.carousel.isCarouselInProgress()){
+                        if (!robot.carousel.isTimerCarouselInProgress()){
                         subState++;
-                        advanceState();
                         }
                         break;
+                    case 3:
+                        generalTimer.set(0.2);
+                        subState++;
+                        break;
+                    case 4:
+                        robot.drivetrain.operate(0.25,0.25);
+                        if(generalTimer.isExpired()){
+                           subState++;
+                        }
+                        break;
+                    case 5:
+                        robot.driveToTarget(carouselApproach[STARTING_ALLIANCE], false);
+                        if(!robot.driveToTargetInProgress()){
+                            advanceState();
+                        }
                 }
                 break;
             case SHIPPING_HUB:

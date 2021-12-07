@@ -293,10 +293,17 @@ public class Drivetrain {
         vBL = -gamepadInputY - gamepadInputX + gamepadInputTurn;
         vBR = -gamepadInputY + gamepadInputX - gamepadInputTurn;
          */
-        frontLeft.setPower(vFL);
-        frontRight.setPower(vFR * motorReductionForFRAndBL);
-        backLeft.setPower(vBL * motorReductionForFRAndBL);
-        backRight.setPower(vBR * motorReductionForBR);
+        if(gamepadInputY<-0.9){ //speed cap for backwards
+            frontLeft.setPower(vFL *0.7);
+            frontRight.setPower(vFR * motorReductionForFRAndBL*0.7);
+            backLeft.setPower(vBL * motorReductionForFRAndBL*0.7);
+            backRight.setPower(vBR * motorReductionForBR*0.7);
+        } else {
+            frontLeft.setPower(vFL);
+            frontRight.setPower(vFR * motorReductionForFRAndBL);
+            backLeft.setPower(vBL * motorReductionForFRAndBL);
+            backRight.setPower(vBR * motorReductionForBR);
+        }
     }
 
     public void operateMecanumDriveScaled(double gamepadInputX, double gamepadInputY, double gamepadInputTurn, double heading) {
@@ -314,10 +321,17 @@ public class Drivetrain {
         vBL = -scaledY - scaledX + scaledTurn;
         vBR = -scaledY + scaledX - scaledTurn;
          */
-        frontLeft.setPower(vFL);
-        frontRight.setPower(vFR * motorReductionForFRAndBL);
-        backLeft.setPower(vBL * motorReductionForFRAndBL);
-        backRight.setPower(vBR * motorReductionForBR);
+        if(gamepadInputY<-0.9){
+            frontLeft.setPower(vFL *0.7);
+            frontRight.setPower(vFR * motorReductionForFRAndBL*0.7);
+            backLeft.setPower(vBL * motorReductionForFRAndBL*0.7);
+            backRight.setPower(vBR * motorReductionForBR*0.7);
+        } else {
+            frontLeft.setPower(vFL);
+            frontRight.setPower(vFR * motorReductionForFRAndBL);
+            backLeft.setPower(vBL * motorReductionForFRAndBL);
+            backRight.setPower(vBR * motorReductionForBR);
+        }
     }
 
     /*public void switchFieldCentric(boolean gamepadInput) {

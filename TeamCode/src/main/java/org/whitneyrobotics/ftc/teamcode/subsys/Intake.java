@@ -12,11 +12,15 @@ public class Intake {
     private DcMotorEx intakeMotor;
 
     private int autoIntakeState = 0;
-    private static final double INTAKE_MOTOR_POWER = 0.65;
+    private static final double INTAKE_MOTOR_POWER = 1;
     public boolean autoIntakeInProgress = false;
     public boolean isReversed;
 
     private SimpleTimer autoIntakeTimer = new SimpleTimer();
+    private SimpleTimer rejectTimer = new SimpleTimer();
+    private int rejectState;
+    public String stateDesc;
+
     private Toggler intakePowerState;
 
     public void resetAllEncoder(){
@@ -25,7 +29,7 @@ public class Intake {
     }
 
     public Intake (HardwareMap hardwareMap){
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "SurgicalTubes");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
         intakePowerState = new Toggler(2);
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -84,6 +88,23 @@ public class Intake {
     public void disable(){
         intakePowerState.setState(0);
         intakeMotor.setPower(0); //in case if theres some weird power left
+    }
+
+    public boolean reject(double seconds){
+        switch(rejectState){
+            case 0:
+                rejectTimer.set(seconds);
+                intakeMotor.setPower(-INTAKE_MOTOR_POWER);
+                rejectState++;
+                break;
+            case 1:
+                if(rejectTimer.isExpired()){
+                    intakeMotor.setPower(0);
+                    rejectState = 0;
+                    return true;
+                }
+        }
+        return false;
     }
 
     // Useful for Telemetry

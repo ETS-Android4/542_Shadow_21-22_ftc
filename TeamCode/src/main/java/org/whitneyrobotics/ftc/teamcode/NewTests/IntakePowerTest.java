@@ -12,18 +12,18 @@ import org.whitneyrobotics.ftc.teamcode.lib.util.Toggler;
 @TeleOp(name="Intake Power Test", group="Tests")
 public class IntakePowerTest extends OpMode {
     private DcMotorEx surgicalTubes;
+    double power = 0;
     private Toggler powerSelector = new Toggler(201);
 
     @Override
     public void init() {
-        surgicalTubes = hardwareMap.get(DcMotorEx.class,"surgicalTubesMotor");
+        surgicalTubes = hardwareMap.get(DcMotorEx.class,"intakeMotor");
         surgicalTubes.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         powerSelector.setState(101); //0
     }
 
     @Override
     public void loop() {
-        double power = 0;
         powerSelector.changeState(gamepad1.dpad_up,gamepad1.dpad_down);
 
         if(gamepad1.y){

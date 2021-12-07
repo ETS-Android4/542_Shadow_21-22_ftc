@@ -269,18 +269,19 @@ public class DrivetrainExperimental {
         robotAngle = (Math.atan2(-gamepadInputY, -gamepadInputX) - Math.PI / 4);
         if (fieldCentricSwitch.currentState() == 1) {
             robotAngle -= heading * Math.PI / 180;
+            double a = WHEEL_BASE / 2;
+            double b = TRACK_WIDTH / 2;
+            rightX = gamepadInputTurn;
+            vFL = r * Math.cos(robotAngle) + rightX;
+            vFR = r * Math.sin(robotAngle) - rightX;
+            vBL = r * Math.sin(robotAngle) + rightX;
+            vBR = r * Math.cos(robotAngle) - rightX;
+        } else {
+            vFL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
+            vFR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
+            vBL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
+            vBR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
         }
-        double a = WHEEL_BASE / 2;
-        double b = TRACK_WIDTH / 2;
-        rightX = gamepadInputTurn;
-        vFL = r * Math.cos(robotAngle) + rightX;
-        vFR = r * Math.sin(robotAngle) - rightX;
-        vBL = r * Math.sin(robotAngle) + rightX;
-        vBR = r * Math.cos(robotAngle) - rightX;
-        //vFL = -gamepadInputY + gamepadInputX - gamepadInputTurn;
-        //vFR = -gamepadInputY - gamepadInputX + gamepadInputTurn;
-        //vBL = -gamepadInputY - gamepadInputX - gamepadInputTurn;
-        //vBR = -gamepadInputY + gamepadInputX + gamepadInputTurn;
 
         /* INVERTED
         vFL = -gamepadInputY + gamepadInputX + gamepadInputTurn;
@@ -299,21 +300,22 @@ public class DrivetrainExperimental {
         robotAngle = (Math.atan2(-Math.pow(gamepadInputY,3), -Math.pow(gamepadInputX,3)) - Math.PI / 4);
         if (fieldCentricSwitch.currentState() == 1) {
             robotAngle -= heading * Math.PI / 180;
+            rightX = Math.pow(gamepadInputTurn,3);
+            vFL = r * Math.cos(robotAngle) + rightX;
+            vFR = r * Math.sin(robotAngle) - rightX;
+            vBL = r * Math.sin(robotAngle) + rightX;
+            vBR = r * Math.cos(robotAngle) - rightX;
+        } else {
+            double scaledY = Math.pow(gamepadInputY, 3);
+            double scaledX = Math.pow(gamepadInputX, 3);
+            double scaledTurn = Math.pow(gamepadInputTurn, 3);
+
+            vFL = -scaledY + scaledX - scaledTurn;
+            vFR = -scaledY - scaledX + scaledTurn;
+            vBL = -scaledY - scaledX - scaledTurn;
+            vBR = -scaledY + scaledX + scaledTurn;
         }
-        double scaledY = Math.pow(gamepadInputY, 3);
-        double scaledX = Math.pow(gamepadInputX, 3);
-        double scaledTurn = Math.pow(gamepadInputTurn, 3);
 
-        rightX = Math.pow(gamepadInputTurn,3);
-        vFL = r * Math.cos(robotAngle) + rightX;
-        vFR = r * Math.sin(robotAngle) - rightX;
-        vBL = r * Math.sin(robotAngle) + rightX;
-        vBR = r * Math.cos(robotAngle) - rightX;
-
-        //vFL = -scaledY + scaledX - scaledTurn;
-        //vFR = -scaledY - scaledX + scaledTurn;
-        //vBL = -scaledY - scaledX - scaledTurn;
-        //vBR = -scaledY + scaledX + scaledTurn;
         /*INVERTED:
         vFL = -scaledY + scaledX + scaledTurn;
         vFR = -scaledY - scaledX - scaledTurn;
