@@ -3,14 +3,13 @@ package org.whitneyrobotics.ftc.teamcode.ShadowAuto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
+import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 
 @Autonomous(name = "TFAutoOP")
 public class TFAuto extends OpMode {
@@ -26,17 +25,32 @@ public class TFAuto extends OpMode {
             "Marker"
     };
 
-    public Dictionary StateContainer = new Hashtable();
+    static final int RED = 0;
+    static final int BLUE = 1;
+    static final int TOP = 0;
+    static final int BOT = 1;
+
+    static int SELF_TEAM = RED; // Change both on initialize
+    static int SELF_SIDE = BOT;
+
     public int CurrentState = 0;
+    static final int INIT = 0;
+    static final int SHIPPINGHUB = 1;
+    static final int CAROUSEL = 2;
+    static final int WAREHOUSE = 3;
 
     public float CAMERA_LEFT;
     public float CAMERA_CENTER;
     public float CAMERA_RIGHT;
     public float CAMERA_PIXEL_OFFSET;
-
     public final float ScreenWidth = 500; // test value idk real one
 
-    public int BarcodeLevel;
+    Position[][] ShippingHub = new Position[2][3];
+    Position[] WarehousePark = new Position[2];
+    Position[] CarosuelApp = new Position[2];
+
+    public boolean ScanningBarcode = false;
+    public int BarcodeLevel = 0;
     public final int BarcodePixelOffset = 200;
 
     private VuforiaLocalizer Vuforia;
@@ -59,28 +73,23 @@ public class TFAuto extends OpMode {
         TFOD.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 
-    public void initStates() {
-        StateContainer.put(0, "Init");
-        StateContainer.put(1, "Carousel");
-        StateContainer.put(2, "Shipping Hub");
-        StateContainer.put(3, "Freight Deliver");
-        StateContainer.put(4, "Park");
-    }
-
     @Override
     public void init() {
+
         Robot = new WHSRobotImpl(hardwareMap);
-        //Robot.robotDrivetrain.resetEncoders();
-        initStates();
         initVuforia();
         initTfod();
         if (TFOD != null) {
             TFOD.activate();
             TFOD.setZoom(2.5, 16.0 / 9.0);
         }
+
+        // Set positions after testing
+
+
     }
 
-    public void init_loop() {
+    public int UpdateBarcode() {
         if (TFOD != null) {
             List<Recognition> UpdatedRecognitions = TFOD.getUpdatedRecognitions();
             if (UpdatedRecognitions != null) {
@@ -104,32 +113,37 @@ public class TFAuto extends OpMode {
                 }
             }
         }
+        if (BarcodeLevel == 0 && ScanningBarcode) { // if couldn't find game object then recurse
+            BarcodeLevel = UpdateBarcode();
+        }
+        return BarcodeLevel;
     }
 
     @Override
     public void loop() {
         switch(CurrentState) {
-            case 0:
+            case INIT:
+                ScanningBarcode = true;
+                UpdateBarcode();
+                CurrentState++;
+                break;
+            case SHIPPINGHUB:
+                Robot.driveToTarget(ShippingHub[SELF_TEAM][SELF_SIDE], false);
+                if (!Robot.driveToTargetInProgress()) {
+                    Robot.outtake.operateWithoutGamepad(BarcodeLevel);
+                    if (Robot.outtake.autoDrop()) {
+                        CurrentState++;
+                    }
+                }
+                break;
+            case CAROUSEL:
 
                 break;
-
-            case 1:
-
-                break;
-
-            case 2:
+            case WAREHOUSE:
 
                 break;
-
-            case 3:
-
-                break;
-
-            case 4:
-
-                break;
-
             default:
+
         }
     }
 
