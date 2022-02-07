@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.whitneyrobotics.ftc.teamcode.subsys.Carousel;
 import org.whitneyrobotics.ftc.teamcode.subsys.WHSRobotImpl;
 import org.whitneyrobotics.ftc.teamcode.lib.geometry.Position;
 
@@ -136,8 +137,12 @@ public class TFAuto extends OpMode {
                     }
                 }
                 break;
-            case CAROUSEL:
-
+            case CAROUSEL: // idk if this works or if its even right. im probably doing something wrong
+                Robot.driveToTarget(CarosuelApp[SELF_TEAM], false); // Possibly change to swerveToTarget
+                if (!Robot.driveToTargetInProgress()) {
+                    Robot.carousel.operateAuto(SELF_TEAM == BLUE);
+                }
+                CurrentState++;
                 break;
             case WAREHOUSE:
 
